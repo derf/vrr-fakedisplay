@@ -3,7 +3,7 @@ use Mojolicious::Lite;
 use Cache::File;
 
 use DateTime;
-use DateTime::Format::DateParse;
+use DateTime::Format::Strptime;
 
 use App::VRR::Fakedisplay;
 use Travel::Status::DE::VRR;
@@ -88,6 +88,16 @@ sub render_image {
 
 	my $png = App::VRR::Fakedisplay->new(width => 180, height => 50, color => [split(qr{,}, $color)]);
 
+	my $strp_simple = DateTime::Format::Strptime->new(
+		pattern => '%H:%M',
+		time_zone => 'floating',
+	);
+	my $strp_full = DateTime::Format::Strptime->new(
+		pattern => '%d.%m.%Y %H:%M',
+		time_zone => 'floating',
+	);
+
+
 	if ($self->param('line')) {
 		@grep_line = split(qr{,}, $self->param('line'));
 	}
@@ -104,7 +114,8 @@ sub render_image {
 		my $time = $d->time;
 		my $etr;
 
-		my $dt_dep = DateTime::Format::DateParse->parse_datetime($time, 'floating');
+		my $dt_dep = $strp_simple->parse_datetime($time)
+			// $strp_full->parse_datetime($time);
 		my $dt;
 
 		if ((@grep_line and not ($line ~~ \@grep_line)) or

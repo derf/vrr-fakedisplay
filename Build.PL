@@ -18,7 +18,7 @@ Module::Build->new(
 		'perl' => '5.10.0',
 		'Cache::File' => 0,
 		'DateTime' => 0,
-		'DateTime::Format::DateParse' => 0,
+		'DateTime::Format::Strptime' => 0,
 		'GD' => 0,
 		'Mojolicious::Lite' => 0,
 		'Travel::Status::DE::VRR' => 0.02,
