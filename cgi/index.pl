@@ -38,6 +38,10 @@ sub handle_request {
 	$self->stash( title      => 'vrr-fakedisplay' );
 	$self->stash( version    => $VERSION );
 
+	$self->stash( params => $self->req->params->to_string);
+	$self->stash( height => 50 );
+	$self->stash( width => 180);
+
 	$self->render(
 		'main',
 		city       => $city,
@@ -54,7 +58,9 @@ sub render_image {
 
 	my $dt_now = DateTime->now(time_zone => 'Europe/Berlin');
 
-	my $color = $self->param('color') // '255,0,0';
+	my $color = $self->param('color') || '255,0,0';
+	my $width = $self->param('width') || 180;
+	my $height = $self->param('height') || 50;
 
 	$self->res->headers->content_type('image/png');
 
@@ -109,7 +115,7 @@ sub render_image {
 
 		$png->draw_at(0, $line);
 		$png->draw_at(25, $destination);
-		$png->draw_at(145, $etr);
+		$png->draw_at(144, $etr);
 
 		if ($etr ne 'sofort') {
 			$png->draw_at(161, 'min');
@@ -159,7 +165,8 @@ __DATA__
 <body>
 
 % if ($city and $stop) {
-<img src="../../<%= $city %>/<%= $stop %>.png" alt=""/>
+<img src="../../<%= $city %>/<%= $stop %>.png?<%= $params %>" alt=""
+height="<%= $height * 4 %>" width="<%= $width * 4 %>"/>
 % }
 % else {
 
