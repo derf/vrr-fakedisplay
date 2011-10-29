@@ -77,7 +77,7 @@ sub render_image {
 
 	my $dt_now = DateTime->now(time_zone => 'Europe/Berlin');
 
-	my $color = $self->param('color') || '255,0,0';
+	my $color = $self->param('color') || '255,150,0';
 	my $width = $self->param('width') || 180;
 	my $height = $self->param('height') || 50;
 
