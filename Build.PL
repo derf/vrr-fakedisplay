@@ -16,6 +16,12 @@ Module::Build->new(
 	license => 'perl',
 	requires => {
 		'perl' => '5.10.0',
+		'Cache::File' => 0,
+		'DateTime' => 0,
+		'DateTime::Format::DateParse' => 0,
+		'GD' => 0,
+		'Mojolicious::Lite' => 0,
+		'Travel::Status::DE::VRR' => 0.02,
 	},
 	share_dir => 'share',
 	sign => 1,
