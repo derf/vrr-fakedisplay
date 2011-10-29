@@ -59,7 +59,7 @@ sub locate_char {
 
 	given ($char) {
 		when (/[WwMm]/) { $w = 8 }
-		when (/[BDEFrt ]/) { $w = 5 }
+		when (/[BEFkrt ]/) { $w = 5 }
 		when (/[il1:]/) { $w = 4 }
 		when (/[.,]/) { $w = 3 }
 	}
