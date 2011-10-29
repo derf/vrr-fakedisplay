@@ -54,11 +54,13 @@ sub render_image {
 
 	my $dt_now = DateTime->now(time_zone => 'Europe/Berlin');
 
+	my $color = $self->param('color') // '255,0,0';
+
 	$self->res->headers->content_type('image/png');
 
 	my ($results, $errstr) = get_results_for($city, $stop);
 
-	my $png = App::VRR::Fakedisplay->new(width => 180, height => 50);
+	my $png = App::VRR::Fakedisplay->new(width => 180, height => 50, color => [split(qr{,}, $color)]);
 	for my $d (@{$results}) {
 
 		my $line = $d->line;
@@ -95,7 +97,7 @@ sub render_image {
 		}
 		elsif ($duration->in_units('hours') == 0) {
 			$etr = sprintf(
-				' %2dmin',
+				' %2d',
 				$duration->in_units('minutes'),
 			);
 		}
@@ -108,6 +110,11 @@ sub render_image {
 		$png->draw_at(0, $line);
 		$png->draw_at(25, $destination);
 		$png->draw_at(145, $etr);
+
+		if ($etr ne 'sofort') {
+			$png->draw_at(161, 'min');
+		}
+
 		$png->new_line();
 	}
 

@@ -26,7 +26,7 @@ sub new {
 	$self->{image} = GD::Image->new($self->{width} * $self->{scale}, $self->{height} * $self->{scale});
 
 	$self->{color}->{bg} = $self->{image}->colorAllocate(0, 0, 0);
-	$self->{color}->{fg} = $self->{image}->colorAllocate(255, 0, 0);
+	$self->{color}->{fg} = $self->{image}->colorAllocate(@{$opt{color} // [255, 0, 0]});
 
 	$self->{image}->filledRectangle(0, 0, ($self->{width} * $self->{scale}) -1,
 	($self->{height} * $self->{scale}) - 1, $self->{color}->{bg});
