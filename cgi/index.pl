@@ -253,10 +253,10 @@ v<%= $version %>
 function reloadDisplay() {
 	d = new Date();
 	$("#display").attr("src", "../<%= $city %>/<%= $stop %>.png?<%= $params %>&r="+d.getTime())
-	setTimeout('reloadDisplay()', 30000);
+	setTimeout('reloadDisplay()', 60000);
 }
 
-setTimeout('reloadDisplay()', 30000);
+setTimeout('reloadDisplay()', 60000);
 </script>
 
 </html>
