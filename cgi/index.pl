@@ -195,6 +195,7 @@ __DATA__
 	}
 
 	</style>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
 </head>
 <body>
 
@@ -237,11 +238,10 @@ v<%= $version %>
 
 </body>
 
-<script language="text/javascript">
+<script type="text/javascript">
 function reloadDisplay() {
-	var now = new Date();
-	document.getElementById("display").src
-		= document.getElementById("display").src + '&r=' + now.getTime();
+	d = new Date();
+	$("#display").attr("src", "../<%= $city %>/<%= $stop %>.png?<%= $params %>&r="+d.getTime())
 	setTimeout('reloadDisplay()', 30000);
 }
 
