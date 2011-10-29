@@ -53,12 +53,13 @@ sub locate_char {
 		when (q{:}) { $y = 30; $x =   0 }
 		when (q{-}) { $y = 30; $x =  10 }
 		when (q{.}) { $y = 30; $x =  20 }
-		when (q{,}) { $y = 30, $x =  30 }
+		when (q{,}) { $y = 30; $x =  30 }
+		when (q{/}) { $y = 30; $x =  40 }
 	}
 
 	given ($char) {
 		when (/[WwMm]/) { $w = 8 }
-		when (/[BDErt ]/) { $w = 5 }
+		when (/[BDEFrt ]/) { $w = 5 }
 		when (/[il1:]/) { $w = 4 }
 		when (/[.,]/) { $w = 3 }
 	}

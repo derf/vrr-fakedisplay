@@ -51,6 +51,25 @@ sub handle_request {
 	);
 }
 
+sub shorten_destination {
+	my ($dest, $city) = @_;
+
+	$dest =~ s{ ^ $city \s }{}x;
+
+	if (length($dest) > 20) {
+		$dest =~ s{^Dortmund}{DO} or
+		$dest =~ s{^Duisburg}{DU} or
+		$dest =~ s{^Düsseldorf}{D} or
+		$dest =~ s{^Essen}{E} or
+		$dest =~ s{^Gelsenkirchen}{GE} or
+		$dest =~ s{^Mülheim}{MH};
+	}
+
+	$dest = substr($dest, 0, 20);
+
+	return $dest;
+}
+
 sub render_image {
 	my $self = shift;
 	my $city = $self->stash('city');
@@ -62,11 +81,21 @@ sub render_image {
 	my $width = $self->param('width') || 180;
 	my $height = $self->param('height') || 50;
 
-	$self->res->headers->content_type('image/png');
+	my (@grep_line, @grep_platform);
+
 
 	my ($results, $errstr) = get_results_for($city, $stop);
 
 	my $png = App::VRR::Fakedisplay->new(width => 180, height => 50, color => [split(qr{,}, $color)]);
+
+	if ($self->param('line')) {
+		@grep_line = split(qr{,}, $self->param('line'));
+	}
+	if ($self->param('platform')) {
+		@grep_platform = split(qr{,}, $self->param('platform'));
+	}
+
+	$self->res->headers->content_type('image/png');
 	for my $d (@{$results}) {
 
 		my $line = $d->line;
@@ -77,6 +106,11 @@ sub render_image {
 
 		my $dt_dep = DateTime::Format::DateParse->parse_datetime($time, 'floating');
 		my $dt;
+
+		if ((@grep_line and not ($line ~~ \@grep_line)) or
+			(@grep_platform and not ($platform ~~ \@grep_platform))) {
+			next;
+		}
 
 		if ($time =~ m{ ^ \d\d? : \d\d $ }x) {
 			$dt = DateTime->new(
@@ -111,7 +145,7 @@ sub render_image {
 			last;
 		}
 
-		$destination =~ s{  $city \s }{}ix;
+		$destination = shorten_destination($destination, $city);
 
 		$png->draw_at(0, $line);
 		$png->draw_at(25, $destination);
