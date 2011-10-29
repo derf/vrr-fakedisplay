@@ -2,6 +2,9 @@
 use Mojolicious::Lite;
 use Cache::File;
 
+use DateTime;
+use DateTime::Format::DateParse;
+
 use App::VRR::Fakedisplay;
 use Travel::Status::DE::VRR;
 
@@ -49,15 +52,62 @@ sub render_image {
 	my $city = $self->stash('city');
 	my $stop = $self->stash('stop');
 
+	my $dt_now = DateTime->now(time_zone => 'Europe/Berlin');
+
 	$self->res->headers->content_type('image/png');
 
 	my ($results, $errstr) = get_results_for($city, $stop);
 
-	my $png = App::VRR::Fakedisplay->new();
-	for my $d (@{$results}[0 .. 5]) {
-		$png->draw_at(0, $d->line);
-		$png->draw_at(30, $d->destination);
-		$png->draw_at(180, $d->time);
+	my $png = App::VRR::Fakedisplay->new(width => 180, height => 50);
+	for my $d (@{$results}) {
+
+		my $line = $d->line;
+		my $platform = (split(qr{ }, $d->platform))[-1];
+		my $destination = $d->destination;
+		my $time = $d->time;
+		my $etr;
+
+		my $dt_dep = DateTime::Format::DateParse->parse_datetime($time, 'floating');
+		my $dt;
+
+		if ($time =~ m{ ^ \d\d? : \d\d $ }x) {
+			$dt = DateTime->new(
+				year => $dt_now->year,
+				month => $dt_now->month,
+				day => $dt_now->day,
+				hour => $dt_dep->hour,
+				minute => $dt_dep->minute,
+				second => $dt_dep->second,
+				time_zone => 'Europe/Berlin',
+			);
+		}
+		else {
+			$dt = $dt_dep;
+		}
+
+		my $duration = $dt->subtract_datetime($dt_now);
+
+		if ($duration->is_negative) {
+			next;
+		}
+		elsif ($duration->in_units('minutes') == 0) {
+			$etr = 'sofort';
+		}
+		elsif ($duration->in_units('hours') == 0) {
+			$etr = sprintf(
+				' %2dmin',
+				$duration->in_units('minutes'),
+			);
+		}
+		else {
+			last;
+		}
+
+		$destination =~ s{  $city \s }{}ix;
+
+		$png->draw_at(0, $line);
+		$png->draw_at(25, $destination);
+		$png->draw_at(145, $etr);
 		$png->new_line();
 	}
 

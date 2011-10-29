@@ -3,6 +3,7 @@ package App::VRR::Fakedisplay;
 use strict;
 use warnings;
 use 5.010;
+use utf8;
 
 use File::ShareDir qw(dist_file);
 use GD;
@@ -10,12 +11,12 @@ use GD;
 our $VERSION = '0.00';
 
 sub new {
-	my ( $class, %opts ) = @_;
+	my ( $class, %opt ) = @_;
 
 	my $self = {
 		font_file => dist_file( 'App-VRR-Fakedisplay', 'font.png' ),
-		width => 300,
-		height => 50,
+		width => $opt{width} || 140,
+		height => $opt{height} || 40,
 		scale => 10,
 		offset_x => 0,
 		offset_y => 0,
@@ -44,6 +45,10 @@ sub locate_char {
 		when (/[A-Z]/) { $y =  0; $x = (ord($char) - 65) * 10 }
 		when (/[0-9]/) { $y = 20; $x = (ord($char) - 48) * 10 }
 
+		when (q{ä}) { $y = 40; $x =  0 }
+		when (q{ö}) { $y = 40; $x = 10 }
+		when (q{ü}) { $y = 40; $x = 20 }
+
 		when (q{ }) { $y = 90; $x =   0 }
 		when (q{:}) { $y = 30; $x =   0 }
 		when (q{-}) { $y = 30; $x =  10 }
@@ -53,9 +58,9 @@ sub locate_char {
 
 	given ($char) {
 		when (/[WwMm]/) { $w = 8 }
-		when (/[BDEt]/) { $w = 5 }
-		when (/[il]/) { $w = 4 }
-		when (/[:.,]/) { $w = 3 }
+		when (/[BDErt ]/) { $w = 5 }
+		when (/[il1:]/) { $w = 4 }
+		when (/[.,]/) { $w = 3 }
 	}
 
 	return ($x, $y, $w, $h);
@@ -72,7 +77,13 @@ sub draw_at {
 
 	my $font_idx = $self->{font_idx};
 
+	my $scale = $self->{scale};
+
 	my ($off_x, $off_y) = ($offset_x, $self->{offset_y});
+
+	if ($off_y >= $self->{height} or $off_x >= $self->{width}) {
+		return;
+	}
 
 	for my $char (split(qr{}, $text)) {
 		my ($x, $y, $w, $h) = $self->locate_char($char);
@@ -80,12 +91,11 @@ sub draw_at {
 			for my $pos_y ( $y .. ($y + $h)) {
 				if ($font->getPixel($pos_x, $pos_y) == $font_idx) {
 					$im->filledEllipse(
-						($off_x + $pos_x - $x) * 10, ($off_y + $pos_y - $y) * 10,
-						10, 10,
+						($off_x + $pos_x - $x) * $scale, ($off_y + $pos_y - $y) * $scale,
+						$scale, $scale,
 						$c_fg
 					);
 				}
-				say "";
 			}
 		}
 		$off_x += $w;
