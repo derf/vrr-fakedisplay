@@ -199,7 +199,7 @@ __DATA__
 <body>
 
 % if ($city and $stop) {
-<img src="../../<%= $city %>/<%= $stop %>.png?<%= $params %>" alt=""
+<img src="../<%= $city %>/<%= $stop %>.png?<%= $params %>" alt=""
 id="display" height="<%= $height * 4 %>" width="<%= $width * 4 %>"/>
 % }
 % else {
