@@ -114,8 +114,8 @@ sub render_image {
 		my $time = $d->time;
 		my $etr;
 
-		my $dt_dep = $strp_simple->parse_datetime($time)
-			// $strp_full->parse_datetime($time);
+		my $dt_dep = $strp_full->parse_datetime($time)
+			// $strp_simple->parse_datetime($time);
 		my $dt;
 
 		if ((@grep_line and not ($line ~~ \@grep_line)) or
