@@ -200,7 +200,7 @@ __DATA__
 
 % if ($city and $stop) {
 <img src="../../<%= $city %>/<%= $stop %>.png?<%= $params %>" alt=""
-height="<%= $height * 4 %>" width="<%= $width * 4 %>"/>
+id="display" height="<%= $height * 4 %>" width="<%= $width * 4 %>"/>
 % }
 % else {
 
@@ -236,6 +236,18 @@ v<%= $version %>
 </div>
 
 </body>
+
+<script language="text/javascript">
+function reloadDisplay() {
+	var now = new Date();
+	document.getElementById("display").src
+		= document.getElementById("display").src + '&r=' + now.getTime();
+	setTimeout('reloadDisplay()', 30000);
+}
+
+setTimeout('reloadDisplay()', 30000);
+</script>
+
 </html>
 
 @@ not_found.html.ep
