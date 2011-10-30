@@ -8,7 +8,7 @@ use DateTime::Format::Strptime;
 use App::VRR::Fakedisplay;
 use Travel::Status::DE::VRR;
 
-our $VERSION = '0.00';
+our $VERSION = '0.01';
 
 sub get_results_for {
 	my ( $city, $stop ) = @_;
