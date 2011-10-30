@@ -77,9 +77,7 @@ sub render_image {
 
 	my $dt_now = DateTime->now(time_zone => 'Europe/Berlin');
 
-	my $color = $self->param('color') || '255,150,0';
-	my $width = $self->param('width') || 180;
-	my $height = $self->param('height') || 50;
+	my $color = $self->param('color') || '255,208,0';
 
 	my (@grep_line, @grep_platform);
 
@@ -217,8 +215,13 @@ id="display" height="<%= $height * 4 %>" width="<%= $width * 4 %>"/>
 % else {
 
 <p>
-DB-Fakedisplay displays the next departures at a DB station, just like the big
-LC display in the station itself.
+VRR-Fakedisplay shows the next departures at a public transit stop, just like
+the Lumino LED displays used at some stops.
+</p>
+
+<p>
+It was written for the VRR (Verkehrsverbund Rhein-Ruhr), but supports most other
+local transit networks as well.
 </p>
 
 % }
@@ -233,7 +236,7 @@ LC display in the station itself.
 
 <%= form_for _redirect => begin %>
 <p>
-  Station name:
+  City -> Stop:
   <%= text_field 'city' %>
   <%= text_field 'stop' %>
   <%= submit_button 'Display' %>
@@ -243,7 +246,7 @@ LC display in the station itself.
 </div>
 
 <div class="about">
-<a href="http://finalrewind.org/projects/db-fakedisplay/">db-fakedisplay</a>
+<a href="http://finalrewind.org/projects/vrr-fakedisplay/">vrr-fakedisplay</a>
 v<%= $version %>
 </div>
 
