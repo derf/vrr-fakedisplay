@@ -10,7 +10,7 @@ my ($out_file) = @ARGV;
 my $font = GD::Image->new('share/font.png');
 my $black = $font->colorClosest(0, 0, 0);
 
-open(my $out_fh, '>', $out_file) or die("open ${out_file}: $!");
+open(my $out_fh, '>:encoding(UTF-8)', $out_file) or die("open ${out_file}: $!");
 
 sub write_out {
 	my ($off_x, $off_y, $char) = @_;
