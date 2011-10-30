@@ -12,7 +12,8 @@ Module::Build->new(
 		'Test::Compile' => 0,
 		'Test::Pod' => 0,
 	},
-	module_name => 'App::VRR::Fakedisplay',
+	dist_abstract => 'vrr fakedisplay',
+	dist_name => 'vrr-fakedisplay',
 	license => 'perl',
 	PL_files => {
 		'lib/App/VRR/Fakedisplay.pm.PL' => 'lib/App/VRR/Fakedisplay.pm',
@@ -27,5 +28,6 @@ Module::Build->new(
 		'Travel::Status::DE::VRR' => 0.02,
 	},
 	sign => 1,
+	dist_version_from => 'cgi/index.pl',
 
 )->create_build_script();
