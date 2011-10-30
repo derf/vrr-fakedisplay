@@ -14,6 +14,9 @@ Module::Build->new(
 	},
 	module_name => 'App::VRR::Fakedisplay',
 	license => 'perl',
+	PL_files => {
+		'lib/App/VRR/Fakedisplay.pm.PL' => 'lib/App/VRR/Fakedisplay.pm',
+	},
 	requires => {
 		'perl' => '5.10.0',
 		'Cache::File' => 0,
@@ -23,7 +26,6 @@ Module::Build->new(
 		'Mojolicious::Lite' => 0,
 		'Travel::Status::DE::VRR' => 0.02,
 	},
-	share_dir => 'share',
 	sign => 1,
 
 )->create_build_script();

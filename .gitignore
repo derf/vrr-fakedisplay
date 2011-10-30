@@ -2,6 +2,7 @@
 /Build
 /blib
 /cover_db
+/lib/App/VRR/Fakedisplay.pm
 /MANIFEST
 /MANIFEST.bak
 /MANIFEST.SKIP
