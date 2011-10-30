@@ -8,23 +8,24 @@ use GD;
 
 my ($out_file) = @ARGV;
 my $font = GD::Image->new('share/font.png');
-my $black = $font->colorClosest(0, 0, 0);
+my $black = $font->colorClosest( 0, 0, 0 );
 
-open(my $out_fh, '>:encoding(UTF-8)', $out_file) or die("open ${out_file}: $!");
+open( my $out_fh, '>:encoding(UTF-8)', $out_file )
+  or die("open ${out_file}: $!");
 
 sub write_out {
-	my ($off_x, $off_y, $char) = @_;
+	my ( $off_x, $off_y, $char ) = @_;
 	my $char_w = 0;
 
 	say $out_fh "'${char}' => {";
 	say $out_fh 'matrix => [';
 
-	for my $pos_y ( $off_y .. ($off_y + 10)) {
+	for my $pos_y ( $off_y .. ( $off_y + 10 ) ) {
 		print $out_fh '[ ';
-		for my $pos_x ( $off_x .. ($off_x + 10)) {
-			if ($font->getPixel($pos_x, $pos_y) == $black) {
+		for my $pos_x ( $off_x .. ( $off_x + 10 ) ) {
+			if ( $font->getPixel( $pos_x, $pos_y ) == $black ) {
 
-				if (($pos_x - $off_x) > $char_w) {
+				if ( ( $pos_x - $off_x ) > $char_w ) {
 					$char_w = $pos_x - $off_x;
 				}
 
@@ -40,7 +41,7 @@ sub write_out {
 	# spacing (one empty column)
 	$char_w++;
 
-	if ($char eq q{ }) {
+	if ( $char eq q{ } ) {
 		$char_w = 5;
 	}
 
@@ -50,17 +51,16 @@ sub write_out {
 }
 
 sub parse_char_row {
-	my ($off_y, @chars) = @_;
+	my ( $off_y, @chars ) = @_;
 	my $off_x = 0;
 
 	for my $char (@chars) {
-		write_out($off_x, $off_y, $char);
+		write_out( $off_x, $off_y, $char );
 		$off_x += 10;
 	}
 
 	return;
 }
-
 
 print $out_fh <<'___CUT___';
 
@@ -99,11 +99,11 @@ sub new {
 
 ___CUT___
 
-parse_char_row( 0, 'A' .. 'Z');
-parse_char_row(10, 'a' .. 'z');
-parse_char_row(20, '0' .. '9');
-parse_char_row(30, q{:}, q{-}, q{.}, q{,}, q{/}, q{ });
-parse_char_row(40, qw(ä ö ü));
+parse_char_row( 0,  'A' .. 'Z' );
+parse_char_row( 10, 'a' .. 'z' );
+parse_char_row( 20, '0' .. '9' );
+parse_char_row( 30, q{:}, q{-}, q{.}, q{,}, q{/}, q{ } );
+parse_char_row( 40, qw(ä ö ü) );
 
 print $out_fh <<'___CUT___';
 
