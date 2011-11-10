@@ -41,7 +41,7 @@ sub handle_request {
 	my $city = $self->stash('city');
 	my $stop = $self->stash('stop');
 
-	my $no_lines = $self->param('lines');
+	my $no_lines = $self->param('no_lines');
 
 	if ($no_lines < 1 or $no_lines > 10) {
 		$no_lines = default_no_lines();
@@ -90,7 +90,7 @@ sub render_image {
 	my $dt_now = DateTime->now( time_zone => 'Europe/Berlin' );
 
 	my $color = $self->param('color') || '255,208,0';
-	my $no_lines = $self->param('lines');
+	my $no_lines = $self->param('no_lines');
 
 	my ( @grep_line, @grep_platform );
 
@@ -197,8 +197,9 @@ get '/_redirect' => sub {
 	$params->remove('city');
 	$params->remove('stop');
 
-	if ($params->param('lines') == default_no_lines()) {
-		$params->remove('lines');
+	if (not $params->param('no_lines') or $params->param('no_lines') ==
+		default_no_lines()) {
+		$params->remove('no_lines');
 	}
 
 	my $params_s = $params->to_string;
@@ -274,7 +275,7 @@ local transit networks as well.
   <%= submit_button 'Display' %>
   <div class="break"></div>
   (optional) number of lines (1 .. 10):
-  <%= text_field 'lines' %>
+  <%= text_field 'no_lines' %>
   <br/>
 </p>
 <% end %>
