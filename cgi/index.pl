@@ -8,7 +8,11 @@ use DateTime::Format::Strptime;
 use App::VRR::Fakedisplay;
 use Travel::Status::DE::VRR;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
+
+sub default_no_lines {
+	return 5;
+}
 
 sub get_results_for {
 	my ( $city, $stop ) = @_;
@@ -37,11 +41,17 @@ sub handle_request {
 	my $city = $self->stash('city');
 	my $stop = $self->stash('stop');
 
+	my $no_lines = $self->param('lines');
+
+	if ($no_lines < 1 or $no_lines > 10) {
+		$no_lines = default_no_lines();
+	}
+
 	$self->stash( title   => 'vrr-fakedisplay' );
 	$self->stash( version => $VERSION );
 
 	$self->stash( params => $self->req->params->to_string );
-	$self->stash( height => 50 );
+	$self->stash( height => $no_lines * 10 );
 	$self->stash( width  => 180 );
 
 	$self->render(
@@ -80,16 +90,11 @@ sub render_image {
 	my $dt_now = DateTime->now( time_zone => 'Europe/Berlin' );
 
 	my $color = $self->param('color') || '255,208,0';
+	my $no_lines = $self->param('lines');
 
 	my ( @grep_line, @grep_platform );
 
 	my ( $results, $errstr ) = get_results_for( $city, $stop );
-
-	my $png = App::VRR::Fakedisplay->new(
-		width  => 180,
-		height => 50,
-		color  => [ split( qr{,}, $color ) ]
-	);
 
 	my $strp_simple = DateTime::Format::Strptime->new(
 		pattern   => '%H:%M',
@@ -106,6 +111,16 @@ sub render_image {
 	if ( $self->param('platform') ) {
 		@grep_platform = split( qr{,}, $self->param('platform') );
 	}
+
+	if ($no_lines < 1 or $no_lines > 10) {
+		$no_lines = default_no_lines();
+	}
+
+	my $png = App::VRR::Fakedisplay->new(
+		width  => 180,
+		height => $no_lines * 10,
+		color  => [ split( qr{,}, $color ) ]
+	);
 
 	$self->res->headers->content_type('image/png');
 	for my $d ( @{$results} ) {
@@ -177,7 +192,18 @@ get '/_redirect' => sub {
 	my $city = $self->param('city');
 	my $stop = $self->param('stop');
 
-	$self->redirect_to("/${city}/${stop}");
+	my $params = $self->req->params;
+
+	$params->remove('city');
+	$params->remove('stop');
+
+	if ($params->param('lines') == default_no_lines()) {
+		$params->remove('lines');
+	}
+
+	my $params_s = $params->to_string;
+
+	$self->redirect_to("/${city}/${stop}?${params_s}");
 };
 
 get '/'                => \&handle_request;
@@ -203,6 +229,10 @@ __DATA__
 
 	div.about a {
 		color: #000066;
+	}
+
+	div.break {
+		height: 1em;
 	}
 
 	</style>
@@ -242,6 +272,10 @@ local transit networks as well.
   <%= text_field 'city' %>
   <%= text_field 'stop' %>
   <%= submit_button 'Display' %>
+  <div class="break"></div>
+  (optional) number of lines (1 .. 10):
+  <%= text_field 'lines' %>
+  <br/>
 </p>
 <% end %>
 
