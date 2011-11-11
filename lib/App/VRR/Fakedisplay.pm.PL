@@ -103,7 +103,7 @@ parse_char_row( 0,  'A' .. 'Z' );
 parse_char_row( 10, 'a' .. 'z' );
 parse_char_row( 20, '0' .. '9' );
 parse_char_row( 30, q{:}, q{-}, q{.}, q{,}, q{/}, q{ } );
-parse_char_row( 40, qw(ä ö ü) );
+parse_char_row( 40, qw(ä ö ü ß) );
 
 print $out_fh <<'___CUT___';
 
