@@ -146,7 +146,8 @@ sub render_image {
 		my $dt;
 
 		if (   ( @grep_line and not( $line ~~ \@grep_line ) )
-			or ( @grep_platform and not( $platform ~~ \@grep_platform ) ) )
+			or ( @grep_platform and not( $platform ~~ \@grep_platform ) )
+			or ( $line =~ m{ ^ (RE | IC | EC) }x ) )
 		{
 			next;
 		}
