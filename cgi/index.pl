@@ -43,7 +43,7 @@ sub handle_request {
 
 	my $no_lines = $self->param('no_lines');
 
-	if ($no_lines < 1 or $no_lines > 10) {
+	if ( $no_lines < 1 or $no_lines > 10 ) {
 		$no_lines = default_no_lines();
 	}
 
@@ -66,7 +66,9 @@ sub handle_request {
 sub shorten_destination {
 	my ( $dest, $city ) = @_;
 
-	$dest =~ s{ ^ $city \s }{}ix;
+	if ( not( $dest =~ m{ Hbf $ }ix ) ) {
+		$dest =~ s{ ^ $city \s }{}ix;
+	}
 
 	if ( length($dest) > 20 ) {
 		     $dest =~ s{^Dortmund}{DO}
@@ -112,7 +114,7 @@ sub render_image {
 		@grep_platform = split( qr{,}, $self->param('platform') );
 	}
 
-	if ($no_lines < 1 or $no_lines > 10) {
+	if ( $no_lines < 1 or $no_lines > 10 ) {
 		$no_lines = default_no_lines();
 	}
 
@@ -197,8 +199,9 @@ get '/_redirect' => sub {
 	$params->remove('city');
 	$params->remove('stop');
 
-	if (not $params->param('no_lines') or $params->param('no_lines') ==
-		default_no_lines()) {
+	if ( not $params->param('no_lines')
+		or $params->param('no_lines') == default_no_lines() )
+	{
 		$params->remove('no_lines');
 	}
 
