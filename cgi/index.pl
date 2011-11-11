@@ -63,6 +63,14 @@ sub handle_request {
 	);
 }
 
+sub shorten_line {
+	my ($line) = @_;
+
+	$line =~ s{ ^ SB \K \s+ }{}x;
+
+	return $line;
+}
+
 sub shorten_destination {
 	my ( $dest, $city ) = @_;
 
@@ -174,6 +182,7 @@ sub render_image {
 		}
 
 		$destination = shorten_destination( $destination, $city );
+		$line = shorten_line($line);
 
 		$png->draw_at( 0,   $line );
 		$png->draw_at( 25,  $destination );
