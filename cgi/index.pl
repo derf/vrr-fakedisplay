@@ -8,6 +8,8 @@ use DateTime::Format::Strptime;
 use App::VRR::Fakedisplay;
 use Travel::Status::DE::VRR;
 
+no warnings 'uninitialized';
+
 our $VERSION = '0.02';
 
 sub default_no_lines {
@@ -147,7 +149,7 @@ sub render_image {
 
 		if (   ( @grep_line and not( $line ~~ \@grep_line ) )
 			or ( @grep_platform and not( $platform ~~ \@grep_platform ) )
-			or ( $line =~ m{ ^ (RE | IC | EC) }x ) )
+			or ( $line =~ m{ ^ (RB | RE | IC | EC) }x ) )
 		{
 			next;
 		}
