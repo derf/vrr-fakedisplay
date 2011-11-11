@@ -66,7 +66,7 @@ sub handle_request {
 sub shorten_destination {
 	my ( $dest, $city ) = @_;
 
-	$dest =~ s{ ^ $city \s }{}x;
+	$dest =~ s{ ^ $city \s }{}ix;
 
 	if ( length($dest) > 20 ) {
 		     $dest =~ s{^Dortmund}{DO}
