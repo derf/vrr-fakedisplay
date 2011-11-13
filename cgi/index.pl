@@ -320,7 +320,7 @@ local transit networks as well.
   <span class="fielddesc">optional:</span><br/>
   <span class="fielddesc">number of lines (1 .. 10)</span>
   <%= text_field 'no_lines' %><br/>
-  <span class="fielddesc">offset in minutes</span>
+  <span class="fielddesc">min. offset (minutes)</span>
   <%= text_field 'offset' %><br/>
   <span class="fielddesc">match lines <sup>1 2</sup></span>
   <%= text_field 'line' %><br/>
