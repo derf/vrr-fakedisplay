@@ -196,7 +196,7 @@ sub render_image {
 		$png->draw_at( 25,  $destination );
 
 		if (length($etr) > 2) {
-			$png->draw_at( 142, $etr );
+			$png->draw_at( 145, $etr );
 		}
 		elsif (length($etr) > 1) {
 			$png->draw_at( 148, $etr );
@@ -274,7 +274,7 @@ __DATA__
 	span.fielddesc {
 		display: block;
 		float: left;
-		width: 10em;
+		width: 12em;
 		text-align: right;
 		padding-right: 0.5em;
 	}
@@ -318,17 +318,16 @@ local transit networks as well.
   <%= submit_button 'Display' %>
   <div class="break"></div>
   <span class="fielddesc">optional:</span><br/>
-  <span class="fielddesc">number of lines (1 .. 10)</span>
+  <span class="fielddesc">display height [1..10]</span>
   <%= text_field 'no_lines' %><br/>
-  <span class="fielddesc">min. offset (minutes)</span>
+  <span class="fielddesc">min. offset [minutes]</span>
   <%= text_field 'offset' %><br/>
-  <span class="fielddesc">match lines <sup>1 2</sup></span>
+  <span class="fielddesc">match line prefix <sup>1</sup></span>
   <%= text_field 'line' %><br/>
   <span class="fielddesc">match platform <sup>1</sup></span>
   <%= text_field 'platform' %><br/>
   <br/>
   <sup>1</sup> comma-separated list<br/>
-  <sup>2</sup> prefix matching<br/>
 </p>
 <% end %>
 
