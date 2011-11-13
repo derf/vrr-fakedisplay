@@ -20,6 +20,10 @@ sub write_out {
 	say $out_fh "'${char}' => {";
 	say $out_fh 'matrix => [';
 
+	if ($char eq '1') {
+		$off_x--;
+	}
+
 	for my $pos_y ( $off_y .. ( $off_y + 10 ) ) {
 		print $out_fh '[ ';
 		for my $pos_x ( $off_x .. ( $off_x + 10 ) ) {
@@ -43,6 +47,10 @@ sub write_out {
 
 	if ( $char eq q{ } ) {
 		$char_w = 5;
+	}
+
+	if ($char ~~ [qw[0 1 2 3 4 5 6 7 8 9]]) {
+		$char_w = 6;
 	}
 
 	say $out_fh '],';
