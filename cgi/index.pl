@@ -10,7 +10,7 @@ use Travel::Status::DE::VRR;
 
 no warnings 'uninitialized';
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 sub default_no_lines {
 	return 5;
@@ -105,6 +105,7 @@ sub render_image {
 	my $no_lines = $self->param('no_lines');
 
 	my ( @grep_line, @grep_platform );
+	my $offset = 0;
 
 	my ( $results, $errstr ) = get_results_for( $city, $stop );
 
@@ -118,10 +119,14 @@ sub render_image {
 	);
 
 	if ( $self->param('line') ) {
-		@grep_line = split( qr{,}, $self->param('line') );
+		my @lines = split( qr{,}, $self->param('line') );
+		@grep_line = map { qr{ ^ \Q$_\E }ix  } @lines;
 	}
 	if ( $self->param('platform') ) {
 		@grep_platform = split( qr{,}, $self->param('platform') );
+	}
+	if ( $self->param('offset') ) {
+		$offset = $self->param('offset');
 	}
 
 	if ( $no_lines < 1 or $no_lines > 10 ) {
@@ -147,7 +152,7 @@ sub render_image {
 		  // $strp_simple->parse_datetime($time);
 		my $dt;
 
-		if (   ( @grep_line and not( $line ~~ \@grep_line ) )
+		if (   ( @grep_line and not( grep { $line =~ $_ } @grep_line ) )
 			or ( @grep_platform and not( $platform ~~ \@grep_platform ) )
 			or ( $line =~ m{ ^ (RB | RE | IC | EC) }x ) )
 		{
@@ -171,14 +176,14 @@ sub render_image {
 
 		my $duration = $dt->subtract_datetime($dt_now);
 
-		if ( $duration->is_negative ) {
+		if ( $duration->is_negative or ($duration->in_units('minutes') < $offset) ) {
 			next;
 		}
 		elsif ( $duration->in_units('minutes') == 0 ) {
 			$etr = 'sofort';
 		}
 		elsif ( $duration->in_units('hours') == 0 ) {
-			$etr = sprintf( ' %2d', $duration->in_units('minutes'), );
+			$etr = $duration->in_units('minutes');
 		}
 		else {
 			last;
@@ -189,7 +194,16 @@ sub render_image {
 
 		$png->draw_at( 0,   $line );
 		$png->draw_at( 25,  $destination );
-		$png->draw_at( 144, $etr );
+
+		if (length($etr) > 2) {
+			$png->draw_at( 142, $etr );
+		}
+		elsif (length($etr) > 1) {
+			$png->draw_at( 148, $etr );
+		}
+		else {
+			$png->draw_at( 154, $etr );
+		}
 
 		if ( $etr ne 'sofort' ) {
 			$png->draw_at( 161, 'min' );
@@ -215,6 +229,12 @@ get '/_redirect' => sub {
 		or $params->param('no_lines') == default_no_lines() )
 	{
 		$params->remove('no_lines');
+	}
+
+	for my $param (qw(line platform offset)) {
+		if (not $params->param($param)) {
+			$params->remove($param);
+		}
 	}
 
 	my $params_s = $params->to_string;
@@ -251,6 +271,14 @@ __DATA__
 		height: 1em;
 	}
 
+	span.fielddesc {
+		display: block;
+		float: left;
+		width: 10em;
+		text-align: right;
+		padding-right: 0.5em;
+	}
+
 	</style>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
 </head>
@@ -284,14 +312,23 @@ local transit networks as well.
 
 <%= form_for _redirect => begin %>
 <p>
-  City -> Stop:
+  <span class="fielddesc">City -> Stop</span>
   <%= text_field 'city' %>
   <%= text_field 'stop' %>
   <%= submit_button 'Display' %>
   <div class="break"></div>
-  (optional) number of lines (1 .. 10):
-  <%= text_field 'no_lines' %>
+  <span class="fielddesc">optional:</span><br/>
+  <span class="fielddesc">number of lines (1 .. 10)</span>
+  <%= text_field 'no_lines' %><br/>
+  <span class="fielddesc">offset in minutes</span>
+  <%= text_field 'offset' %><br/>
+  <span class="fielddesc">match lines <sup>1 2</sup></span>
+  <%= text_field 'line' %><br/>
+  <span class="fielddesc">match platform <sup>1</sup></span>
+  <%= text_field 'platform' %><br/>
   <br/>
+  <sup>1</sup> comma-separated list<br/>
+  <sup>2</sup> prefix matching<br/>
 </p>
 <% end %>
 
