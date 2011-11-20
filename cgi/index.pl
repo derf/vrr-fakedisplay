@@ -109,6 +109,10 @@ sub render_image {
 
 	my ( $results, $errstr ) = get_results_for( $city, $stop );
 
+	if ($errstr) {
+		$color = '255,0,0';
+	}
+
 	my $strp_simple = DateTime::Format::Strptime->new(
 		pattern   => '%H:%M',
 		time_zone => 'floating',
@@ -138,6 +142,13 @@ sub render_image {
 		height => $no_lines * 10,
 		color  => [ split( qr{,}, $color ) ]
 	);
+
+	if ($errstr) {
+		$png->draw_at(6, '-------efa.vrr.de error-------');
+		$png->new_line();
+		$png->new_line();
+		$png->draw_at(0, $errstr);
+	}
 
 	$self->res->headers->content_type('image/png');
 	for my $d ( @{$results} ) {
