@@ -269,8 +269,11 @@ __DATA__
 	<meta charset="utf-8">
 	<style type="text/css">
 
-	div.about {
+	body {
 		font-family: Sans-Serif;
+	}
+
+	div.about {
 		color: #666666;
 	}
 
@@ -282,10 +285,14 @@ __DATA__
 		height: 1em;
 	}
 
-	span.fielddesc {
-		display: block;
+	div.field {
+		width: 100%;
+		clear: both;
+	}
+
+	div.field div.desc {
 		float: left;
-		width: 12em;
+		width: 10em;
 		text-align: right;
 		padding-right: 0.5em;
 	}
@@ -322,27 +329,40 @@ local transit networks as well.
 <% } %>
 
 <%= form_for _redirect => begin %>
-<p>
-  <span class="fielddesc">City -> Stop</span>
-  <%= text_field 'city' %>
-  <%= text_field 'stop' %>
-  <%= submit_button 'Display' %>
+<div>
+  <div class="field">
+    <div class="desc">City -> Stop</div>
+    <div>
+      <%= text_field 'city' %>
+      <%= text_field 'stop' %>
+      <%= submit_button 'Display' %>
+    </div>
+  </div>
   <div class="break"></div>
-  <span class="fielddesc">optional:</span><br/>
-  <span class="fielddesc">display height [1..10]</span>
-  <%= text_field 'no_lines' %><br/>
-  <span class="fielddesc">min. offset [minutes]</span>
-  <%= text_field 'offset' %><br/>
-  <span class="fielddesc">match line prefix <sup>1</sup></span>
-  <%= text_field 'line' %><br/>
-  <span class="fielddesc">match platform <sup>1</sup></span>
-  <%= text_field 'platform' %><br/>
-  <br/>
+  optional:
+  <div class="field">
+    <div class="desc">display height [1..10]</div>
+    <div> <%= text_field 'no_lines' %></div>
+  </div>
+  <div class="field">
+    <div class="desc">min. offset [minutes]</div>
+    <div><%= text_field 'offset' %></div>
+  </div>
+  <div class="field">
+    <div class="desc">match line prefix <sup>1</sup></div>
+    <div><%= text_field 'line' %></div>
+  </div>
+  <div class="field">
+    <div class="desc">match platform <sup>1</sup></div>
+    <div><%= text_field 'platform' %></div>
+  </div>
+  <div>
   <sup>1</sup> comma-separated list<br/>
-</p>
+  </div>
+</div>
 <% end %>
 
-</div>
+</div> <!-- input-field -->
 
 <div class="about">
 <a href="http://finalrewind.org/projects/vrr-fakedisplay/">vrr-fakedisplay</a>
