@@ -163,6 +163,8 @@ sub render_image {
 		  // $strp_simple->parse_datetime($time);
 		my $dt;
 
+		$line =~ s{ \s* S-Bahn }{}ox;
+
 		if (   ( @grep_line and not( grep { $line =~ $_ } @grep_line ) )
 			or ( @grep_platform and not( $platform ~~ \@grep_platform ) )
 			or ( $line =~ m{ ^ (RB | RE | IC | EC) }x ) )
