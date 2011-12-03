@@ -6,6 +6,7 @@ use DateTime;
 use DateTime::Format::Strptime;
 
 use App::VRR::Fakedisplay;
+use Travel::Status::DE::DeutscheBahn;
 use Travel::Status::DE::VRR;
 
 no warnings 'uninitialized';
@@ -16,23 +17,43 @@ sub default_no_lines {
 	return 5;
 }
 
-sub get_results_for {
-	my ( $city, $stop ) = @_;
+sub get_results {
+	my ( $backend, $city, $stop ) = @_;
 
 	my $cache = Cache::File->new(
 		cache_root      => '/tmp/vrr-fake',
 		default_expires => '900 sec',
 	);
 
-	my $results = $cache->thaw("${city} _ ${stop}");
+	my $sstr = ( $backend eq 'db' ? "${stop}, ${city}" : "${city} _ ${stop}" );
+
+	my $results = $cache->thaw($sstr);
 
 	if ( not $results ) {
-		my $status = Travel::Status::DE::VRR->new(
-			place => $city,
-			name  => $stop
-		);
+		my $status;
+		if ( $backend eq 'db' ) {
+			$status = Travel::Status::DE::DeutscheBahn->new(
+				station => "${stop}, ${city}",
+				mot     => {
+					ice   => 0,
+					ic_ec => 0,
+					d     => 0,
+					nv    => 0,
+					s     => 1,
+					bus   => 1,
+					u     => 1,
+					tram  => 1,
+				},
+			);
+		}
+		else {
+			$status = Travel::Status::DE::VRR->new(
+				place => $city,
+				name  => $stop
+			);
+		}
 		$results = [ [ $status->results ], $status->errstr ];
-		$cache->freeze( "${city} _ ${stop}", $results );
+		$cache->freeze( $sstr, $results );
 	}
 
 	return @{$results};
@@ -68,13 +89,22 @@ sub handle_request {
 sub shorten_line {
 	my ($line) = @_;
 
-	$line =~ s{ ^ SB \K \s+ }{}x;
+	$line =~ s{ ^ ( U | S | SB ) \K \s+ }{}ox;
+	$line =~ s{ ^ ( STR | Bus ) }{}ox;
+
+	$line =~ s{ ^ \s+ }{}ox;
 
 	return $line;
 }
 
 sub shorten_destination {
-	my ( $dest, $city ) = @_;
+	my ( $backend, $dest, $city ) = @_;
+
+	if ( $backend eq 'db' ) {
+		$city =~ s{ \s* [(] [^)]+ [)] $ }{}ox;
+		$dest =~ s{ \s* [(] [^)]+ [)] $ }{}ox;
+		$dest =~ s{ ^ (.+) , \s+ (.+) $ }{$2 $1}ox;
+	}
 
 	if ( not( $dest =~ m{ Hbf $ }ix ) ) {
 		$dest =~ s{ ^ $city \s }{}ix;
@@ -101,13 +131,14 @@ sub render_image {
 
 	my $dt_now = DateTime->now( time_zone => 'Europe/Berlin' );
 
-	my $color = $self->param('color') || '255,208,0';
+	my $color    = $self->param('color') || '255,208,0';
 	my $no_lines = $self->param('no_lines');
+	my $backend  = $self->param('backend');
 
 	my ( @grep_line, @grep_platform );
 	my $offset = 0;
 
-	my ( $results, $errstr ) = get_results_for( $city, $stop );
+	my ( $results, $errstr ) = get_results( $backend, $city, $stop );
 
 	if ($errstr) {
 		$color = '255,0,0';
@@ -124,7 +155,7 @@ sub render_image {
 
 	if ( $self->param('line') ) {
 		my @lines = split( qr{,}, $self->param('line') );
-		@grep_line = map { qr{ ^ \Q$_\E }ix  } @lines;
+		@grep_line = map { qr{ ^ \Q$_\E }ix } @lines;
 	}
 	if ( $self->param('platform') ) {
 		@grep_platform = split( qr{,}, $self->param('platform') );
@@ -144,10 +175,10 @@ sub render_image {
 	);
 
 	if ($errstr) {
-		$png->draw_at(6, '-------efa.vrr.de error-------');
+		$png->draw_at( 6, '-------efa.vrr.de error-------' );
 		$png->new_line();
 		$png->new_line();
-		$png->draw_at(0, $errstr);
+		$png->draw_at( 0, $errstr );
 	}
 
 	$self->res->headers->content_type('image/png');
@@ -189,7 +220,9 @@ sub render_image {
 
 		my $duration = $dt->subtract_datetime($dt_now);
 
-		if ( $duration->is_negative or ($duration->in_units('minutes') < $offset) ) {
+		if ( $duration->is_negative
+			or ( $duration->in_units('minutes') < $offset ) )
+		{
 			next;
 		}
 		elsif ( $duration->in_units('minutes') == 0 ) {
@@ -202,16 +235,16 @@ sub render_image {
 			last;
 		}
 
-		$destination = shorten_destination( $destination, $city );
+		$destination = shorten_destination( $backend, $destination, $city );
 		$line = shorten_line($line);
 
-		$png->draw_at( 0,   $line );
-		$png->draw_at( 25,  $destination );
+		$png->draw_at( 0,  $line );
+		$png->draw_at( 25, $destination );
 
-		if (length($etr) > 2) {
+		if ( length($etr) > 2 ) {
 			$png->draw_at( 145, $etr );
 		}
-		elsif (length($etr) > 1) {
+		elsif ( length($etr) > 1 ) {
 			$png->draw_at( 148, $etr );
 		}
 		else {
@@ -245,7 +278,7 @@ get '/_redirect' => sub {
 	}
 
 	for my $param (qw(line platform offset)) {
-		if (not $params->param($param)) {
+		if ( not $params->param($param) ) {
 			$params->remove($param);
 		}
 	}
@@ -357,6 +390,10 @@ local transit networks as well.
   <div class="field">
     <div class="desc">match platform <sup>1</sup></div>
     <div><%= text_field 'platform' %></div>
+  </div>
+  <div class="field">
+    <div class="desc">backend</div>
+    <div><%= select_field backend => [['EFA (VRR)' => 'vrr'], ['HAFAS (DB)' => 'db']] %></div>
   </div>
   <div>
   <sup>1</sup> comma-separated list<br/>

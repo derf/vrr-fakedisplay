@@ -25,6 +25,7 @@ Module::Build->new(
 		'DateTime::Format::Strptime' => 0,
 		'GD' => 0,
 		'Mojolicious::Lite' => 0,
+		'Travel::Status::DE::DeutscheBahn' => 1.00,
 		'Travel::Status::DE::VRR' => 0.02,
 	},
 	sign => 1,
