@@ -20,9 +20,15 @@ sub default_no_lines {
 sub get_results {
 	my ( $backend, $city, $stop ) = @_;
 
+	my $expiry = 900;
+
+	if (lc($city) eq 'berlin' or lc($stop) ~~ [qw[hbf hauptbahnhof]]) {
+		$expiry = 600;
+	}
+
 	my $cache = Cache::File->new(
 		cache_root      => '/tmp/vrr-fake',
-		default_expires => '900 sec',
+		default_expires => "${expiry} sec",
 	);
 
 	my $sstr = ( $backend eq 'db' ? "${stop}, ${city}" : "${city} _ ${stop}" );
