@@ -82,7 +82,7 @@ use utf8;
 use File::ShareDir qw(dist_file);
 use GD;
 
-our $VERSION = '0.01';
+our $VERSION = '0.04';
 
 sub new {
 	my ( $class, %opt ) = @_;

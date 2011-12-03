@@ -11,7 +11,7 @@ use Travel::Status::DE::VRR;
 
 no warnings 'uninitialized';
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 sub default_no_lines {
 	return 5;
@@ -88,6 +88,8 @@ sub handle_request {
 
 sub shorten_line {
 	my ($line) = @_;
+
+	$line =~ s{ \s* S-Bahn }{}ox;
 
 	$line =~ s{ ^ ( U | S | SB ) \K \s+ }{}ox;
 	$line =~ s{ ^ ( STR | Bus ) }{}ox;
@@ -175,7 +177,7 @@ sub render_image {
 	);
 
 	if ($errstr) {
-		$png->draw_at( 6, '-------efa.vrr.de error-------' );
+		$png->draw_at( 6, '--------backend error--------' );
 		$png->new_line();
 		$png->new_line();
 		$png->draw_at( 0, $errstr );
@@ -194,7 +196,6 @@ sub render_image {
 		  // $strp_simple->parse_datetime($time);
 		my $dt;
 
-		$line =~ s{ \s* S-Bahn }{}ox;
 
 		if (   ( @grep_line and not( grep { $line =~ $_ } @grep_line ) )
 			or ( @grep_platform and not( $platform ~~ \@grep_platform ) )
