@@ -11,7 +11,7 @@ use Travel::Status::DE::VRR;
 
 no warnings 'uninitialized';
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 sub default_no_lines {
 	return 5;
