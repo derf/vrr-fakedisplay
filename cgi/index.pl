@@ -31,7 +31,8 @@ sub get_results {
 		default_expires => "${expiry} sec",
 	);
 
-	my $sstr = ( $backend eq 'db' ? "${stop}, ${city}" : "${city} _ ${stop}" );
+	my $sstr = ( "${backend} _ ${stop} _ ${city}" );
+	$sstr =~ tr{a-zA-Z0-9}{_}c;
 
 	my $results = $cache->thaw($sstr);
 
