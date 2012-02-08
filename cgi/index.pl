@@ -140,7 +140,7 @@ sub render_image {
 
 	my $dt_now = DateTime->now( time_zone => 'Europe/Berlin' );
 
-	my $color    = $self->param('color') || '255,208,0';
+	my $color    = $self->param('color') || '255,255,255';
 	my $no_lines = $self->param('no_lines');
 	my $backend  = $self->param('backend');
 
@@ -150,7 +150,7 @@ sub render_image {
 	my ( $results, $errstr ) = get_results( $backend, $city, $stop );
 
 	if ($errstr) {
-		$color = '255,0,0';
+		$color = '255,255,255';
 	}
 
 	my $strp_simple = DateTime::Format::Strptime->new(
@@ -178,8 +178,8 @@ sub render_image {
 	}
 
 	my $png = App::VRR::Fakedisplay->new(
-		width  => 180,
-		height => $no_lines * 10,
+		width  => 96,
+		height => 68,
 		color  => [ split( qr{,}, $color ) ]
 	);
 
@@ -247,22 +247,23 @@ sub render_image {
 		$line = shorten_line($line);
 
 		$png->draw_at( 0,  $line );
-		$png->draw_at( 25, $destination );
 
 		if ( length($etr) > 2 ) {
-			$png->draw_at( 145, $etr );
+			$png->draw_at( 60, $etr );
 		}
 		elsif ( length($etr) > 1 ) {
-			$png->draw_at( 148, $etr );
+			$png->draw_at( 63, $etr );
 		}
 		else {
-			$png->draw_at( 154, $etr );
+			$png->draw_at( 69, $etr );
 		}
 
 		if ( $etr ne 'sofort' ) {
-			$png->draw_at( 161, 'min' );
+			$png->draw_at( 76, 'min' );
 		}
 
+		$png->new_line();
+		$png->draw_at( 0, $destination );
 		$png->new_line();
 	}
 

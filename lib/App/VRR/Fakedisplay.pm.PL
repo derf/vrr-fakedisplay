@@ -88,9 +88,9 @@ sub new {
 	my ( $class, %opt ) = @_;
 
 	my $self = {
-		width => $opt{width} || 140,
-		height => $opt{height} || 40,
-		scale => 10,
+		width => $opt{width} || 96,
+		height => $opt{height} || 68,
+		scale => 1,
 		offset_x => 0,
 		offset_y => 0,
 	};
@@ -98,7 +98,7 @@ sub new {
 	$self->{image} = GD::Image->new($self->{width} * $self->{scale}, $self->{height} * $self->{scale});
 
 	$self->{color}->{bg} = $self->{image}->colorAllocate(0, 0, 0);
-	$self->{color}->{fg} = $self->{image}->colorAllocate(@{$opt{color} // [255, 0, 0]});
+	$self->{color}->{fg} = $self->{image}->colorAllocate(@{$opt{color} // [255, 255, 255]});
 
 	$self->{image}->filledRectangle(0, 0, ($self->{width} * $self->{scale}) -1,
 	($self->{height} * $self->{scale}) - 1, $self->{color}->{bg});
@@ -166,7 +166,7 @@ sub draw_at {
 
 sub new_line {
 	my ($self) = @_;
-	$self->{offset_y} += 10;
+	$self->{offset_y} += 8;
 
 	return;
 }
