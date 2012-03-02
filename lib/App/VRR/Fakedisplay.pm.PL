@@ -20,7 +20,7 @@ sub write_out {
 	say $out_fh "'${char}' => {";
 	say $out_fh 'matrix => [';
 
-	if ($char eq '1') {
+	if ( $char eq '1' ) {
 		$off_x--;
 	}
 
@@ -49,7 +49,7 @@ sub write_out {
 		$char_w = 5;
 	}
 
-	if ($char ~~ [qw[0 1 2 3 4 5 6 7 8 9]]) {
+	if ( $char ~~ [qw[0 1 2 3 4 5 6 7 8 9]] ) {
 		$char_w = 6;
 	}
 

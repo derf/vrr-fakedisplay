@@ -22,7 +22,7 @@ sub get_results {
 
 	my $expiry = 900;
 
-	if (lc($city) eq 'berlin' or lc($stop) ~~ [qw[hbf hauptbahnhof]]) {
+	if ( lc($city) eq 'berlin' or lc($stop) ~~ [qw[hbf hauptbahnhof]] ) {
 		$expiry = 600;
 	}
 
@@ -31,7 +31,7 @@ sub get_results {
 		default_expires => "${expiry} sec",
 	);
 
-	my $sstr = ( "${backend} _ ${stop} _ ${city}" );
+	my $sstr = ("${backend} _ ${stop} _ ${city}");
 	$sstr =~ tr{a-zA-Z0-9}{_}c;
 
 	my $results = $cache->thaw($sstr);
@@ -202,7 +202,6 @@ sub render_image {
 		my $dt_dep = $strp_full->parse_datetime($time)
 		  // $strp_simple->parse_datetime($time);
 		my $dt;
-
 
 		if (   ( @grep_line and not( grep { $line =~ $_ } @grep_line ) )
 			or ( @grep_platform and not( $platform ~~ \@grep_platform ) )
