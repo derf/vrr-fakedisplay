@@ -316,11 +316,17 @@ __DATA__
 	}
 
 	div.about {
+		margin-top: 2em;
 		color: #666666;
 	}
 
 	div.about a {
 		color: #000066;
+		text-decoration: none;
+	}
+
+	span.optional {
+		color: #666666;
 	}
 
 	div.break {
@@ -334,9 +340,13 @@ __DATA__
 
 	div.field div.desc {
 		float: left;
-		width: 10em;
+		width: 14em;
 		text-align: right;
 		padding-right: 0.5em;
+	}
+
+	input, select {
+		border: 1px solid black;
 	}
 
 	</style>
@@ -373,7 +383,7 @@ local transit networks as well.
 <%= form_for _redirect => begin %>
 <div>
   <div class="field">
-    <div class="desc">City -> Stop</div>
+    <div class="desc">City &rarr; Stop</div>
     <div>
       <%= text_field 'city' %>
       <%= text_field 'stop' %>
@@ -381,9 +391,10 @@ local transit networks as well.
     </div>
   </div>
   <div class="break"></div>
-  optional:
+  <span class="optional">optional:</span>
   <div class="field">
-    <div class="desc">display height [1..10]</div>
+    <div class="desc" title="number of lines">
+      display height [1..10]</div>
     <div> <%= text_field 'no_lines' %></div>
   </div>
   <div class="field">
@@ -391,19 +402,17 @@ local transit networks as well.
     <div><%= text_field 'offset' %></div>
   </div>
   <div class="field">
-    <div class="desc">match line prefix <sup>1</sup></div>
+    <div class="desc" title="comma-separated list, example: NE,U,10">
+      match line prefix</div>
     <div><%= text_field 'line' %></div>
   </div>
   <div class="field">
-    <div class="desc">match platform <sup>1</sup></div>
+    <div class="desc" title="comma-separated list. Buggy.">match platform</div>
     <div><%= text_field 'platform' %></div>
   </div>
   <div class="field">
     <div class="desc">backend</div>
     <div><%= select_field backend => [['EFA (VRR)' => 'vrr'], ['HAFAS (DB)' => 'db']] %></div>
-  </div>
-  <div>
-  <sup>1</sup> comma-separated list<br/>
   </div>
 </div>
 <% end %>
