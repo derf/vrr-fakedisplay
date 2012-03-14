@@ -13,9 +13,13 @@ no warnings 'uninitialized';
 
 our $VERSION = '0.05';
 
-sub default_no_lines {
-	return 5;
-}
+my %default = (
+	backend  => 'vrr',
+	line     => q{},
+	no_lines => 5,
+	offset   => q{},
+	platform => q{},
+);
 
 sub get_results {
 	my ( $backend, $city, $stop ) = @_;
@@ -74,7 +78,7 @@ sub handle_request {
 	my $no_lines = $self->param('no_lines');
 
 	if ( $no_lines < 1 or $no_lines > 10 ) {
-		$no_lines = default_no_lines();
+		$no_lines = $default{no_lines};
 	}
 
 	$self->stash( title   => 'vrr-fakedisplay' );
@@ -174,7 +178,7 @@ sub render_image {
 	}
 
 	if ( $no_lines < 1 or $no_lines > 10 ) {
-		$no_lines = default_no_lines();
+		$no_lines = $default{no_lines};
 	}
 
 	my $png = App::VRR::Fakedisplay->new(
@@ -278,14 +282,10 @@ get '/_redirect' => sub {
 	$params->remove('city');
 	$params->remove('stop');
 
-	if ( not $params->param('no_lines')
-		or $params->param('no_lines') == default_no_lines() )
-	{
-		$params->remove('no_lines');
-	}
-
-	for my $param (qw(line platform offset)) {
-		if ( not $params->param($param) ) {
+	for my $param (qw(line platform offset no_lines backend)) {
+		if ( not $params->param($param)
+			or ( $params->param($param) eq $default{$param} ) )
+		{
 			$params->remove($param);
 		}
 	}
