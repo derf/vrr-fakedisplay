@@ -13,16 +13,20 @@ no warnings 'uninitialized';
 
 our $VERSION = '0.05';
 
-sub default_no_lines {
-	return 5;
-}
+my %default = (
+	backend  => 'vrr',
+	line     => q{},
+	no_lines => 5,
+	offset   => q{},
+	platform => q{},
+);
 
 sub get_results {
 	my ( $backend, $city, $stop ) = @_;
 
 	my $expiry = 900;
 
-	if (lc($city) eq 'berlin' or lc($stop) ~~ [qw[hbf hauptbahnhof]]) {
+	if ( lc($city) eq 'berlin' or lc($stop) ~~ [qw[hbf hauptbahnhof]] ) {
 		$expiry = 600;
 	}
 
@@ -31,7 +35,7 @@ sub get_results {
 		default_expires => "${expiry} sec",
 	);
 
-	my $sstr = ( "${backend} _ ${stop} _ ${city}" );
+	my $sstr = ("${backend} _ ${stop} _ ${city}");
 	$sstr =~ tr{a-zA-Z0-9}{_}c;
 
 	my $results = $cache->thaw($sstr);
@@ -74,7 +78,7 @@ sub handle_request {
 	my $no_lines = $self->param('no_lines');
 
 	if ( $no_lines < 1 or $no_lines > 10 ) {
-		$no_lines = default_no_lines();
+		$no_lines = $default{no_lines};
 	}
 
 	$self->stash( title   => 'vrr-fakedisplay' );
@@ -174,7 +178,7 @@ sub render_image {
 	}
 
 	if ( $no_lines < 1 or $no_lines > 10 ) {
-		$no_lines = default_no_lines();
+		$no_lines = $default{no_lines};
 	}
 
 	my $png = App::VRR::Fakedisplay->new(
@@ -202,7 +206,6 @@ sub render_image {
 		my $dt_dep = $strp_full->parse_datetime($time)
 		  // $strp_simple->parse_datetime($time);
 		my $dt;
-
 
 		if (   ( @grep_line and not( grep { $line =~ $_ } @grep_line ) )
 			or ( @grep_platform and not( $platform ~~ \@grep_platform ) )
@@ -279,14 +282,10 @@ get '/_redirect' => sub {
 	$params->remove('city');
 	$params->remove('stop');
 
-	if ( not $params->param('no_lines')
-		or $params->param('no_lines') == default_no_lines() )
-	{
-		$params->remove('no_lines');
-	}
-
-	for my $param (qw(line platform offset)) {
-		if ( not $params->param($param) ) {
+	for my $param (qw(line platform offset no_lines backend)) {
+		if ( not $params->param($param)
+			or ( $params->param($param) eq $default{$param} ) )
+		{
 			$params->remove($param);
 		}
 	}
@@ -317,11 +316,17 @@ __DATA__
 	}
 
 	div.about {
+		margin-top: 2em;
 		color: #666666;
 	}
 
 	div.about a {
 		color: #000066;
+		text-decoration: none;
+	}
+
+	span.optional {
+		color: #666666;
 	}
 
 	div.break {
@@ -335,9 +340,13 @@ __DATA__
 
 	div.field div.desc {
 		float: left;
-		width: 10em;
+		width: 14em;
 		text-align: right;
 		padding-right: 0.5em;
+	}
+
+	input, select {
+		border: 1px solid black;
 	}
 
 	</style>
@@ -374,7 +383,7 @@ local transit networks as well.
 <%= form_for _redirect => begin %>
 <div>
   <div class="field">
-    <div class="desc">City -> Stop</div>
+    <div class="desc">City &rarr; Stop</div>
     <div>
       <%= text_field 'city' %>
       <%= text_field 'stop' %>
@@ -382,9 +391,10 @@ local transit networks as well.
     </div>
   </div>
   <div class="break"></div>
-  optional:
+  <span class="optional">optional:</span>
   <div class="field">
-    <div class="desc">display height [1..10]</div>
+    <div class="desc" title="number of lines">
+      display height [1..10]</div>
     <div> <%= text_field 'no_lines' %></div>
   </div>
   <div class="field">
@@ -392,19 +402,17 @@ local transit networks as well.
     <div><%= text_field 'offset' %></div>
   </div>
   <div class="field">
-    <div class="desc">match line prefix <sup>1</sup></div>
+    <div class="desc" title="comma-separated list, example: NE,U,10">
+      match line prefix</div>
     <div><%= text_field 'line' %></div>
   </div>
   <div class="field">
-    <div class="desc">match platform <sup>1</sup></div>
+    <div class="desc" title="comma-separated list. Buggy.">match platform</div>
     <div><%= text_field 'platform' %></div>
   </div>
   <div class="field">
     <div class="desc">backend</div>
     <div><%= select_field backend => [['EFA (VRR)' => 'vrr'], ['HAFAS (DB)' => 'db']] %></div>
-  </div>
-  <div>
-  <sup>1</sup> comma-separated list<br/>
   </div>
 </div>
 <% end %>
