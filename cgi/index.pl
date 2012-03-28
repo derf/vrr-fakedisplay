@@ -349,6 +349,14 @@ __DATA__
 		border: 1px solid black;
 	}
 
+	div.notes {
+		margin-top: 4em;
+	}
+
+	div.notes ul {
+		margin-top: 1em;
+	}
+
 	</style>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
 </head>
@@ -418,6 +426,18 @@ local transit networks as well.
 <% end %>
 
 </div> <!-- input-field -->
+
+<div class="notes">
+<span class="optional">notes:</span>
+<ul>
+<li>The EFA backend does not support Umlauts</li>
+<li>For D&uuml;sseldorf, the DB backend usually gives better results</li>
+<li>If you write the city correctly (like "Essen", not "essen"), vrr-fake can
+shorten destination names</li>
+<li><a href="/vrr-fake/D&uuml;sseldorf/Luisenstr?no_lines=8&amp;backend=db">Example</a>
+</li>
+</ul>
+</div> <!-- notes -->
 
 <div class="about">
 <a href="http://finalrewind.org/projects/vrr-fakedisplay/">vrr-fakedisplay</a>
