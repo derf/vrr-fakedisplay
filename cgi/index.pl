@@ -299,6 +299,14 @@ get '/'                => \&handle_request;
 get '/:city/:stop.png' => \&render_image;
 get '/:city/:stop'     => \&handle_request;
 
+app->config(
+	hypnotoad => {
+		accepts => 10,
+		listen => ['http://*:8091'],
+		pid_file => '/tmp/vrr-fake.pid',
+	},
+);
+
 app->start();
 
 __DATA__
