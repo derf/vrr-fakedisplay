@@ -304,6 +304,7 @@ app->config(
 		accepts => 10,
 		listen => ['http://*:8091'],
 		pid_file => '/tmp/vrr-fake.pid',
+		workers => 2,
 	},
 );
 
