@@ -93,7 +93,9 @@ sub handle_request {
 		city    => $city,
 		stop    => $stop,
 		version => $VERSION,
-		title   => "departures for ${city} ${stop}",
+		title   => $city
+		? "departures for ${city} ${stop}"
+		: "vrr-fakedisplay ${VERSION}",
 	);
 }
 
@@ -301,10 +303,10 @@ get '/:city/:stop'     => \&handle_request;
 
 app->config(
 	hypnotoad => {
-		accepts => 10,
-		listen => ['http://*:8091'],
+		accepts  => 10,
+		listen   => ['http://*:8091'],
 		pid_file => '/tmp/vrr-fake.pid',
-		workers => 2,
+		workers  => 2,
 	},
 );
 
@@ -383,8 +385,8 @@ the Lumino LED displays used at some stops.
 </p>
 
 <p>
-It was written for the VRR (Verkehrsverbund Rhein-Ruhr), but supports most other
-local transit networks as well.
+It works best for the VRR (Verkehrsverbund Rhein-Ruhr), but also supports most
+other German transit networks.
 </p>
 
 % }
@@ -443,7 +445,7 @@ local transit networks as well.
 <li>For D&uuml;sseldorf, the DB backend usually gives better results</li>
 <li>If you write the city correctly (like "Essen", not "essen"), vrr-fake can
 shorten destination names</li>
-<li><a href="/vrr-fake/D&uuml;sseldorf/Luisenstr?no_lines=8&amp;backend=db">Example</a>
+<li><a href="/Essen/Martinstr?no_lines=8">Example</a>
 </li>
 </ul>
 </div> <!-- notes -->
