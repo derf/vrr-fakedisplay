@@ -216,6 +216,11 @@ sub render_image {
 			next;
 		}
 
+		if ($d->delay eq '-9999') {
+			# canceled
+			next;
+		}
+
 		if ( $time =~ m{ ^ \d\d? : \d\d $ }x ) {
 			$dt = DateTime->new(
 				year      => $dt_now->year,
