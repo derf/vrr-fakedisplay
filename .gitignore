@@ -3,9 +3,5 @@
 /blib
 /cover_db
 /lib/App/VRR/Fakedisplay.pm
-/MANIFEST
-/MANIFEST.bak
-/MANIFEST.SKIP
-/MANIFEST.SKIP.bak
-/MYMETA.yml
-/MYMETA.json
+/MANIFEST*
+/MYMETA.*
