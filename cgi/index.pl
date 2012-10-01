@@ -105,7 +105,7 @@ sub shorten_line {
 	$line =~ s{ \s* S-Bahn }{}ox;
 
 	$line =~ s{ ^ ( U | S | SB ) \K \s+ }{}ox;
-	$line =~ s{ ^ ( STR | Bus ) }{}ox;
+	$line =~ s{ ^ ( STR | Bus | RNV ) }{}ox;
 
 	$line =~ s{ ^ \s+ }{}ox;
 
