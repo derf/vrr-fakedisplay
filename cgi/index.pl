@@ -11,7 +11,7 @@ use Travel::Status::DE::VRR;
 
 no warnings 'uninitialized';
 
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
 my %default = (
 	backend  => 'vrr',
@@ -152,6 +152,7 @@ sub render_image {
 
 	my ( @grep_line, @grep_platform );
 	my $offset = 0;
+	my $displayed_lines = 0;
 
 	my ( $results, $errstr ) = get_results( $backend, $city, $stop );
 
@@ -258,6 +259,7 @@ sub render_image {
 
 		$png->draw_at( 0,  $line );
 		$png->draw_at( 25, $destination );
+		$displayed_lines++;
 
 		if ( length($etr) > 2 ) {
 			$png->draw_at( 145, $etr );
@@ -274,6 +276,11 @@ sub render_image {
 		}
 
 		$png->new_line();
+	}
+	if ($displayed_lines == 0) {
+		$png->new_line();
+		$png->new_line();
+		$png->draw_at(50, 'no departures');
 	}
 
 	$self->render( data => $png->png );
