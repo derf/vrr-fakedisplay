@@ -315,7 +315,6 @@ get '/:city/:stop'     => \&handle_request;
 
 app->config(
 	hypnotoad => {
-		accepts  => 10,
 		listen   => ['http://*:8091'],
 		pid_file => '/tmp/vrr-fake.pid',
 		workers  => 2,
