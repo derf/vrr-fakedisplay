@@ -4,6 +4,7 @@ use Cache::File;
 
 use DateTime;
 use DateTime::Format::Strptime;
+use List::MoreUtils qw(any);
 
 use App::VRR::Fakedisplay;
 use Travel::Status::DE::DeutscheBahn;
@@ -151,7 +152,7 @@ sub render_image {
 	my $backend  = $self->param('backend');
 
 	my ( @grep_line, @grep_platform );
-	my $offset = 0;
+	my $offset          = 0;
 	my $displayed_lines = 0;
 
 	my ( $results, $errstr ) = get_results( $backend, $city, $stop );
@@ -210,14 +211,15 @@ sub render_image {
 		  // $strp_simple->parse_datetime($time);
 		my $dt;
 
-		if (   ( @grep_line and not( grep { $line =~ $_ } @grep_line ) )
+		if (   ( @grep_line and not( any { $line =~ $_ } @grep_line ) )
 			or ( @grep_platform and not( $platform ~~ \@grep_platform ) )
 			or ( $line =~ m{ ^ (RB | RE | IC | EC) }x ) )
 		{
 			next;
 		}
 
-		if ($d->delay eq '-9999') {
+		if ( $d->delay eq '-9999' ) {
+
 			# canceled
 			next;
 		}
@@ -277,10 +279,10 @@ sub render_image {
 
 		$png->new_line();
 	}
-	if ($displayed_lines == 0) {
+	if ( $displayed_lines == 0 ) {
 		$png->new_line();
 		$png->new_line();
-		$png->draw_at(50, 'no departures');
+		$png->draw_at( 50, 'no departures' );
 	}
 
 	$self->render( data => $png->png );
