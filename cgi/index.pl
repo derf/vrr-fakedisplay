@@ -150,6 +150,11 @@ sub render_image {
 	my $color    = $self->param('color') || '255,208,0';
 	my $no_lines = $self->param('no_lines');
 	my $backend  = $self->param('backend');
+	my $scale = $self->param('scale');
+
+	if ($scale > 30) {
+		$scale = 30;
+	}
 
 	my ( @grep_line, @grep_platform );
 	my $offset          = 0;
@@ -188,7 +193,8 @@ sub render_image {
 	my $png = App::VRR::Fakedisplay->new(
 		width  => 180,
 		height => $no_lines * 10,
-		color  => [ split( qr{,}, $color ) ]
+		color  => [ split( qr{,}, $color ) ],
+		scale => $scale,
 	);
 
 	if ($errstr) {

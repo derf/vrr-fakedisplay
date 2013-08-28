@@ -90,7 +90,7 @@ sub new {
 	my $self = {
 		width => $opt{width} || 140,
 		height => $opt{height} || 40,
-		scale => 10,
+		scale => $opt{scale} || 10,
 		offset_x => 0,
 		offset_y => 0,
 	};
