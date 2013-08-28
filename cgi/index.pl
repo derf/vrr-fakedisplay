@@ -150,9 +150,11 @@ sub render_image {
 	my $color    = $self->param('color') || '255,208,0';
 	my $no_lines = $self->param('no_lines');
 	my $backend  = $self->param('backend');
-	my $scale = $self->param('scale');
+	my $scale    = $self->param('scale');
 
-	if ($scale > 30) {
+	my $want_crop = 0;
+
+	if ( $scale > 30 ) {
 		$scale = 30;
 	}
 
@@ -187,14 +189,20 @@ sub render_image {
 	}
 
 	if ( $no_lines < 1 or $no_lines > 10 ) {
-		$no_lines = $default{no_lines};
+		$want_crop = 1;
+		if ( $no_lines >= -10 and $no_lines <= -1 ) {
+			$no_lines *= -1;
+		}
+		else {
+			$no_lines = 10;
+		}
 	}
 
 	my $png = App::VRR::Fakedisplay->new(
 		width  => 180,
 		height => $no_lines * 10,
 		color  => [ split( qr{,}, $color ) ],
-		scale => $scale,
+		scale  => $scale,
 	);
 
 	if ($errstr) {
@@ -219,7 +227,8 @@ sub render_image {
 
 		if (   ( @grep_line and not( any { $line =~ $_ } @grep_line ) )
 			or ( @grep_platform and not( $platform ~~ \@grep_platform ) )
-			or ( $line =~ m{ ^ (RB | RE | IC | EC) }x ) )
+			or ( $line =~ m{ ^ (RB | RE | IC | EC) }x )
+			or ( $displayed_lines >= $no_lines ) )
 		{
 			next;
 		}
@@ -291,6 +300,9 @@ sub render_image {
 		$png->draw_at( 50, 'no departures' );
 	}
 
+	if ($want_crop) {
+		$png->crop_to_content();
+	}
 	$self->render( data => $png->png );
 }
 

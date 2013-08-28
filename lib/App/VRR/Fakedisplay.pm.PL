@@ -169,6 +169,23 @@ sub new_line {
 	return;
 }
 
+sub crop_to_content {
+	my ($self) = @_;
+
+	my $new_im = GD::Image->new($self->{width} * $self->{scale},
+		$self->{offset_y} * $self->{scale}, 1);
+	$new_im->copyResized($self->{image}, 0, 0, 0, 0,
+		$self->{width} * $self->{scale},
+		$self->{offset_y} * $self->{scale},
+		$self->{width} * $self->{scale},
+		$self->{offset_y} * $self->{scale}
+	);
+
+	$self->{image} = $new_im;
+
+	return;
+}
+
 sub png {
 	my ($self) = @_;
 
