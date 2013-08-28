@@ -95,10 +95,11 @@ sub new {
 		offset_y => 0,
 	};
 
-	$self->{image} = GD::Image->new($self->{width} * $self->{scale}, $self->{height} * $self->{scale});
+	$self->{image} = GD::Image->new($self->{width} * $self->{scale}, $self->{height} * $self->{scale}, 1);
 
 	$self->{color}->{bg} = $self->{image}->colorAllocate(0, 0, 0);
 	$self->{color}->{fg} = $self->{image}->colorAllocate(@{$opt{color} // [255, 0, 0]});
+	$self->{image}->setAntiAliased($self->{color}->{fg});
 
 	$self->{image}->filledRectangle(0, 0, ($self->{width} * $self->{scale}) -1,
 	($self->{height} * $self->{scale}) - 1, $self->{color}->{bg});
@@ -126,9 +127,6 @@ sub draw_at {
 	my $im = $self->{image};
 	my $font = $self->{font};
 
-	my $c_bg = $self->{color}{bg};
-	my $c_fg = $self->{color}{fg};
-
 	my $font_idx = $self->{font_idx};
 
 	my $scale = $self->{scale};
@@ -153,7 +151,7 @@ sub draw_at {
 					$im->filledEllipse(
 						($off_x + $x) * $scale, ($off_y + $y) * $scale,
 						$scale, $scale,
-						$c_fg
+						gdAntiAliased
 					);
 				}
 			}
