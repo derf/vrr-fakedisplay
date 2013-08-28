@@ -78,7 +78,7 @@ sub handle_request {
 
 	my $no_lines = $self->param('no_lines');
 
-	if ( $no_lines < 1 or $no_lines > 10 ) {
+	if (not $no_lines or $no_lines < 1 or $no_lines > 10 ) {
 		$no_lines = $default{no_lines};
 	}
 
@@ -148,7 +148,7 @@ sub render_image {
 	my $dt_now = DateTime->now( time_zone => 'Europe/Berlin' );
 
 	my $color    = $self->param('color') || '255,208,0';
-	my $no_lines = $self->param('no_lines');
+	my $no_lines = $self->param('no_lines') // $default{no_lines};
 	my $backend  = $self->param('backend');
 	my $scale    = $self->param('scale');
 
