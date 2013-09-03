@@ -78,7 +78,7 @@ sub handle_request {
 
 	my $no_lines = $self->param('no_lines');
 
-	if (not $no_lines or $no_lines < 1 or $no_lines > 10 ) {
+	if ( not $no_lines or $no_lines < 1 or $no_lines > 10 ) {
 		$no_lines = $default{no_lines};
 	}
 
@@ -98,6 +98,8 @@ sub handle_request {
 		? "departures for ${city} ${stop}"
 		: "vrr-fakedisplay ${VERSION}",
 	);
+
+	return;
 }
 
 sub shorten_line {
@@ -140,34 +142,20 @@ sub shorten_destination {
 	return $dest;
 }
 
-sub render_image {
-	my $self = shift;
-	my $city = $self->stash('city');
-	my $stop = $self->stash('stop');
-
-	my $dt_now = DateTime->now( time_zone => 'Europe/Berlin' );
-
-	my $color    = $self->param('color') || '255,208,0';
-	my $no_lines = $self->param('no_lines') // $default{no_lines};
-	my $backend  = $self->param('backend');
-	my $scale    = $self->param('scale');
-
-	my $want_crop = 0;
-
-	if ( $scale > 30 ) {
-		$scale = 30;
-	}
+sub get_departures {
+	my (%opt) = @_;
 
 	my ( @grep_line, @grep_platform );
-	my $offset          = 0;
+	my $no_lines = $opt{no_lines} // $default{no_lines};
+	my $offset   = $opt{offset}   // 0;
 	my $displayed_lines = 0;
+	my $want_crop       = 0;
+	my @fmt_departures;
 
-	my ( $results, $errstr ) = get_results( $backend, $city, $stop );
+	my ( $results, $errstr )
+	  = get_results( $opt{backend}, $opt{city}, $opt{stop} );
 
-	if ($errstr) {
-		$color = '255,0,0';
-	}
-
+	my $dt_now = DateTime->now( time_zone => 'Europe/Berlin' );
 	my $strp_simple = DateTime::Format::Strptime->new(
 		pattern   => '%H:%M',
 		time_zone => 'floating',
@@ -177,42 +165,24 @@ sub render_image {
 		time_zone => 'floating',
 	);
 
-	if ( $self->param('line') ) {
-		my @lines = split( qr{,}, $self->param('line') );
+	if ( $opt{filter_line} ) {
+		my @lines = split( qr{,}, $opt{filter_line} );
 		@grep_line = map { qr{ ^ \Q$_\E }ix } @lines;
 	}
-	if ( $self->param('platform') ) {
-		@grep_platform = split( qr{,}, $self->param('platform') );
-	}
-	if ( $self->param('offset') ) {
-		$offset = $self->param('offset');
+	if ( $opt{filter_platform} ) {
+		@grep_platform = split( qr{,}, $opt{filter_platform} );
 	}
 
 	if ( $no_lines < 1 or $no_lines > 10 ) {
-		$want_crop = 1;
 		if ( $no_lines >= -10 and $no_lines <= -1 ) {
+			$want_crop = 1;
 			$no_lines *= -1;
 		}
 		else {
-			$no_lines = 10;
+			$no_lines = $default{no_lines};
 		}
 	}
 
-	my $png = App::VRR::Fakedisplay->new(
-		width  => 180,
-		height => $no_lines * 10,
-		color  => [ split( qr{,}, $color ) ],
-		scale  => $scale,
-	);
-
-	if ($errstr) {
-		$png->draw_at( 6, '--------backend error--------' );
-		$png->new_line();
-		$png->new_line();
-		$png->draw_at( 0, $errstr );
-	}
-
-	$self->res->headers->content_type('image/png');
 	for my $d ( @{$results} ) {
 
 		my $line        = $d->line;
@@ -271,12 +241,69 @@ sub render_image {
 			last;
 		}
 
-		$destination = shorten_destination( $backend, $destination, $city );
+		$destination
+		  = shorten_destination( $opt{backend}, $destination, $opt{city} );
 		$line = shorten_line($line);
+
+		$displayed_lines++;
+
+		push( @fmt_departures, [ $line, $destination, $etr ] );
+	}
+
+	if ( not $want_crop ) {
+		while ( ++$displayed_lines < $no_lines ) {
+			push( @fmt_departures, [ (q{}) x 3 ] );
+		}
+	}
+
+	return ( \@fmt_departures, $errstr );
+}
+
+sub render_image {
+	my $self = shift;
+
+	my $color = $self->param('color') || '255,208,0';
+	my $scale = $self->param('scale');
+
+	my ( $departures, $errstr ) = get_departures(
+		city            => $self->stash('city'),
+		stop            => $self->stash('stop'),
+		no_lines        => scalar $self->param('no_lines'),
+		backend         => scalar $self->param('backend'),
+		filter_line     => scalar $self->param('line'),
+		filter_platform => scalar $self->param('platform'),
+		offset          => scalar $self->param('offset'),
+	);
+
+	if ( $scale > 30 ) {
+		$scale = 30;
+	}
+
+	if ($errstr) {
+		$color = '255,0,0';
+	}
+
+	my $png = App::VRR::Fakedisplay->new(
+		width  => 180,
+		height => @{$departures} * 10,
+		color  => [ split( qr{,}, $color ) ],
+		scale  => $scale,
+	);
+
+	if ($errstr) {
+		$png->draw_at( 6, '--------backend error--------' );
+		$png->new_line();
+		$png->new_line();
+		$png->draw_at( 0, $errstr );
+	}
+
+	$self->res->headers->content_type('image/png');
+	for my $d ( @{$departures} ) {
+
+		my ( $line, $destination, $etr ) = @{$d};
 
 		$png->draw_at( 0,  $line );
 		$png->draw_at( 25, $destination );
-		$displayed_lines++;
 
 		if ( length($etr) > 2 ) {
 			$png->draw_at( 145, $etr );
@@ -288,22 +315,21 @@ sub render_image {
 			$png->draw_at( 154, $etr );
 		}
 
-		if ( $etr ne 'sofort' ) {
+		if ( $etr and $etr ne 'sofort' ) {
 			$png->draw_at( 161, 'min' );
 		}
 
 		$png->new_line();
 	}
-	if ( $displayed_lines == 0 ) {
+	if ( @{$departures} == 0 ) {
 		$png->new_line();
 		$png->new_line();
 		$png->draw_at( 50, 'no departures' );
 	}
 
-	if ($want_crop) {
-		$png->crop_to_content();
-	}
 	$self->render( data => $png->png );
+
+	return;
 }
 
 get '/_redirect' => sub {
@@ -327,11 +353,14 @@ get '/_redirect' => sub {
 	my $params_s = $params->to_string;
 
 	$self->redirect_to("/${city}/${stop}?${params_s}");
+
+	return;
 };
 
-get '/'                => \&handle_request;
-get '/:city/:stop.png' => \&render_image;
-get '/:city/:stop'     => \&handle_request;
+get '/'                 => \&handle_request;
+get '/:city/:stop.html' => \&render_html;
+get '/:city/:stop.png'  => \&render_image;
+get '/:city/:stop'      => \&handle_request;
 
 app->config(
 	hypnotoad => {
