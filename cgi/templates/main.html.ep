@@ -66,7 +66,7 @@
 id="display" height="<%= $height * 4 %>" width="<%= $width * 4 %>"/>
 % }
 % elsif ($frontend eq 'html') {
-<iframe src="/<%= $city %>/<%= $stop %>.html?<%= $params %>"
+<iframe src="/<%= $city %>/<%= $stop %>.html?<%= $params %>" id="display"
 height="<%= $height * 5 %>" width="<%= $width * 5 %>"></iframe>
 % }
 % }
@@ -157,7 +157,7 @@ v<%= $version %>
 <script type="text/javascript">
 function reloadDisplay() {
 	d = new Date();
-	$("#display").attr("src", "../<%= $city %>/<%= $stop %>.png?<%= $params %>&r="+d.getTime())
+	$("#display").attr("src", "../<%= $city %>/<%= $stop %>.<%= $frontend %>?<%= $params %>&r="+d.getTime())
 	setTimeout('reloadDisplay()', 60000);
 }
 
