@@ -253,7 +253,7 @@ sub get_departures {
 	}
 
 	if ( not $want_crop ) {
-		while ( ++$displayed_lines < $no_lines ) {
+		while ( $displayed_lines++ < $no_lines ) {
 			push( @fmt_departures, [ (q{}) x 3 ] );
 		}
 	}
