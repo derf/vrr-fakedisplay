@@ -77,6 +77,7 @@ sub handle_request {
 	my $stop = $self->stash('stop');
 
 	my $no_lines = $self->param('no_lines');
+	my $frontend = $self->param('frontend') // 'png';
 
 	if ( not $no_lines or $no_lines < 1 or $no_lines > 10 ) {
 		$no_lines = $default{no_lines};
@@ -94,6 +95,7 @@ sub handle_request {
 		city    => $city,
 		stop    => $stop,
 		version => $VERSION,
+		frontend => $frontend,
 		title   => $city
 		? "departures for ${city} ${stop}"
 		: "vrr-fakedisplay ${VERSION}",
@@ -257,6 +259,34 @@ sub get_departures {
 	}
 
 	return ( \@fmt_departures, $errstr );
+}
+
+sub render_html {
+	my $self = shift;
+
+	my ( $departures, $errstr ) = get_departures(
+		city            => $self->stash('city'),
+		stop            => $self->stash('stop'),
+		no_lines        => scalar $self->param('no_lines'),
+		backend         => scalar $self->param('backend'),
+		filter_line     => scalar $self->param('line'),
+		filter_platform => scalar $self->param('platform'),
+		offset          => scalar $self->param('offset'),
+	);
+
+	for my $d ( @{$departures} ) {
+		if ( $d->[2] and $d->[2] ne 'sofort' ) {
+			$d->[2] .= ' min';
+		}
+	}
+
+	$self->render(
+		'display',
+		title      => "vrr-fakedisplay v${VERSION}",
+		departures => $departures,
+	);
+
+	return;
 }
 
 sub render_image {

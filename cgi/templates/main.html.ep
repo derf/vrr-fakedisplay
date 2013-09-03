@@ -9,6 +9,10 @@
 		font-family: Sans-Serif;
 	}
 
+	iframe {
+		border: none;
+	}
+
 	div.about {
 		margin-top: 2em;
 		color: #666666;
@@ -57,8 +61,14 @@
 <body>
 
 % if ($city and $stop) {
+% if ($frontend eq 'png') {
 <img src="../<%= $city %>/<%= $stop %>.png?<%= $params %>" alt=""
 id="display" height="<%= $height * 4 %>" width="<%= $width * 4 %>"/>
+% }
+% elsif ($frontend eq 'html') {
+<iframe src="/<%= $city %>/<%= $stop %>.html?<%= $params %>"
+height="<%= $height * 5 %>" width="<%= $width * 5 %>"></iframe>
+% }
 % }
 % else {
 
@@ -115,6 +125,10 @@ other German transit networks.
   <div class="field">
     <div class="desc">backend</div>
     <div><%= select_field backend => [['EFA (VRR)' => 'vrr'], ['HAFAS (DB)' => 'db']] %></div>
+  </div>
+  <div class="field">
+    <div class="desc">frontend</div>
+    <div><%= select_field frontend => [['Image (PNG)' => 'png'], ['HTML' => 'html']] %></div>
   </div>
 </div>
 <% end %>

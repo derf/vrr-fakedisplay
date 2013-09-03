@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title><%= $title %></title>
+	<meta charset="utf-8">
+	<style type="text/css">
+
+	@font-face {
+		font-family: VRRR;
+		src: url('/VRRR.ttf');
+	}
+
+	body {
+		font-family: VRRR;
+		background-color: #000000;
+		color: #ffd000;
+		font-size: 430%;
+	}
+
+	div.outer {
+		width: 12em;
+		margin-left: auto;
+		margin-right: auto;
+	}
+
+	div.row {
+		position: relative;
+		margin-bottom: 0;
+		margin-top: 0;
+		padding-bottom: 0;
+		padding-top: 0;
+		width: 12em;
+		height: 0.68em;
+	}
+
+	div.row div {
+		overflow: hidden;
+		position: absolute;
+		height: 100%;
+	}
+
+	div.line {
+		left: 0;
+		width: 13%;
+	}
+
+	div.dest {
+		left: 14%;
+		width: 67%;
+	}
+
+	div.time {
+		right: 0;
+		width: 19%;
+		text-align: right;
+	}
+
+	</style>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
+</head>
+<body>
+
+<div class="outer">
+% for my $d (@{$departures}) {
+<div class="row">
+<div class="line"> <%= $d->[0] %> </div>
+<div class="dest"> <%= $d->[1] %> </div>
+<div class="time"> <%= $d->[2] %> </div>
+</div> <!-- row -->
+% }
+</div> <!-- outer -->
+
+</body>
+</html>
