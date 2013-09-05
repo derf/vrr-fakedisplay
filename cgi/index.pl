@@ -11,6 +11,7 @@ use Travel::Status::DE::DeutscheBahn;
 use Travel::Status::DE::VRR;
 
 no warnings 'uninitialized';
+no if $] >= 5.018, warnings => "experimental::smartmatch";
 
 our $VERSION = '0.06';
 
