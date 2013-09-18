@@ -435,4 +435,5 @@ app->config(
 	},
 );
 
+app->types->type( json => 'application/json; charset=utf-8' );
 app->start();
