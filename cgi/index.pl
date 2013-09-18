@@ -285,6 +285,7 @@ sub render_html {
 		'display',
 		title      => "vrr-fakedisplay v${VERSION}",
 		departures => $departures,
+		scale      => $self->param('scale') || '4.3',
 	);
 
 	return;

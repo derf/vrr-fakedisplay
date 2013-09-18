@@ -14,7 +14,7 @@
 		font-family: VRRR;
 		background-color: #000000;
 		color: #ffd000;
-		font-size: 430%;
+		font-size: <%= $scale * 100 %>%;
 	}
 
 	div.outer {
