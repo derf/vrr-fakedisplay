@@ -93,11 +93,11 @@ sub handle_request {
 
 	$self->render(
 		'main',
-		city    => $city,
-		stop    => $stop,
-		version => $VERSION,
+		city     => $city,
+		stop     => $stop,
+		version  => $VERSION,
 		frontend => $frontend,
-		title   => $city
+		title    => $city
 		? "departures for ${city} ${stop}"
 		: "vrr-fakedisplay ${VERSION}",
 	);
@@ -250,7 +250,7 @@ sub get_departures {
 
 		$displayed_lines++;
 
-		push( @fmt_departures, [ $line, $destination, $etr ] );
+		push( @fmt_departures, [ $line, $destination, $etr, $d ] );
 	}
 
 	if ( not $want_crop ) {
@@ -286,6 +286,38 @@ sub render_html {
 		title      => "vrr-fakedisplay v${VERSION}",
 		departures => $departures,
 		scale      => $self->param('scale') || '4.3',
+	);
+
+	return;
+}
+
+sub render_json {
+	my $self = shift;
+
+	my ( $departures, $errstr ) = get_departures(
+		city            => $self->stash('city'),
+		stop            => $self->stash('stop'),
+		no_lines        => scalar $self->param('no_lines'),
+		backend         => scalar $self->param('backend'),
+		filter_line     => scalar $self->param('line'),
+		filter_platform => scalar $self->param('platform'),
+		offset          => scalar $self->param('offset'),
+	);
+
+	for my $d ( @{$departures} ) {
+		if ( $d->[2] and $d->[2] ne 'sofort' ) {
+			$d->[2] .= ' min';
+		}
+	}
+
+	my @preformatted = map { [ $_->[0], $_->[1], $_->[2] ] } @{$departures};
+	my @raw_objects = map { $_->[3] } @{$departures};
+
+	$self->render(
+		json => {
+			preformatted => \@preformatted,
+			raw          => \@raw_objects,
+		}
 	);
 
 	return;
@@ -332,7 +364,7 @@ sub render_image {
 	$self->res->headers->content_type('image/png');
 	for my $d ( @{$departures} ) {
 
-		my ( $line, $destination, $etr ) = @{$d};
+		my ( $line, $destination, $etr, undef ) = @{$d};
 
 		$png->draw_at( 0,  $line );
 		$png->draw_at( 25, $destination );
@@ -391,6 +423,7 @@ get '/_redirect' => sub {
 
 get '/'                 => \&handle_request;
 get '/:city/:stop.html' => \&render_html;
+get '/:city/:stop.json' => \&render_json;
 get '/:city/:stop.png'  => \&render_image;
 get '/:city/:stop'      => \&handle_request;
 
