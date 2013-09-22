@@ -149,8 +149,9 @@ sub get_departures {
 	my (%opt) = @_;
 
 	my ( @grep_line, @grep_platform );
-	my $no_lines = $opt{no_lines} // $default{no_lines};
-	my $offset   = $opt{offset}   // 0;
+	my $no_lines  = $opt{no_lines}  // $default{no_lines};
+	my $max_lines = $opt{max_lines} // 10;
+	my $offset    = $opt{offset}    // 0;
 	my $displayed_lines = 0;
 	my $want_crop       = 0;
 	my @fmt_departures;
@@ -176,8 +177,8 @@ sub get_departures {
 		@grep_platform = split( qr{,}, $opt{filter_platform} );
 	}
 
-	if ( $no_lines < 1 or $no_lines > 10 ) {
-		if ( $no_lines >= -10 and $no_lines <= -1 ) {
+	if ( $no_lines < 1 or $no_lines > $max_lines ) {
+		if ( $no_lines >= -$max_lines and $no_lines <= -1 ) {
 			$want_crop = 1;
 			$no_lines *= -1;
 		}
@@ -299,7 +300,8 @@ sub render_json {
 	my ( $departures, $errstr ) = get_departures(
 		city            => $self->stash('city'),
 		stop            => $self->stash('stop'),
-		no_lines        => scalar $self->param('no_lines'),
+		no_lines        => scalar $self->param('no_lines') // '-100',
+		max_lines       => 100,
 		backend         => scalar $self->param('backend'),
 		filter_line     => scalar $self->param('line'),
 		filter_platform => scalar $self->param('platform'),
