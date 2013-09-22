@@ -264,6 +264,7 @@ sub get_departures {
 
 sub render_html {
 	my $self = shift;
+	my $color = $self->param('color') || '255,208,0';
 
 	my ( $departures, $errstr ) = get_departures(
 		city            => $self->stash('city'),
@@ -284,6 +285,7 @@ sub render_html {
 	$self->render(
 		'display',
 		title      => "vrr-fakedisplay v${VERSION}",
+		color      => [ split( qr{,}, $color ) ],
 		departures => $departures,
 		scale      => $self->param('scale') || '4.3',
 	);

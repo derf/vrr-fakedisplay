@@ -13,7 +13,7 @@
 	body {
 		font-family: VRRR;
 		background-color: #000000;
-		color: #ffd000;
+		color: #<%= join(q{}, map { sprintf('%02x', $_) } @{$color} ) %>;
 		font-size: <%= $scale * 100 %>%;
 	}
 
