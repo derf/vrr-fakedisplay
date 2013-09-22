@@ -62,12 +62,18 @@
 
 % if ($city and $stop) {
 % if ($frontend eq 'png') {
-<img src="../<%= $city %>/<%= $stop %>.png?<%= $params %>" alt=""
+<img src="/<%= $city %>/<%= $stop %>.png?<%= $params %>" alt=""
 id="display" height="<%= $height * 4 %>" width="<%= $width * 4 %>"/>
 % }
 % elsif ($frontend eq 'html') {
 <iframe src="/<%= $city %>/<%= $stop %>.html?<%= $params %>" id="display"
 height="<%= $height * 5 %>" width="<%= $width * 5 %>"></iframe>
+% }
+% elsif ($frontend eq 'json') {
+<p>
+<a href="/<%= $city %>/<%= $stop %>.json?<%= $params %>">JSON data for
+<%= $city %> <%= $stop %></a>
+</p>
 % }
 % }
 % else {
@@ -128,7 +134,7 @@ other German transit networks.
   </div>
   <div class="field">
     <div class="desc">frontend</div>
-    <div><%= select_field frontend => [['Image (PNG)' => 'png'], ['HTML' => 'html']] %></div>
+    <div><%= select_field frontend => [['Image (PNG)' => 'png'], ['HTML' => 'html'], ['JSON' => 'json']] %></div>
   </div>
 </div>
 <% end %>
