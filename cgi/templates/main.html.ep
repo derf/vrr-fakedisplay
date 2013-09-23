@@ -74,6 +74,24 @@ height="<%= $height * 5 %>" width="<%= $width * 5 %>"></iframe>
 <a href="/<%= $city %>/<%= $stop %>.json?<%= $params %>">JSON data for
 <%= $city %> <%= $stop %></a>
 </p>
+<p>
+% if (param('backend') and param('backend') eq 'db') {
+The raw data consists of serialized
+<a href="http://finalrewind.org/projects/Travel-Status-DE-DeutscheBahn/">
+Travel::Status::DE::DeutscheBahn</a>-objects, see the
+<a href="http://man.finalrewind.org/3/Travel-Status-DE-DeutscheBahn-Result/">::Result</a>
+documentation.
+% }
+% else {
+The raw data consists of serialized
+<a href="http://finalrewind.org/projects/Travel-Status-DE-VRR/">
+Travel::Status::DE::VRR</a>-objects, see the
+<a href="http://man.finalrewind.org/3/Travel-Status-DE-VRR-Result/">::Result</a>
+and
+<a href="http://man.finalrewind.org/3/Travel-Status-DE-VRR-Line/">::Line</a>
+documentation.
+% }
+</p>
 % }
 % }
 % else {
