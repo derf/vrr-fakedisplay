@@ -26,11 +26,7 @@ my %default = (
 sub get_results {
 	my ( $backend, $city, $stop ) = @_;
 
-	my $expiry = 900;
-
-	if ( lc($city) eq 'berlin' or lc($stop) ~~ [qw[hbf hauptbahnhof]] ) {
-		$expiry = 600;
-	}
+	my $expiry = 420;
 
 	my $cache = Cache::File->new(
 		cache_root      => '/tmp/vrr-fake',
