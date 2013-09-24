@@ -315,6 +315,7 @@ sub render_json {
 
 	$self->render(
 		json => {
+			error        => $errstr,
 			preformatted => \@preformatted,
 			raw          => \@raw_objects,
 		}
