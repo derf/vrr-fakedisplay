@@ -24,9 +24,9 @@ my %default = (
 );
 
 sub get_results {
-	my ( $backend, $city, $stop ) = @_;
+	my ( $backend, $city, $stop, $expiry ) = @_;
 
-	my $expiry = 420;
+	my $expiry ||= 150;
 
 	my $cache = Cache::File->new(
 		cache_root      => '/tmp/vrr-fake',
@@ -153,7 +153,7 @@ sub get_departures {
 	my @fmt_departures;
 
 	my ( $results, $errstr )
-	  = get_results( $opt{backend}, $opt{city}, $opt{stop} );
+	  = get_results( $opt{backend}, $opt{city}, $opt{stop}, $opt{cache_expiry} );
 
 	my $dt_now = DateTime->now( time_zone => 'Europe/Berlin' );
 	my $strp_simple = DateTime::Format::Strptime->new(
@@ -302,6 +302,7 @@ sub render_json {
 		filter_line     => scalar $self->param('line'),
 		filter_platform => scalar $self->param('platform'),
 		offset          => scalar $self->param('offset'),
+		cache_expiry    => 60,
 	);
 
 	for my $d ( @{$departures} ) {
