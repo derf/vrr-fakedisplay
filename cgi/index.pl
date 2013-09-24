@@ -26,7 +26,7 @@ my %default = (
 sub get_results {
 	my ( $backend, $city, $stop, $expiry ) = @_;
 
-	my $expiry ||= 150;
+	$expiry ||= 150;
 
 	my $cache = Cache::File->new(
 		cache_root      => '/tmp/vrr-fake',
