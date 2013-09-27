@@ -183,8 +183,6 @@ shorten destination names</li>
 v<%= $version %>
 </div>
 
-</body>
-
 <script type="text/javascript">
 function reloadDisplay() {
 	d = new Date();
@@ -194,5 +192,8 @@ function reloadDisplay() {
 
 setTimeout('reloadDisplay()', 60000);
 </script>
+
+</body>
+
 
 </html>
