@@ -13,7 +13,7 @@ use Travel::Status::DE::VRR;
 no warnings 'uninitialized';
 no if $] >= 5.018, warnings => "experimental::smartmatch";
 
-our $VERSION = qx{git describe --dirty} || '0.06';
+our $VERSION = qx{git describe --dirty} || '0.07';
 chomp $VERSION;
 
 my %default = (
