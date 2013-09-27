@@ -76,6 +76,7 @@ height="<%= $height * 5 %>" width="<%= $width * 5 %>"></iframe>
 </p>
 <p>
 Data is cached for 1 minute: JSON format:
+</p>
 <ul>
 <li>error: err string if an error occured, otherwise null</li>
 <li>preformatted: strings used by the PNG / HTML frontend</li>
@@ -99,7 +100,6 @@ documentation
 </li>
 <li>version: Program version (string, not numeric)</li>
 </ul>
-</p>
 % }
 % }
 % else {
