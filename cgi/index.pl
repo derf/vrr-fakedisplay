@@ -14,6 +14,7 @@ no warnings 'uninitialized';
 no if $] >= 5.018, warnings => "experimental::smartmatch";
 
 our $VERSION = qx{git describe --dirty} || '0.06';
+chomp $VERSION;
 
 my %default = (
 	backend  => 'vrr',
@@ -76,7 +77,7 @@ sub handle_request {
 	my $no_lines = $self->param('no_lines');
 	my $frontend = $self->param('frontend') // 'png';
 
-	if ( not $no_lines or $no_lines < 1 or $no_lines > 10 ) {
+	if ( not $no_lines or $no_lines < 1 or $no_lines > 40 ) {
 		$no_lines = $default{no_lines};
 	}
 
@@ -141,20 +142,61 @@ sub shorten_destination {
 	return $dest;
 }
 
-sub get_departures {
+sub get_filtered_departures {
 	my (%opt) = @_;
 
-	my ( @grep_line, @grep_platform );
-	my $no_lines  = $opt{no_lines}  // $default{no_lines};
-	my $max_lines = $opt{max_lines} // 10;
-	my $offset    = $opt{offset}    // 0;
-	my $displayed_lines = 0;
-	my $want_crop       = 0;
-	my @fmt_departures;
+	my ( @grep_line, @grep_platform, @filtered_results );
 
 	my ( $results, $errstr )
 	  = get_results( $opt{backend}, $opt{city}, $opt{stop},
 		$opt{cache_expiry} );
+
+	if ( $opt{filter_line} ) {
+		my @lines = split( qr{,}, $opt{filter_line} );
+		@grep_line = map { qr{ ^ \Q$_\E }ix } @lines;
+	}
+	if ( $opt{filter_platform} ) {
+		@grep_platform = split( qr{,}, $opt{filter_platform} );
+	}
+
+	for my $d ( @{$results} ) {
+
+		my $line        = $d->line;
+		my $platform    = ( split( qr{ }, $d->platform ) )[-1];
+		my $destination = $d->destination;
+		my $time        = $d->time;
+		my $etr;
+
+		if (   ( @grep_line and not( any { $line =~ $_ } @grep_line ) )
+			or ( @grep_platform and not( $platform ~~ \@grep_platform ) )
+			or ( $line =~ m{ ^ (RB | RE | IC | EC) }x ) )
+		{
+			next;
+		}
+
+		if ( $d->delay eq '-9999' ) {
+
+			# canceled
+			next;
+		}
+
+		push( @filtered_results, $d );
+	}
+
+	return ( \@filtered_results, $errstr );
+}
+
+sub make_infoboard_lines {
+	my (%opt) = @_;
+
+	my ( @grep_line, @grep_platform );
+	my $no_lines  = $opt{no_lines}  // $default{no_lines};
+	my $max_lines = $opt{max_lines} // 40;
+	my $offset    = $opt{offset}    // 0;
+	my $results   = $opt{data};
+	my $displayed_lines = 0;
+	my $want_crop       = $opt{want_crop};
+	my @fmt_departures;
 
 	my $dt_now = DateTime->now( time_zone => 'Europe/Berlin' );
 	my $strp_simple = DateTime::Format::Strptime->new(
@@ -166,22 +208,8 @@ sub get_departures {
 		time_zone => 'floating',
 	);
 
-	if ( $opt{filter_line} ) {
-		my @lines = split( qr{,}, $opt{filter_line} );
-		@grep_line = map { qr{ ^ \Q$_\E }ix } @lines;
-	}
-	if ( $opt{filter_platform} ) {
-		@grep_platform = split( qr{,}, $opt{filter_platform} );
-	}
-
 	if ( $no_lines < 1 or $no_lines > $max_lines ) {
-		if ( $no_lines >= -$max_lines and $no_lines <= -1 ) {
-			$want_crop = 1;
-			$no_lines *= -1;
-		}
-		else {
-			$no_lines = $default{no_lines};
-		}
+		$no_lines = 40;
 	}
 
 	for my $d ( @{$results} ) {
@@ -196,17 +224,7 @@ sub get_departures {
 		  // $strp_simple->parse_datetime($time);
 		my $dt;
 
-		if (   ( @grep_line and not( any { $line =~ $_ } @grep_line ) )
-			or ( @grep_platform and not( $platform ~~ \@grep_platform ) )
-			or ( $line =~ m{ ^ (RB | RE | IC | EC) }x )
-			or ( $displayed_lines >= $no_lines ) )
-		{
-			next;
-		}
-
-		if ( $d->delay eq '-9999' ) {
-
-			# canceled
+		if ( $displayed_lines >= $no_lines ) {
 			next;
 		}
 
@@ -248,7 +266,7 @@ sub get_departures {
 
 		$displayed_lines++;
 
-		push( @fmt_departures, [ $line, $destination, $etr, $d ] );
+		push( @fmt_departures, [ $line, $destination, $etr ] );
 	}
 
 	if ( not $want_crop ) {
@@ -257,24 +275,31 @@ sub get_departures {
 		}
 	}
 
-	return ( \@fmt_departures, $errstr );
+	return @fmt_departures;
 }
 
 sub render_html {
 	my $self = shift;
 	my $color = $self->param('color') || '255,208,0';
 
-	my ( $departures, $errstr ) = get_departures(
+	my ( $raw_departures, $errstr ) = get_filtered_departures(
 		city            => $self->stash('city'),
 		stop            => $self->stash('stop'),
-		no_lines        => scalar $self->param('no_lines'),
 		backend         => scalar $self->param('backend'),
 		filter_line     => scalar $self->param('line'),
 		filter_platform => scalar $self->param('platform'),
-		offset          => scalar $self->param('offset'),
 	);
 
-	for my $d ( @{$departures} ) {
+	my @departures = make_infoboard_lines(
+		city      => $self->stash('city'),
+		stop      => $self->stash('stop'),
+		no_lines  => scalar $self->param('no_lines'),
+		offset    => scalar $self->param('offset'),
+		want_crop => scalar $self->param('want_crop'),
+		data      => $raw_departures
+	);
+
+	for my $d (@departures) {
 		if ( $d->[2] and $d->[2] ne 'sofort' ) {
 			$d->[2] .= ' min';
 		}
@@ -284,7 +309,7 @@ sub render_html {
 		'display',
 		title      => "vrr-fakedisplay v${VERSION}",
 		color      => [ split( qr{,}, $color ) ],
-		departures => $departures,
+		departures => \@departures,
 		scale      => $self->param('scale') || '4.3',
 	);
 
@@ -294,32 +319,32 @@ sub render_html {
 sub render_json {
 	my $self = shift;
 
-	my ( $departures, $errstr ) = get_departures(
+	my ( $raw_departures, $errstr ) = get_filtered_departures(
 		city            => $self->stash('city'),
 		stop            => $self->stash('stop'),
-		no_lines        => scalar $self->param('no_lines') // '-100',
-		max_lines       => 100,
 		backend         => scalar $self->param('backend'),
 		filter_line     => scalar $self->param('line'),
 		filter_platform => scalar $self->param('platform'),
-		offset          => scalar $self->param('offset'),
 		cache_expiry    => 60,
 	);
+	my @departures = make_infoboard_lines(
+		no_lines  => scalar $self->param('no_lines'),
+		offset    => scalar $self->param('offset'),
+		want_crop => scalar $self->param('want_crop'),
+		data      => $raw_departures,
+	);
 
-	for my $d ( @{$departures} ) {
+	for my $d (@departures) {
 		if ( $d->[2] and $d->[2] ne 'sofort' ) {
 			$d->[2] .= ' min';
 		}
 	}
 
-	my @preformatted = map { [ $_->[0], $_->[1], $_->[2] ] } @{$departures};
-	my @raw_objects = map { $_->[3] } @{$departures};
-
 	$self->render(
 		json => {
 			error        => $errstr,
-			preformatted => \@preformatted,
-			raw          => \@raw_objects,
+			preformatted => \@departures,
+			raw          => $raw_departures,
 			version      => $VERSION,
 		}
 	);
@@ -333,14 +358,21 @@ sub render_image {
 	my $color = $self->param('color') || '255,208,0';
 	my $scale = $self->param('scale');
 
-	my ( $departures, $errstr ) = get_departures(
+	my ( $raw_departures, $errstr ) = get_filtered_departures(
 		city            => $self->stash('city'),
 		stop            => $self->stash('stop'),
-		no_lines        => scalar $self->param('no_lines'),
 		backend         => scalar $self->param('backend'),
 		filter_line     => scalar $self->param('line'),
 		filter_platform => scalar $self->param('platform'),
-		offset          => scalar $self->param('offset'),
+	);
+
+	my @departures = make_infoboard_lines(
+		city      => $self->stash('city'),
+		stop      => $self->stash('stop'),
+		no_lines  => scalar $self->param('no_lines'),
+		offset    => scalar $self->param('offset'),
+		want_crop => scalar $self->param('want_crop'),
+		data      => $raw_departures
 	);
 
 	if ( $scale > 30 ) {
@@ -353,7 +385,7 @@ sub render_image {
 
 	my $png = App::VRR::Fakedisplay->new(
 		width  => 180,
-		height => @{$departures} * 10,
+		height => @departures * 10,
 		color  => [ split( qr{,}, $color ) ],
 		scale  => $scale,
 	);
@@ -366,7 +398,7 @@ sub render_image {
 	}
 
 	$self->res->headers->content_type('image/png');
-	for my $d ( @{$departures} ) {
+	for my $d (@departures) {
 
 		my ( $line, $destination, $etr, undef ) = @{$d};
 
@@ -389,7 +421,7 @@ sub render_image {
 
 		$png->new_line();
 	}
-	if ( @{$departures} == 0 ) {
+	if ( @departures == 0 ) {
 		$png->new_line();
 		$png->new_line();
 		$png->draw_at( 50, 'no departures' );

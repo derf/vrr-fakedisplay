@@ -92,6 +92,14 @@ and
 documentation.
 % }
 </p>
+<p>
+Notes:
+<ul>
+<li>data is cached for 1 minute</li>
+<li>preformatted contains the string used by the PNG / HTML frontend</li>
+<li>if an error occured, the error field is non-null</li>
+</ul>
+</p>
 % }
 % }
 % else {
