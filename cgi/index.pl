@@ -13,7 +13,7 @@ use Travel::Status::DE::VRR;
 no warnings 'uninitialized';
 no if $] >= 5.018, warnings => "experimental::smartmatch";
 
-our $VERSION = '0.06';
+our $VERSION = qx{git describe --dirty} || '0.06';
 
 my %default = (
 	backend  => 'vrr',
@@ -153,7 +153,8 @@ sub get_departures {
 	my @fmt_departures;
 
 	my ( $results, $errstr )
-	  = get_results( $opt{backend}, $opt{city}, $opt{stop}, $opt{cache_expiry} );
+	  = get_results( $opt{backend}, $opt{city}, $opt{stop},
+		$opt{cache_expiry} );
 
 	my $dt_now = DateTime->now( time_zone => 'Europe/Berlin' );
 	my $strp_simple = DateTime::Format::Strptime->new(
@@ -319,6 +320,7 @@ sub render_json {
 			error        => $errstr,
 			preformatted => \@preformatted,
 			raw          => \@raw_objects,
+			version      => $VERSION,
 		}
 	);
 
