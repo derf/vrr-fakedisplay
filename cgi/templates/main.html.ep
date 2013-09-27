@@ -97,6 +97,7 @@ and
 documentation
 % }
 </li>
+<li>version: Program version (string, not numeric)</li>
 </ul>
 </p>
 % }
