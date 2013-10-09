@@ -293,6 +293,7 @@ sub render_html {
 	my @departures = make_infoboard_lines(
 		city      => $self->stash('city'),
 		stop      => $self->stash('stop'),
+		backend   => scalar $self->param('backend'),
 		no_lines  => scalar $self->param('no_lines'),
 		offset    => scalar $self->param('offset'),
 		want_crop => scalar $self->param('want_crop'),
@@ -369,6 +370,7 @@ sub render_image {
 	my @departures = make_infoboard_lines(
 		city      => $self->stash('city'),
 		stop      => $self->stash('stop'),
+		backend   => scalar $self->param('backend'),
 		no_lines  => scalar $self->param('no_lines'),
 		offset    => scalar $self->param('offset'),
 		want_crop => scalar $self->param('want_crop'),
