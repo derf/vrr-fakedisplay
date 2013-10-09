@@ -77,6 +77,9 @@ sub handle_request {
 	my $no_lines = $self->param('no_lines');
 	my $frontend = $self->param('frontend') // 'png';
 
+	my (undef, $errstr) = get_results( $self->param('backend') // $default{backend},
+		$city, $stop);
+
 	if ( not $no_lines or $no_lines < 1 or $no_lines > 40 ) {
 		$no_lines = $default{no_lines};
 	}
@@ -94,6 +97,7 @@ sub handle_request {
 		stop     => $stop,
 		version  => $VERSION,
 		frontend => $frontend,
+		errstr   => $errstr,
 		title    => $city
 		? "departures for ${city} ${stop}"
 		: "vrr-fakedisplay ${VERSION}",

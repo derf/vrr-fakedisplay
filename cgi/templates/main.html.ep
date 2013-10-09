@@ -23,6 +23,16 @@
 		text-decoration: none;
 	}
 
+	div.error {
+		font-size: 150%;
+		font-weight: bold;
+		color: #dd0000;
+	}
+
+	pre {
+		margin-bottom: 2em;
+	}
+
 	span.optional {
 		color: #666666;
 	}
@@ -56,12 +66,20 @@
 	}
 
 	</style>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js" type="text/javascript"></script>
 </head>
 <body>
 
 % if ($city and $stop) {
-% if ($frontend eq 'png') {
+% if ($errstr) {
+<div class="error">Error from backend:</div>
+<div>
+<pre>
+%= $errstr
+</pre>
+</div>
+% }
+% elsif ($frontend eq 'png') {
 <img src="/<%= $city %>/<%= $stop %>.png?<%= $params %>" alt=""
 id="display" height="<%= $height * 4 %>" width="<%= $width * 4 %>"/>
 % }
