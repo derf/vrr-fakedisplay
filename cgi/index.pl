@@ -78,9 +78,10 @@ sub handle_request {
 	my $frontend = $self->param('frontend') // 'png';
 	my $errstr;
 
-	if ($city and $stop) {
-		(undef, $errstr) = get_results( $self->param('backend') // $default{backend},
-		$city, $stop);
+	if ( $city and $stop ) {
+		( undef, $errstr )
+		  = get_results( $self->param('backend') // $default{backend},
+			$city, $stop );
 	}
 
 	if ( not $no_lines or $no_lines < 1 or $no_lines > 40 ) {
@@ -181,12 +182,6 @@ sub get_filtered_departures {
 			next;
 		}
 
-		if ( $d->delay eq '-9999' ) {
-
-			# canceled
-			next;
-		}
-
 		push( @filtered_results, $d );
 	}
 
@@ -231,7 +226,9 @@ sub make_infoboard_lines {
 		  // $strp_simple->parse_datetime($time);
 		my $dt;
 
-		if ( $displayed_lines >= $no_lines ) {
+		if ( ( $displayed_lines >= $no_lines )
+			or $d->is_cancelled )
+		{
 			next;
 		}
 
