@@ -67,7 +67,7 @@
 	}
 
 	</style>
-	%= javascript 'jquery-1.10.2.min.js'
+	%= javascript '/jquery-1.10.2.min.js'
 </head>
 <body>
 
