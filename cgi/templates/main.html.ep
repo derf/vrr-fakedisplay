@@ -170,13 +170,13 @@ other German transit networks.
   </div>
   <div class="field">
     <div class="desc" title="comma-separated list, example: NE,U,10">
-      match line prefix</div>
+      match line prefixes¹</div>
     <div>
       %= text_field 'line'
     </div>
   </div>
   <div class="field">
-    <div class="desc" title="comma-separated list. Buggy.">match platform</div>
+    <div class="desc" title="comma-separated list. Buggy.">match platform¹</div>
     <div>
       %= text_field 'platform'
     </div>
@@ -196,6 +196,9 @@ other German transit networks.
 </div>
 % end
 
+<p>
+<b>¹</b> separate values with commas, e.g. NE,U,10
+</p>
 </div> <!-- input-field -->
 
 <div class="notes">
