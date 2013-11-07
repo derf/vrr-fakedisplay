@@ -473,7 +473,7 @@ app->config(
 	hypnotoad => {
 		listen   => ['http://*:8091'],
 		pid_file => '/tmp/vrr-fake.pid',
-		workers  => 2,
+		workers  => $ENV{DBFAKEDISPLAY_WORKERS} // 2,
 	},
 );
 
