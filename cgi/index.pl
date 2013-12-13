@@ -1,6 +1,7 @@
 #!/usr/bin/env perl
 use Mojolicious::Lite;
 use Cache::File;
+use utf8;
 
 use DateTime;
 use DateTime::Format::Strptime;
@@ -283,8 +284,9 @@ sub make_infoboard_lines {
 }
 
 sub render_html {
-	my $self = shift;
-	my $color = $self->param('color') || '255,208,0';
+	my $self     = shift;
+	my $color    = $self->param('color') || '255,208,0';
+	my $template = $self->param('template') || 'display';
 
 	my ( $raw_departures, $errstr ) = get_filtered_departures(
 		city            => $self->stash('city'),
@@ -311,11 +313,13 @@ sub render_html {
 	}
 
 	$self->render(
-		'display',
+		$template,
 		title      => "vrr-fakedisplay v${VERSION}",
 		color      => [ split( qr{,}, $color ) ],
 		departures => \@departures,
+		raw        => $raw_departures,
 		scale      => $self->param('scale') || '4.3',
+		version    => $VERSION,
 	);
 
 	return;

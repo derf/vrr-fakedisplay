@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title><%= $title %></title>
+	<meta charset="utf-8">
+% if ($self->stash('refresh_interval')) {
+	<meta http-equiv="refresh" content="<%= $self->stash('refresh_interval') %>"/>
+% }
+
+	<style type="text/css">
+
+	html {
+		font-family: Sans-Serif;
+	}
+
+	div.displayclean {
+		background-color:#F8F8F8;
+		position:absolute;
+		top:5px;
+		left:5px;
+		border-width:1px 2px;
+		width:100%;
+		height:499px;
+	}
+
+	div.displayclean ul {
+		position:absolute;
+		width:100%;
+		background-color:#F8F8F8;
+		top: -3px;
+		left: 0;
+
+		list-style-type:none;
+		margin:0;
+		padding:0;
+		border-width:1px 0 25px;
+		border-style:solid;
+		border-color:#CCCCCC;
+	}
+
+	div.displayclean li {
+		height:70px;
+		background-color:#F8F8F8;
+		padding:5px;
+		display:block;
+		border-width:1px 0;
+		border-style:solid;
+		border-color:#CCCCCC;
+		width:95%;
+		position:relative;
+	}
+
+	div.displayclean li .line {
+		color:#FFFFFF;
+		background-color:#666666;
+		font-weight:bold;
+		font-size:28px;
+		padding:3px 8px 2px 5px;
+		position:absolute;
+		top:7px;
+		left:1%;
+	}
+
+	div.displayclean li .tram {
+		background-color:#CC0000;
+	}
+
+	div.displayclean li .sbahn {
+		background-color:#006E10;
+		-webkit-border-radius: 30px;
+		-moz-border-radius: 30px;
+		border-radius: 30px;
+	}
+
+	div.displayclean li .ubahn {
+		background-color:#001090;
+	}
+
+	div.displayclean li .bus {
+		background-color:#991199;
+		-webkit-border-radius: 10px;
+		-moz-border-radius: 10px;
+		border-radius: 10px;
+	}
+
+	div.displayclean li .route {
+		color:#444444;
+		font-size:21px;
+		position:absolute;
+		top:5px;
+		left:10em;
+	}
+
+	div.displayclean li .dest {
+		color:#000000;
+		font-weight:bold;
+		font-size:46px;
+		position:absolute;
+		top:23px;
+		left:4.5em;
+	}
+
+	div.displayclean li .countdown {
+		color:#000000;
+		font-size:48px;
+		position:absolute;
+		right:5px;
+		bottom:2px;
+	}
+
+	div.displayclean li .header {
+		color:#000000;
+		font-size:55px;
+		font-weight:bold;
+		padding-top:8px;
+		border-width-top:0;
+		display:block;
+		text-align:center;
+	}
+
+	div.displayclean li .head {
+		border-bottom-width:0;
+	}
+
+	div.displayclean li .countdown .delay {
+		font-size:38px;
+		color:#FF0000;
+		padding-right:7px;
+	}
+
+	div.displayclean li .time {
+		color:#000000;
+		font-size:24px;
+		position:absolute;
+		right:5px;
+		top:5px;
+	}
+
+	div.about {
+		font-family: Sans-Serif;
+		color: #666666;
+	}
+
+	div.about a {
+		color: #000066;
+		text-decoration: none;
+	}
+
+	div.error {
+		font-size: 150%;
+		font-weight: bold;
+		color: #ee0000;
+	}
+
+	pre {
+		margin-bottom: 2em;
+	}
+
+	span.optional,
+	span.notes {
+		color: #666666;
+	}
+
+	div.break {
+		heighT: 1em;
+	}
+
+	div.field {
+		width: 100%;
+		clear: both;
+	}
+
+	div.field div.desc {
+		float: left;
+		width: 14em;
+		text-align: right;
+		padding-right: 0.5em;
+	}
+
+	input, select {
+		border: 1px solid black;
+	}
+
+	div.notes {
+		margin-top: 4em;
+	}
+
+	div.notes ul {
+		margin-top: 1em;
+	}
+
+	</style>
+</head>
+<body>
+
+% if (my $error = stash 'error') {
+<div class="error">Received an error from the backend service:</div>
+<div>
+<pre>
+%= $error
+</pre>
+</div>
+% }
+
+<div class="displayclean">
+<ul>
+% for my $departure (@{$raw}) {
+% my $linetype = q{};
+% given ($departure->type) {
+%   when ($_ =~ m{enbahn$}) { $linetype = 'tram' }
+%   when ('S-Bahn')       { $linetype = 'sbahn' }
+%   when ([qw[NE Niederflurbus SB]]) { $linetype = 'bus' }
+%   when ('U-Bahn')       { $linetype = 'ubahn' }
+% }
+<li>
+<span class="line <%= $linetype %>">
+%= $departure->line
+</span>
+<span class="route">
+%= $departure->lineref->route
+</span>
+<span class="dest">
+%= $departure->destination
+</span>
+<span class="countdown">
+% if ($departure->is_cancelled) {
+<span class="delay"> FÄLLT AUS </span>
+% }
+% if ($departure->delay) {
+<span class="delay"> (+<%= $departure->delay %>) </span>
+% }
+</span>
+<span class="time">
+%= $departure->time
+</span>
+</li>
+% }
+</ul>
+</div>
+
+<div class="about">
+<a href="http://finalrewind.org/projects/db-fakedisplay/">db-fakedisplay</a>
+v<%= $version %>
+</div>
+
+</body>
+</html>
