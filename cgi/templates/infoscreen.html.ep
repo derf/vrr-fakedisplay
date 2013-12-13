@@ -223,11 +223,14 @@
 %= $departure->destination
 </span>
 <span class="countdown">
+% if ($departure->delay) {
+<span class="delay"> (+<%= $departure->delay %>) </span>
+% }
 % if ($departure->is_cancelled) {
 <span class="delay"> FÄLLT AUS </span>
 % }
-% if ($departure->delay) {
-<span class="delay"> (+<%= $departure->delay %>) </span>
+% else {
+<%= $departure->countdown %> min
 % }
 </span>
 <span class="time">
