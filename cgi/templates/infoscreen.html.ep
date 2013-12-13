@@ -20,7 +20,6 @@
 		left:5px;
 		border-width:1px 2px;
 		width:100%;
-		height:499px;
 	}
 
 	div.displayclean ul {
@@ -33,20 +32,19 @@
 		list-style-type:none;
 		margin:0;
 		padding:0;
-		border-width:1px 0 25px;
-		border-style:solid;
-		border-color:#CCCCCC;
+		border-bottom: 1px solid #cccccc;
 	}
 
 	div.displayclean li {
-		height:70px;
+		height: 7em;
 		background-color:#F8F8F8;
-		padding:5px;
 		display:block;
+		padding-bottom: 5px;
+		padding-top: 5px;
 		border-width:1px 0;
 		border-style:solid;
 		border-color:#CCCCCC;
-		width:95%;
+		width:100%;
 		position:relative;
 	}
 
@@ -54,11 +52,11 @@
 		color:#FFFFFF;
 		background-color:#666666;
 		font-weight:bold;
-		font-size:2.3vw;
+		font-size: 3em;
 		padding:3px 8px 2px 5px;
 		position:absolute;
 		top:7px;
-		left:1%;
+		left:2px;
 	}
 
 	div.displayclean li .tram {
@@ -85,24 +83,29 @@
 
 	div.displayclean li .route {
 		color:#444444;
-		font-size:1.575vw;
+		font-size:2.1em;
 		position:absolute;
 		top:5px;
-		left:10em;
+		left:4.8em;
+		height:1em;
+		width: 70%;
+		overflow: hidden;
 	}
 
 	div.displayclean li .dest {
 		color:#000000;
 		font-weight:bold;
-		font-size:3.45vw;
+		font-size:4em;
 		position:absolute;
-		top:23px;
-		left:4.5em;
+		top:0.8em;
+		left:2.5em;
+		width: 70%;
+		overflow: hidden;
 	}
 
 	div.displayclean li .countdown {
 		color:#000000;
-		font-size:3.5vw;
+		font-size:3em;
 		position:absolute;
 		right:5px;
 		bottom:2px;
@@ -110,7 +113,7 @@
 
 	div.displayclean li .header {
 		color:#000000;
-		font-size:4.125vw;
+		font-size:2em;
 		font-weight:bold;
 		padding-top:8px;
 		border-width-top:0;
@@ -123,14 +126,14 @@
 	}
 
 	div.displayclean li .countdown .delay {
-		font-size: 2.85vw;
+		font-size: 1em;
 		color:#FF0000;
 		padding-right:7px;
 	}
 
 	div.displayclean li .time {
 		color:#000000;
-		font-size: 1.7vw;
+		font-size: 2.4em;
 		position:absolute;
 		right:5px;
 		top:5px;
@@ -162,7 +165,7 @@
 	}
 
 	div.break {
-		heighT: 1em;
+		height: 1em;
 	}
 
 	div.field {
