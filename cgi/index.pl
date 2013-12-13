@@ -178,7 +178,8 @@ sub get_filtered_departures {
 
 		if (   ( @grep_line and not( any { $line =~ $_ } @grep_line ) )
 			or ( @grep_platform and not( $platform ~~ \@grep_platform ) )
-			or ( $line =~ m{ ^ (RB | RE | IC | EC) }x ) )
+			or ( $opt{hide_regional} and $line =~ m{ ^ (RB | RE | IC | EC) }x )
+		  )
 		{
 			next;
 		}
@@ -294,6 +295,7 @@ sub render_html {
 		backend         => scalar $self->param('backend'),
 		filter_line     => scalar $self->param('line'),
 		filter_platform => scalar $self->param('platform'),
+		hide_regional   => ( $template eq 'infoscreen' ? 0 : 1 ),
 	);
 
 	my @departures = make_infoboard_lines(
@@ -332,9 +334,10 @@ sub render_json {
 		city            => $self->stash('city'),
 		stop            => $self->stash('stop'),
 		backend         => scalar $self->param('backend'),
+		cache_expiry    => 60,
 		filter_line     => scalar $self->param('line'),
 		filter_platform => scalar $self->param('platform'),
-		cache_expiry    => 60,
+		hide_regional   => 1,
 	);
 	my @departures = make_infoboard_lines(
 		no_lines  => scalar $self->param('no_lines'),
@@ -373,6 +376,7 @@ sub render_image {
 		backend         => scalar $self->param('backend'),
 		filter_line     => scalar $self->param('line'),
 		filter_platform => scalar $self->param('platform'),
+		hide_regional   => 0,
 	);
 
 	my @departures = make_infoboard_lines(

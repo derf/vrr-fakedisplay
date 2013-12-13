@@ -54,7 +54,7 @@
 		color:#FFFFFF;
 		background-color:#666666;
 		font-weight:bold;
-		font-size:28px;
+		font-size:2.3vw;
 		padding:3px 8px 2px 5px;
 		position:absolute;
 		top:7px;
@@ -85,7 +85,7 @@
 
 	div.displayclean li .route {
 		color:#444444;
-		font-size:21px;
+		font-size:1.575vw;
 		position:absolute;
 		top:5px;
 		left:10em;
@@ -94,7 +94,7 @@
 	div.displayclean li .dest {
 		color:#000000;
 		font-weight:bold;
-		font-size:46px;
+		font-size:3.45vw;
 		position:absolute;
 		top:23px;
 		left:4.5em;
@@ -102,7 +102,7 @@
 
 	div.displayclean li .countdown {
 		color:#000000;
-		font-size:48px;
+		font-size:3.5vw;
 		position:absolute;
 		right:5px;
 		bottom:2px;
@@ -110,7 +110,7 @@
 
 	div.displayclean li .header {
 		color:#000000;
-		font-size:55px;
+		font-size:4.125vw;
 		font-weight:bold;
 		padding-top:8px;
 		border-width-top:0;
@@ -123,14 +123,14 @@
 	}
 
 	div.displayclean li .countdown .delay {
-		font-size:38px;
+		font-size: 2.85vw;
 		color:#FF0000;
 		padding-right:7px;
 	}
 
 	div.displayclean li .time {
 		color:#000000;
-		font-size:24px;
+		font-size: 1.7vw;
 		position:absolute;
 		right:5px;
 		top:5px;
@@ -217,7 +217,9 @@
 %= $departure->line
 </span>
 <span class="route">
+% if ($departure->lineref) {
 %= $departure->lineref->route
+% }
 </span>
 <span class="dest">
 %= $departure->destination
