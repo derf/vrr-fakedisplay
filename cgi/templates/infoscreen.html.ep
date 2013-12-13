@@ -209,7 +209,7 @@
 % given ($departure->type) {
 %   when ($_ =~ m{enbahn$}) { $linetype = 'tram' }
 %   when ('S-Bahn')       { $linetype = 'sbahn' }
-%   when ([qw[NE Niederflurbus SB]]) { $linetype = 'bus' }
+%   when ([qw[NE Niederflurbus SB Bus]]) { $linetype = 'bus' }
 %   when ('U-Bahn')       { $linetype = 'ubahn' }
 % }
 <li>
