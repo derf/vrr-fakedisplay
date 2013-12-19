@@ -88,6 +88,15 @@ id="display" height="<%= $height * 4 %>" width="<%= $width * 4 %>"/>
 <iframe src="/<%= $city %>/<%= $stop %>.html?<%= $params %>" id="display"
 height="<%= $height * 5 %>" width="<%= $width * 5 %>"></iframe>
 % }
+% elsif ($frontend eq 'infoscreen') {
+<p>
+<a href="/<%= $city %>/<%= $stop %>.html?<%= $params %>&amp;template=infoscreen">Infoscreen for
+<%= $city %> <%= $stop %></a>
+</p>
+Preview:<br/>
+<iframe src="/<%= $city %>/<%= $stop %>.html?<%= $params %>&amp;template=infoscreen" id="display"
+height="<%= $height * 5 %>" width="<%= $width * 5 %>"></iframe>
+% }
 % elsif ($frontend eq 'json') {
 <p>
 <a href="/<%= $city %>/<%= $stop %>.json?<%= $params %>">JSON data for
@@ -190,7 +199,7 @@ other German transit networks.
   <div class="field">
     <div class="desc">frontend</div>
     <div>
-      %= select_field frontend => [['Image (PNG)' => 'png'], ['HTML' => 'html'], ['JSON' => 'json']]
+      %= select_field frontend => [['Image (PNG)' => 'png'], ['HTML' => 'html'], ['Infoscreen' => 'infoscreen'], ['JSON' => 'json']]
     </div>
   </div>
 </div>
