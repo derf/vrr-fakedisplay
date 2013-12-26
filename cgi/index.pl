@@ -228,8 +228,8 @@ sub make_infoboard_lines {
 		  // $strp_simple->parse_datetime($time);
 		my $dt;
 
-		if ( ( $displayed_lines >= $no_lines )
-			or $d->is_cancelled )
+		if (   ( $displayed_lines >= $no_lines )
+			or ( $d->can('is_cancelled') and $d->is_cancelled ) )
 		{
 			next;
 		}
