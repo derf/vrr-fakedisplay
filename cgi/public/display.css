@@ -1,0 +1,47 @@
+@font-face {
+	font-family: VRRR;
+	src: url('/VRRR.ttf');
+}
+
+body {
+	font-family: VRRR;
+	background-color: #000000;
+}
+
+div.outer {
+	width: 12em;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+div.row {
+	position: relative;
+	margin-bottom: 0;
+	margin-top: 0;
+	padding-bottom: 0;
+	padding-top: 0;
+	width: 12em;
+	height: 0.68em;
+}
+
+div.row div {
+	overflow: hidden;
+	position: absolute;
+	height: 100%;
+}
+
+div.line {
+	left: 0;
+	width: 13%;
+}
+
+div.dest {
+	left: 14%;
+	width: 67%;
+}
+
+div.time {
+	right: 0;
+	width: 19%;
+	text-align: right;
+}
