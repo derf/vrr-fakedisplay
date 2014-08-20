@@ -5,6 +5,7 @@
 	<meta charset="utf-8">
 	%= stylesheet '/main.css'
 	%= javascript '/jquery-2.1.1.min.js'
+	%= javascript '/image.js'
 </head>
 <body>
 
@@ -164,17 +165,5 @@ shorten destination names</li>
 v<%= $version %>
 </div>
 
-%= javascript begin
-function reloadDisplay() {
-	d = new Date();
-	$("#display").attr("src", "../<%= $city %>/<%= $stop %>.<%= $frontend %>?<%= $params %>&r="+d.getTime())
-	setTimeout('reloadDisplay()', 60000);
-}
-
-setTimeout('reloadDisplay()', 60000);
-% end
-
 </body>
-
-
 </html>
