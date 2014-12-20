@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>vrr-fakedisplay</title>
+	<meta charset="utf-8">
+	%= stylesheet '/main.css'
+</head>
+<body>
+
+<div class="error">404 Not Found</div>
+<div>
+<pre>
+The requested URL does not exist and does not map to a public transit station.
+</pre>
+</div>
+<div>
+<a href="/">return to main page</a>
+</div>
+</body>
+</html>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>vrr-fakedisplay</title>
+	<meta charset="utf-8">
+	%= stylesheet '/main.css'
+</head>
+<body>
+
+<div class="error">500 Internal Server Error</div>
+<div>
+<pre>
+An error occured while processing your request.
+
+----------[Debug start]----------
+%= $exception->message
+Stash:
+%= dumper $snapshot
+----------[Debug end]----------
+</pre>
+</div>
+<div>
+<a href="/">return to main page</a>
+</div>
+</body>
+</html>
