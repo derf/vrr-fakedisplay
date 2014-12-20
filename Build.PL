@@ -29,6 +29,6 @@ Module::Build->new(
 		'Travel::Status::DE::VRR' => 1.04,
 	},
 	sign => 1,
-	dist_version_from => 'cgi/index.pl',
+	dist_version_from => 'index.pl',
 
 )->create_build_script();
