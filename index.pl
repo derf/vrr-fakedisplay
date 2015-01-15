@@ -78,14 +78,15 @@ sub get_results {
 
 sub handle_request {
 	my $self = shift;
-	my $city = $self->stash('city');
+	my $city = $self->stash('city') // q{};
 	my $stop = $self->stash('stop');
 
 	my $no_lines = $self->param('no_lines');
 	my $frontend = $self->param('frontend') // 'png';
+	my $backend  = $self->param('backend') // $default{backend};
 	my $errstr;
 
-	if ( $city and $stop ) {
+	if ( ( $city and $stop ) or ( $backend eq 'aseag' and $stop ) ) {
 		( undef, $errstr )
 		  = get_results( $self->param('backend') // $default{backend},
 			$city, $stop );
@@ -109,7 +110,7 @@ sub handle_request {
 		version  => $VERSION,
 		frontend => $frontend,
 		errstr   => $errstr,
-		title    => $city
+		title    => $stop
 		? "departures for ${city} ${stop}"
 		: "vrr-fakedisplay ${VERSION}",
 	);
@@ -296,8 +297,8 @@ sub render_html {
 	my $template = $self->param('template') || 'display';
 
 	my ( $raw_departures, $errstr ) = get_filtered_departures(
-		city            => $self->stash('city'),
-		stop            => $self->stash('stop'),
+		city => $self->stash('city') // q{},
+		stop => $self->stash('stop'),
 		backend         => scalar $self->param('backend'),
 		filter_line     => scalar $self->param('line'),
 		filter_platform => scalar $self->param('platform'),
@@ -305,8 +306,8 @@ sub render_html {
 	);
 
 	my @departures = make_infoboard_lines(
-		city      => $self->stash('city'),
-		stop      => $self->stash('stop'),
+		city => $self->stash('city') // q{},
+		stop => $self->stash('stop'),
 		backend   => scalar $self->param('backend'),
 		no_lines  => scalar $self->param('no_lines'),
 		offset    => scalar $self->param('offset'),
@@ -337,8 +338,8 @@ sub render_json {
 	my $self = shift;
 
 	my ( $raw_departures, $errstr ) = get_filtered_departures(
-		city            => $self->stash('city'),
-		stop            => $self->stash('stop'),
+		city => $self->stash('city') // q{},
+		stop => $self->stash('stop'),
 		backend         => scalar $self->param('backend'),
 		cache_expiry    => 60,
 		filter_line     => scalar $self->param('line'),
@@ -377,8 +378,8 @@ sub render_image {
 	my $scale = $self->param('scale');
 
 	my ( $raw_departures, $errstr ) = get_filtered_departures(
-		city            => $self->stash('city'),
-		stop            => $self->stash('stop'),
+		city => $self->stash('city') // q{},
+		stop => $self->stash('stop'),
 		backend         => scalar $self->param('backend'),
 		filter_line     => scalar $self->param('line'),
 		filter_platform => scalar $self->param('platform'),
@@ -386,8 +387,8 @@ sub render_image {
 	);
 
 	my @departures = make_infoboard_lines(
-		city      => $self->stash('city'),
-		stop      => $self->stash('stop'),
+		city => $self->stash('city') // q{},
+		stop => $self->stash('stop'),
 		backend   => scalar $self->param('backend'),
 		no_lines  => scalar $self->param('no_lines'),
 		offset    => scalar $self->param('offset'),
@@ -454,7 +455,7 @@ sub render_image {
 
 get '/_redirect' => sub {
 	my $self = shift;
-	my $city = $self->param('city');
+	my $city = $self->param('city') // q{};
 	my $stop = $self->param('stop');
 
 	my $params = $self->req->params;
@@ -472,7 +473,12 @@ get '/_redirect' => sub {
 
 	my $params_s = $params->to_string;
 
-	$self->redirect_to("/${city}/${stop}?${params_s}");
+	if ($city) {
+		$self->redirect_to("/${city}/${stop}?${params_s}");
+	}
+	else {
+		$self->redirect_to("/${stop}?${params_s}");
+	}
 
 	return;
 };
@@ -482,6 +488,10 @@ get '/:city/(:stop).html' => \&render_html;
 get '/:city/(:stop).json' => \&render_json;
 get '/:city/(:stop).png'  => \&render_image;
 get '/:city/:stop'        => \&handle_request;
+get '/(:stop).html'       => \&render_html;
+get '/(:stop).json'       => \&render_json;
+get '/(:stop).png'        => \&render_image;
+get '/:stop'              => \&handle_request;
 
 app->config(
 	hypnotoad => {

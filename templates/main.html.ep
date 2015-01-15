@@ -9,7 +9,7 @@
 </head>
 <body>
 
-% if ($city and $stop) {
+% if ($stop) {
 % if ($errstr) {
 <div class="error">Received an error from the backend service:</div>
 <div>
@@ -19,25 +19,25 @@
 </div>
 % }
 % elsif ($frontend eq 'png') {
-<img src="/<%= $city %>/<%= $stop %>.png?<%= $params %>" alt=""
+<img src="/<%= $city ? "$city/" : q{} %><%= $stop %>.png?<%= $params %>" alt=""
 id="display" height="<%= $height * 4 %>" width="<%= $width * 4 %>"/>
 % }
 % elsif ($frontend eq 'html') {
-<iframe src="/<%= $city %>/<%= $stop %>.html?<%= $params %>" id="display"
+<iframe src="/<%= $city ? "$city/" : q{} %><%= $stop %>.html?<%= $params %>" id="display"
 height="<%= $height * 5 %>" width="<%= $width * 5 %>"></iframe>
 % }
 % elsif ($frontend eq 'infoscreen') {
 <p>
-<a href="/<%= $city %>/<%= $stop %>.html?<%= $params %>&amp;template=infoscreen">Infoscreen for
+<a href="/<%= $city ? "$city/" : q{} %><%= $stop %>.html?<%= $params %>&amp;template=infoscreen">Infoscreen for
 <%= $city %> <%= $stop %></a>
 </p>
 Preview:<br/>
-<iframe src="/<%= $city %>/<%= $stop %>.html?<%= $params %>&amp;template=infoscreen" id="display"
+<iframe src="/<%= $city ? "$city/" : q{} %><%= $stop %>.html?<%= $params %>&amp;template=infoscreen" id="display"
 height="<%= $height * 5 %>" width="<%= $width * 5 %>"></iframe>
 % }
 % elsif ($frontend eq 'json') {
 <p>
-<a href="/<%= $city %>/<%= $stop %>.json?<%= $params %>">JSON data for
+<a href="/<%= $city ? "$city/" : q{} %><%= $stop %>.json?<%= $params %>">JSON data for
 <%= $city %> <%= $stop %></a>
 </p>
 <p>
