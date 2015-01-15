@@ -131,7 +131,7 @@ other German transit networks.
   <div class="field">
     <div class="desc">backend</div>
     <div>
-      %= select_field backend => [['EFA (VRR)' => 'vrr'], ['HAFAS (DB)' => 'db']]
+      %= select_field backend => [['EFA / VRR' => 'vrr'], ['DB (HAFAS)' => 'db'], ['ASEAG (URA)' => 'aseag']]
     </div>
   </div>
   <div class="field">

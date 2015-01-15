@@ -9,6 +9,7 @@ use List::MoreUtils qw(any);
 
 use App::VRR::Fakedisplay;
 use Travel::Status::DE::DeutscheBahn;
+use Travel::Status::DE::ASEAG;
 use Travel::Status::DE::VRR;
 
 no warnings 'uninitialized';
@@ -55,6 +56,11 @@ sub get_results {
 					u     => 1,
 					tram  => 1,
 				},
+			);
+		}
+		elsif ( $backend eq 'aseag' ) {
+			$status = Travel::Status::DE::ASEAG->new(
+				stop => ( $city ? "${city} ${stop}" : $stop ),
 			);
 		}
 		else {
@@ -170,8 +176,9 @@ sub get_filtered_departures {
 
 	for my $d ( @{$results} ) {
 
-		my $line        = $d->line;
-		my $platform    = ( split( qr{ }, $d->platform ) )[-1];
+		my $line = $d->line;
+		my $platform
+		  = $d->can('platform') ? ( split( qr{ }, $d->platform ) )[-1] : q{};
 		my $destination = $d->destination;
 		my $time        = $d->time;
 		my $etr;
@@ -219,7 +226,6 @@ sub make_infoboard_lines {
 	for my $d ( @{$results} ) {
 
 		my $line        = $d->line;
-		my $platform    = ( split( qr{ }, $d->platform ) )[-1];
 		my $destination = $d->destination;
 		my $time        = $d->time;
 		my $etr;
@@ -471,11 +477,11 @@ get '/_redirect' => sub {
 	return;
 };
 
-get '/'                 => \&handle_request;
+get '/'                   => \&handle_request;
 get '/:city/(:stop).html' => \&render_html;
 get '/:city/(:stop).json' => \&render_json;
 get '/:city/(:stop).png'  => \&render_image;
-get '/:city/:stop'      => \&handle_request;
+get '/:city/:stop'        => \&handle_request;
 
 app->config(
 	hypnotoad => {

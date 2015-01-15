@@ -25,18 +25,20 @@
 <ul>
 % for my $departure (@{$raw}) {
 % my $linetype = q{};
-% given ($departure->type) {
-%   when ($_ =~ m{enbahn$}) { $linetype = 'tram' }
-%   when ('S-Bahn')       { $linetype = 'sbahn' }
-%   when ([qw[NE Niederflurbus SB Bus]]) { $linetype = 'bus' }
-%   when ('U-Bahn')       { $linetype = 'ubahn' }
+% if ($departure->can('type')) {
+%   given ($departure->type) {
+%     when ($_ =~ m{enbahn$}) { $linetype = 'tram' }
+%     when ('S-Bahn')       { $linetype = 'sbahn' }
+%     when ([qw[NE Niederflurbus SB Bus]]) { $linetype = 'bus' }
+%     when ('U-Bahn')       { $linetype = 'ubahn' }
+%   }
 % }
 <li>
 <span class="line <%= $linetype %>">
 %= $departure->line
 </span>
 <span class="route">
-% if ($departure->lineref) {
+% if ($departure->can('lineref') and $departure->lineref) {
 %= $departure->lineref->route
 % }
 </span>
@@ -44,10 +46,10 @@
 %= $departure->destination
 </span>
 <span class="countdown">
-% if ($departure->delay) {
+% if ($departure->can('delay') and $departure->delay) {
 <span class="delay"> (+<%= $departure->delay %>) </span>
 % }
-% if ($departure->is_cancelled) {
+% if ($departure->can('is_cancelled') and $departure->is_cancelled) {
 <span class="delay"> FÄLLT AUS </span>
 % }
 % else {
