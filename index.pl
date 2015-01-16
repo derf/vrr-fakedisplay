@@ -34,6 +34,7 @@ sub get_results {
 	my $cache = Cache::File->new(
 		cache_root      => '/tmp/vrr-fake',
 		default_expires => "${expiry} sec",
+		lock_level      => Cache::File::LOCK_LOCAL(),
 	);
 
 	my $sstr = ("${backend} _ ${stop} _ ${city}");
