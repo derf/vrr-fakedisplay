@@ -41,6 +41,13 @@
 % if ($departure->can('lineref') and $departure->lineref) {
 %= $departure->lineref->route
 % }
+% elsif ($departure->can('route_timetable')) {
+% my @first_deps = ($departure->route_timetable)[0..2];
+% delete $first_deps[2] unless defined $first_deps[2];
+% delete $first_deps[1] unless defined $first_deps[1];
+% delete $first_deps[0] unless defined $first_deps[0];
+%= join(' - ', map { $_->[1] } @first_deps );
+% }
 </span>
 <span class="dest">
 %= $departure->destination
