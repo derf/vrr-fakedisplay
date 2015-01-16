@@ -60,7 +60,12 @@
 <span class="delay"> FÄLLT AUS </span>
 % }
 % else {
+% if ($departure->countdown > 0) {
 <%= $departure->countdown %> min
+% }
+% else {
+sofort
+% }
 % }
 </span>
 <span class="time">
