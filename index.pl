@@ -232,10 +232,16 @@ sub make_infoboard_lines {
 		my $destination = $d->destination;
 		my $time        = $d->time;
 		my $etr;
-
-		my $dt_dep = $strp_full->parse_datetime($time)
-		  // $strp_simple->parse_datetime($time);
+		my $dt_dep;
 		my $dt;
+
+		if ( $d->can('datetime') ) {
+			$dt_dep = $d->datetime;
+		}
+		else {
+			$dt_dep = $strp_full->parse_datetime($time)
+			  // $strp_simple->parse_datetime($time);
+		}
 
 		if (   ( $displayed_lines >= $no_lines )
 			or ( $d->can('is_cancelled') and $d->is_cancelled ) )
