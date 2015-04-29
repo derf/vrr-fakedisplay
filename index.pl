@@ -68,7 +68,8 @@ sub get_results {
 		else {
 			$status = Travel::Status::DE::VRR->new(
 				place => $city,
-				name  => $stop
+				name  => $stop,
+				timeout => 3,
 			);
 		}
 		$results = [ [ $status->results ], $status->errstr ];
