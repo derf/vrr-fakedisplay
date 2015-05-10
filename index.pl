@@ -368,6 +368,7 @@ sub render_json {
 		}
 	}
 
+	$self->res->headers->access_control_allow_origin('*');
 	$self->render(
 		json => {
 			error        => $errstr,
