@@ -156,6 +156,8 @@ other German transit networks.
 <li>If you write the city correctly (like "Essen", not "essen"), vrr-fake can
 shorten destination names</li>
 <li><a href="/Essen/Martinstr?no_lines=8">Example</a>
+<li>See also <a href="http://dbf.finalrewind.org/">db-fakedisplay</a> for an
+interface optimized for Deutsche Bahn departure data</li>
 </li>
 </ul>
 </div> <!-- notes -->
