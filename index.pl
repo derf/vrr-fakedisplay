@@ -353,7 +353,7 @@ sub render_json {
 		cache_expiry    => 60,
 		filter_line     => scalar $self->param('line'),
 		filter_platform => scalar $self->param('platform'),
-		hide_regional   => 1,
+		hide_regional   => 0,
 	);
 	my @departures = make_infoboard_lines(
 		no_lines  => scalar $self->param('no_lines'),
