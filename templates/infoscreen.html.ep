@@ -38,7 +38,10 @@
     %= $departure->line
     </span> <!-- line -->
     <span class="route">
-%   if ($departure->can('lineref') and $departure->lineref) {
+%   if ($departure->can('route_interesting') and $departure->route_interesting) {
+%=    join(' - ', map { $_->{stop_suf} } ($departure->route_interesting));
+%   }
+%   elsif ($departure->can('lineref') and $departure->lineref) {
 %=    $departure->lineref->route
 %   }
 %   elsif ($departure->can('route_timetable')) {
