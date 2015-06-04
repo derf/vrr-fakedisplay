@@ -11,12 +11,10 @@ div.displayclean {
 	width:100%;
 }
 
-div.displayclean ul {
+div.displayclean > ul {
 	position:absolute;
 	width:100%;
 	background-color:#F8F8F8;
-	top: -3px;
-	left: 0;
 
 	list-style-type:none;
 	margin:0;
@@ -24,12 +22,10 @@ div.displayclean ul {
 	border-bottom: 1px solid #cccccc;
 }
 
-div.displayclean li {
+div.displayclean > ul > li {
 	height: 7em;
 	background-color:#F8F8F8;
 	display:block;
-	padding-bottom: 5px;
-	padding-top: 5px;
 	border-width:1px 0;
 	border-style:solid;
 	border-color:#CCCCCC;
@@ -41,7 +37,7 @@ div.displayclean li .line {
 	color:#FFFFFF;
 	background-color:#666666;
 	font-weight:bold;
-	font-size: 3em;
+	font-size: 2.9em;
 	padding:3px 8px 2px 5px;
 	position:absolute;
 	top:7px;
@@ -83,13 +79,17 @@ div.displayclean li .route {
 
 div.displayclean li .dest {
 	color:#000000;
-	font-weight:bold;
 	font-size:4em;
 	position:absolute;
-	top:0.8em;
+	top:0.65em;
 	left:2.5em;
 	width: 70%;
+	z-index: 1;
 	overflow: hidden;
+}
+
+div.displayclean li.cancelled {
+	background-color: #ffe7d0;
 }
 
 div.displayclean li .countdown {
@@ -121,7 +121,7 @@ div.displayclean li .countdown .delay {
 }
 
 div.displayclean li .time {
-	color:#000000;
+	color:#444444;
 	font-size: 2.4em;
 	position:absolute;
 	right:5px;
