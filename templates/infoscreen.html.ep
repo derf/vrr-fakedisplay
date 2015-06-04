@@ -76,10 +76,5 @@ sofort
 </ul>
 </div>
 
-<div class="about">
-<a href="http://finalrewind.org/projects/db-fakedisplay/">db-fakedisplay</a>
-v<%= $version %>
-</div>
-
 </body>
 </html>
