@@ -40,9 +40,9 @@ sub get_results {
 	my $sstr = ("${backend} _ ${stop} _ ${city}");
 	$sstr =~ tr{a-zA-Z0-9}{_}c;
 
-	my $results = $cache->thaw($sstr);
+	my $data = $cache->thaw($sstr);
 
-	if ( not $results ) {
+	if ( not $data ) {
 		my $status;
 		if ( $backend eq 'db' ) {
 			$status = Travel::Status::DE::DeutscheBahn->new(
@@ -73,11 +73,14 @@ sub get_results {
 				full_routes => 1,
 			);
 		}
-		$results = [ [ $status->results ], $status->errstr ];
-		$cache->freeze( $sstr, $results );
+		$data = {
+			results => [ $status->results ],
+			errstr  => $status->errstr
+		};
+		$cache->freeze( $sstr, $data );
 	}
 
-	return @{$results};
+	return $data;
 }
 
 sub handle_request {
@@ -91,9 +94,8 @@ sub handle_request {
 	my $errstr;
 
 	if ( ( $city and $stop ) or ( $backend eq 'aseag' and $stop ) ) {
-		( undef, $errstr )
-		  = get_results( $self->param('backend') // $default{backend},
-			$city, $stop );
+		$errstr = get_results( $self->param('backend') // $default{backend},
+			$city, $stop )->{errstr};
 	}
 
 	if ( not $no_lines or $no_lines < 1 or $no_lines > 40 ) {
@@ -167,9 +169,11 @@ sub get_filtered_departures {
 
 	my ( @grep_line, @grep_platform, @filtered_results );
 
-	my ( $results, $errstr )
-	  = get_results( $opt{backend}, $opt{city}, $opt{stop},
+	my $data = get_results( $opt{backend}, $opt{city}, $opt{stop},
 		$opt{cache_expiry} );
+
+	my $results = $data->{results};
+	my $errstr  = $data->{errstr};
 
 	if ( $opt{filter_line} ) {
 		my @lines = split( qr{,}, $opt{filter_line} );
