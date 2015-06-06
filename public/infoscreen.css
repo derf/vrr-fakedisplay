@@ -128,6 +128,53 @@ div.displayclean li .time {
 	top:5px;
 }
 
+div.displayclean li .moreinfo {
+	color:#000000;
+	font-size:2.1em;
+	position:fixed;
+	top:0em;
+	padding-top: 1em;
+	left:0em;
+	padding-left: 1em;
+	right:0em;
+	padding-right: 1em;
+	bottom:0em;
+	background-color: white;
+	z-index: 5;
+	display: none;
+	overflow: auto;
+}
+
+div.displayclean li .collapsed-moreinfo {
+	display: none;
+}
+
+div.displayclean li .expanded-moreinfo {
+	display: block;
+}
+
+div.displayclean li .moreinfo .mheader {
+	text-align: center;
+	background-color: #dddddd;
+	font-size: 120%;
+}
+
+div.displayclean li .moreinfo .mroute {
+	margin-bottom: 0.6em
+}
+
+div.displayclean li .moreinfo .mroute .separator {
+	color: #999999;
+}
+
+div.displayclean li .moreinfo .mroute .important-stop {
+	color: #000000;
+}
+
+div.displayclean li .moreinfo .mroute .generic-stop {
+	color: #555555;
+}
+
 div.about {
 	font-family: Sans-Serif;
 	color: #666666;

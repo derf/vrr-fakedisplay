@@ -9,6 +9,7 @@
 
 	%= stylesheet '/infoscreen.css'
 	%= javascript '/jquery-2.1.1.min.js'
+	%= javascript '/collapse.js'
 </head>
 <body>
 
@@ -37,6 +38,40 @@
     <span class="line <%= $linetype %>">
     %= $departure->line
     </span> <!-- line -->
+    <span class="moreinfo">
+    <div class="mheader">
+    <span class="train-line"><%= $departure->line %></span>
+    :
+    <span class="train-route">
+%   if ($departure->can('lineref') and $departure->lineref) {
+%=    $departure->lineref->route
+%   }
+%   elsif ($departure->can('route_pre') and $departure->can('route_post')) {
+%     if ($departure->route_pre) {
+%=      ($departure->route_pre)[0]->{stop}
+%     }
+%     if ($departure->route_post) {
+%       ($departure->route_post)[-1]->{stop}
+%     }
+%   }
+    </span> <!-- train-route -->
+    </div> <!-- mheader -->
+%   if ($departure->can('route_pre')) {
+      Fahrplan:
+      <ul>
+%     for my $stop ($departure->route_pre) {
+        <li><%= $stop->{dep_time} %> <%= $stop->{stop} %></li>
+%     }
+      </ul>
+%   }
+%   if ($departure->can('route_post')) {
+      <ul>
+%     for my $stop ($departure->route_post) {
+        <li><%= $stop->{arr_time} %> <%= $stop->{stop} %></li>
+%     }
+      </ul>
+%   }
+    </span> <!-- moreinfo -->
     <span class="route">
 %   if ($departure->can('route_interesting') and $departure->route_interesting) {
 %=    join(' - ', map { $_->{stop_suf} } ($departure->route_interesting));
