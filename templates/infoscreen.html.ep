@@ -58,18 +58,18 @@
     </div> <!-- mheader -->
 %   if ($departure->can('route_pre')) {
       Fahrplan:
-      <ul>
+      <table class="scheduled">
 %     for my $stop ($departure->route_pre) {
-        <li><%= $stop->{dep_time} %> <%= $stop->{stop} %></li>
+        <tr><td class="time"><%= $stop->{dep_time} %></td>
+        <td class="stop"><%= $stop->{stop} %></td></tr>
 %     }
-      </ul>
-%   }
-%   if ($departure->can('route_post')) {
-      <ul>
+      <tr><td class="time"></td>
+      <td class="stop"><%= $id_name %> <%= $id_stop %></td></tr>
 %     for my $stop ($departure->route_post) {
-        <li><%= $stop->{arr_time} %> <%= $stop->{stop} %></li>
+        <tr><td class="time"><%= $stop->{arr_time} %></td>
+        <td class="stop"><%= $stop->{stop} %></td></tr>
 %     }
-      </ul>
+      </table>
 %   }
     </span> <!-- moreinfo -->
     <span class="route">

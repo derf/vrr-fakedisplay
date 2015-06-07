@@ -5,6 +5,7 @@ use utf8;
 
 use DateTime;
 use DateTime::Format::Strptime;
+use Encode qw(decode);
 use List::MoreUtils qw(any);
 
 use App::VRR::Fakedisplay;
@@ -75,8 +76,11 @@ sub get_results {
 		}
 		$data = {
 			results => [ $status->results ],
-			errstr  => $status->errstr
+			errstr  => $status->errstr,
 		};
+		if ( $status->can('identified_data') ) {
+			( $data->{id_name}, $data->{id_stop} ) = $status->identified_data;
+		}
 		$cache->freeze( $sstr, $data );
 	}
 
@@ -173,7 +177,6 @@ sub get_filtered_departures {
 		$opt{cache_expiry} );
 
 	my $results = $data->{results};
-	my $errstr  = $data->{errstr};
 
 	if ( $opt{filter_line} ) {
 		my @lines = split( qr{,}, $opt{filter_line} );
@@ -203,7 +206,9 @@ sub get_filtered_departures {
 		push( @filtered_results, $d );
 	}
 
-	return ( \@filtered_results, $errstr );
+	$data->{filtered_results} = \@filtered_results;
+
+	return $data;
 }
 
 sub make_infoboard_lines {
@@ -310,7 +315,7 @@ sub render_html {
 	my $color    = $self->param('color') || '255,208,0';
 	my $template = $self->param('template') || 'display';
 
-	my ( $raw_departures, $errstr ) = get_filtered_departures(
+	my $data = get_filtered_departures(
 		city => $self->stash('city') // q{},
 		stop => $self->stash('stop'),
 		backend         => scalar $self->param('backend'),
@@ -326,7 +331,7 @@ sub render_html {
 		no_lines  => scalar $self->param('no_lines'),
 		offset    => scalar $self->param('offset'),
 		want_crop => scalar $self->param('want_crop'),
-		data      => $raw_departures
+		data      => $data->{filtered_results},
 	);
 
 	for my $d (@departures) {
@@ -340,7 +345,9 @@ sub render_html {
 		title      => "vrr-fakedisplay v${VERSION}",
 		color      => [ split( qr{,}, $color ) ],
 		departures => \@departures,
-		raw        => $raw_departures,
+		id_name    => decode( 'UTF-8', $data->{id_name} ),
+		id_stop    => decode( 'UTF-8', $data->{id_stop} ),
+		raw        => $data->{filtered_results},
 		scale      => $self->param('scale') || '4.3',
 		version    => $VERSION,
 	);
@@ -351,7 +358,7 @@ sub render_html {
 sub render_json {
 	my $self = shift;
 
-	my ( $raw_departures, $errstr ) = get_filtered_departures(
+	my $data = get_filtered_departures(
 		city => $self->stash('city') // q{},
 		stop => $self->stash('stop'),
 		backend         => scalar $self->param('backend'),
@@ -360,7 +367,9 @@ sub render_json {
 		filter_platform => scalar $self->param('platform'),
 		hide_regional   => 0,
 	);
-	my @departures = make_infoboard_lines(
+	my $raw_departures = $data->{filtered_results};
+	my $errstr         = $data->{errstr};
+	my @departures     = make_infoboard_lines(
 		no_lines  => scalar $self->param('no_lines'),
 		offset    => scalar $self->param('offset'),
 		want_crop => scalar $self->param('want_crop'),
@@ -392,7 +401,7 @@ sub render_image {
 	my $color = $self->param('color') || '255,208,0';
 	my $scale = $self->param('scale');
 
-	my ( $raw_departures, $errstr ) = get_filtered_departures(
+	my $data = get_filtered_departures(
 		city => $self->stash('city') // q{},
 		stop => $self->stash('stop'),
 		backend         => scalar $self->param('backend'),
@@ -400,6 +409,8 @@ sub render_image {
 		filter_platform => scalar $self->param('platform'),
 		hide_regional   => 0,
 	);
+	my $raw_departures = $data->{filtered_results};
+	my $errstr         = $data->{errstr};
 
 	my @departures = make_infoboard_lines(
 		city => $self->stash('city') // q{},
