@@ -60,13 +60,39 @@
       Fahrplan:
       <table class="scheduled">
 %     for my $stop ($departure->route_pre) {
-        <tr><td class="time"><%= $stop->{dep_time} %></td>
+        <tr class="routepre"><td class="time">
+%       if (not defined $stop->{arr_time}) {
+          <%= $stop->{dep_time} %>
+%       }
+%       elsif (not defined $stop->{dep_time}) {
+          <%= $stop->{arr_time} %>
+%       }
+%       elsif ( $stop->{arr_time} eq $stop->{dep_time} ) {
+          <%= $stop->{dep_time} %>
+%       }
+%       else {
+          <%= $stop->{arr_time} %> → <%= $stop->{dep_time} %>
+%       }
+        </td>
         <td class="stop"><%= $stop->{stop} %></td></tr>
 %     }
-      <tr><td class="time"></td>
+      <tr class="routenow"><td class="time"><%= $departure->time %></td>
       <td class="stop"><%= $id_name %> <%= $id_stop %></td></tr>
 %     for my $stop ($departure->route_post) {
-        <tr><td class="time"><%= $stop->{arr_time} %></td>
+        <tr class="routepost"><td class="time">
+%       if (not defined $stop->{arr_time}) {
+          <%= $stop->{dep_time} %>
+%       }
+%       elsif (not defined $stop->{dep_time}) {
+          <%= $stop->{arr_time} %>
+%       }
+%       elsif ( $stop->{arr_time} eq $stop->{dep_time} ) {
+          <%= $stop->{dep_time} %>
+%       }
+%       else {
+          <%= $stop->{arr_time} %> → <%= $stop->{dep_time} %>
+%       }
+        </td>
         <td class="stop"><%= $stop->{stop} %></td></tr>
 %     }
       </table>

@@ -159,6 +159,20 @@ div.displayclean li .moreinfo .mheader {
 	font-size: 120%;
 }
 
+div.displayclean li .moreinfo tr.routepre {
+	background-color: #dddddd;
+}
+div.displayclean li .moreinfo tr.routenow {
+	background-color: #eeeeee;
+}
+div.displayclean li .moreinfo tr.routepost {
+}
+
+div.displayclean li .moreinfo td.time {
+	text-align: center;
+	margin-right: 0.5em;
+}
+
 div.displayclean li .moreinfo .mroute {
 	margin-bottom: 0.6em
 }
