@@ -48,10 +48,10 @@
 %   }
 %   elsif ($departure->can('route_pre') and $departure->can('route_post')) {
 %     if ($departure->route_pre) {
-%=      ($departure->route_pre)[0]->{stop}
+%=      ($departure->route_pre)[0]->name
 %     }
 %     if ($departure->route_post) {
-%       ($departure->route_post)[-1]->{stop}
+%       ($departure->route_post)[-1]->name
 %     }
 %   }
     </span> <!-- train-route -->
@@ -61,46 +61,46 @@
       <table class="scheduled">
 %     for my $stop ($departure->route_pre) {
         <tr class="routepre"><td class="time">
-%       if (not defined $stop->{arr_time}) {
-          <%= $stop->{dep_time} %>
+%       if (not defined $stop->arr_time) {
+          <%= $stop->dep_time %>
 %       }
-%       elsif (not defined $stop->{dep_time}) {
-          <%= $stop->{arr_time} %>
+%       elsif (not defined $stop->dep_time) {
+          <%= $stop->arr_time %>
 %       }
-%       elsif ( $stop->{arr_time} eq $stop->{dep_time} ) {
-          <%= $stop->{dep_time} %>
+%       elsif ( $stop->arr_time eq $stop->dep_time ) {
+          <%= $stop->dep_time %>
 %       }
 %       else {
-          <%= $stop->{arr_time} %> → <%= $stop->{dep_time} %>
+          <%= $stop->arr_time %> → <%= $stop->dep_time %>
 %       }
         </td>
-        <td class="stop"><%= $stop->{stop} %></td></tr>
+        <td class="stop"><%= $stop->name %></td></tr>
 %     }
       <tr class="routenow"><td class="time"><%= $departure->time %></td>
       <td class="stop"><%= $id_name %> <%= $id_stop %></td></tr>
 %     for my $stop ($departure->route_post) {
         <tr class="routepost"><td class="time">
-%       if (not defined $stop->{arr_time}) {
-          <%= $stop->{dep_time} %>
+%       if (not defined $stop->arr_time) {
+          <%= $stop->dep_time %>
 %       }
-%       elsif (not defined $stop->{dep_time}) {
-          <%= $stop->{arr_time} %>
+%       elsif (not defined $stop->dep_time) {
+          <%= $stop->arr_time %>
 %       }
-%       elsif ( $stop->{arr_time} eq $stop->{dep_time} ) {
-          <%= $stop->{dep_time} %>
+%       elsif ( $stop->arr_time eq $stop->dep_time ) {
+          <%= $stop->dep_time %>
 %       }
 %       else {
-          <%= $stop->{arr_time} %> → <%= $stop->{dep_time} %>
+          <%= $stop->arr_time %> → <%= $stop->dep_time %>
 %       }
         </td>
-        <td class="stop"><%= $stop->{stop} %></td></tr>
+        <td class="stop"><%= $stop->name %></td></tr>
 %     }
       </table>
 %   }
     </span> <!-- moreinfo -->
     <span class="route">
 %   if ($departure->can('route_interesting') and $departure->route_interesting) {
-%=    join(' - ', map { $_->{stop_suf} } ($departure->route_interesting));
+%=    join(' - ', map { $_->name_suf } ($departure->route_interesting));
 %   }
 %   elsif ($departure->can('lineref') and $departure->lineref) {
 %=    $departure->lineref->route
