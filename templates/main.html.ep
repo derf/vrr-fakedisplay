@@ -41,7 +41,7 @@ height="<%= $height * 5 %>" width="<%= $width * 5 %>"></iframe>
 <%= $city %> <%= $stop %></a>
 </p>
 <p>
-Data is cached for 1 minute: JSON format:
+Data is cached for 1 minute. JSON format:
 </p>
 <ul>
 <li>error: err string if an error occured, otherwise null</li>
@@ -52,6 +52,13 @@ serialized
 <a href="http://finalrewind.org/projects/Travel-Status-DE-DeutscheBahn/">
 Travel::Status::DE::DeutscheBahn</a>-objects, see the
 <a href="http://man.finalrewind.org/3/Travel-Status-DE-DeutscheBahn-Result/">::Result</a>
+documentation
+% }
+% elsif (param('backend') and param('backend') eq 'aseag') {
+serialized
+<a href="http://finalrewind.org/projects/Travel-Status-DE-URA/">
+Travel::Status::DE::URA</a>-objects, see the
+<a href="http://man.finalrewind.org/3/Travel-Status-DE-URA-Result/">::Result</a>
 documentation
 % }
 % else {
@@ -66,6 +73,8 @@ documentation
 </li>
 <li>version: Program version (string, not numeric)</li>
 </ul>
+<p>NOTE: The JSON interface is not guaranteed to be stable. The data layout may
+change any time.</p>
 % }
 % } # ($city and $stop)
 % else {
