@@ -107,7 +107,7 @@
     </span> <!-- moreinfo -->
     <span class="route">
 %   if ($departure->can('route_interesting') and $departure->route_interesting) {
-%=    join(' - ', map { $_->name_suf } ($departure->route_interesting));
+%=    join(' - ', map { ref($_) ? $_->name_suf : $_ } ($departure->route_interesting));
 %   }
 %   elsif ($departure->can('lineref') and $departure->lineref) {
 %=    $departure->lineref->route
@@ -131,11 +131,13 @@
       <span class="delay"> FÄLLT AUS </span>
 %   }
 %   else {
-%     if ($departure->countdown > 0) {
-        <%= $departure->countdown %> min
-%     }
-%     else {
-        sofort
+%     if ($departure->can('countdown')) {
+%       if ($departure->countdown > 0) {
+          <%= $departure->countdown %> min
+%       }
+%       else {
+          sofort
+%       }
 %     }
 %   }
     </span> <!-- countdown -->
