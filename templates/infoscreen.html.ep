@@ -76,7 +76,14 @@
         </td>
         <td class="stop"><%= $stop->name %></td></tr>
 %     }
-      <tr class="routenow"><td class="time"><%= $departure->time %></td>
+      <tr class="routenow"><td class="time">
+%     if ($departure->can('sched_time')) {
+        <%= $departure->sched_time %>
+%     }
+%     else {
+        <%= $departure->time %>
+%     }
+      </td>
       <td class="stop"><%= $id_name %> <%= $id_stop %></td></tr>
 %     for my $stop ($departure->route_post) {
         <tr class="routepost"><td class="time">
