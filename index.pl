@@ -33,7 +33,7 @@ sub get_results {
 	$expiry ||= 150;
 
 	my $cache = Cache::File->new(
-		cache_root      => '/tmp/vrr-fake',
+		cache_root      => '/tmp/vrr-fakedisplay',
 		default_expires => "${expiry} sec",
 		lock_level      => Cache::File::LOCK_LOCAL(),
 	);
@@ -106,7 +106,7 @@ sub handle_request {
 		$no_lines = $default{no_lines};
 	}
 
-	$self->stash( title   => 'vrr-fakedisplay' );
+	$self->stash( title   => 'vrr-infoscreen' );
 	$self->stash( version => $VERSION );
 
 	$self->stash( params => $self->req->params->to_string );
@@ -122,7 +122,7 @@ sub handle_request {
 		errstr   => $errstr,
 		title    => $stop
 		? "departures for ${city} ${stop}"
-		: "vrr-fakedisplay ${VERSION}",
+		: "vrr-infoscreen ${VERSION}",
 	);
 
 	return;
@@ -342,7 +342,7 @@ sub render_html {
 
 	$self->render(
 		$template,
-		title      => "vrr-fakedisplay v${VERSION}",
+		title      => "vrr-infoscreen v${VERSION}",
 		color      => [ split( qr{,}, $color ) ],
 		departures => \@departures,
 		id_name    => decode( 'UTF-8', $data->{id_name} ),
@@ -522,7 +522,7 @@ get '/:stop'              => \&handle_request;
 app->config(
 	hypnotoad => {
 		listen   => ['http://*:8091'],
-		pid_file => '/tmp/vrr-fake.pid',
+		pid_file => '/tmp/vrr-fakedisplay.pid',
 		workers  => $ENV{DBFAKEDISPLAY_WORKERS} // 2,
 	},
 );

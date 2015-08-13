@@ -76,7 +76,14 @@
         </td>
         <td class="stop"><%= $stop->name %></td></tr>
 %     }
-      <tr class="routenow"><td class="time"><%= $departure->time %></td>
+      <tr class="routenow"><td class="time">
+%     if ($departure->can('sched_time')) {
+        <%= $departure->sched_time %>
+%     }
+%     else {
+        <%= $departure->time %>
+%     }
+      </td>
       <td class="stop"><%= $id_name %> <%= $id_stop %></td></tr>
 %     for my $stop ($departure->route_post) {
         <tr class="routepost"><td class="time">
@@ -100,7 +107,7 @@
     </span> <!-- moreinfo -->
     <span class="route">
 %   if ($departure->can('route_interesting') and $departure->route_interesting) {
-%=    join(' - ', map { $_->name_suf } ($departure->route_interesting));
+%=    join(' - ', map { ref($_) ? $_->name_suf : $_ } ($departure->route_interesting));
 %   }
 %   elsif ($departure->can('lineref') and $departure->lineref) {
 %=    $departure->lineref->route
@@ -124,11 +131,13 @@
       <span class="delay"> FÄLLT AUS </span>
 %   }
 %   else {
-%     if ($departure->countdown > 0) {
-        <%= $departure->countdown %> min
-%     }
-%     else {
-        sofort
+%     if ($departure->can('countdown')) {
+%       if ($departure->countdown > 0) {
+          <%= $departure->countdown %> min
+%       }
+%       else {
+          sofort
+%       }
 %     }
 %   }
     </span> <!-- countdown -->

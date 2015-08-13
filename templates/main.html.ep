@@ -81,7 +81,7 @@ change any time.</p>
 % else {
 
 <p>
-VRR-Fakedisplay shows the next departures at a public transit stop, just like
+VRR-Infoscreen shows the next departures at a public transit stop, just like
 the Lumino LED displays used at some stops.
 </p>
 
@@ -168,10 +168,10 @@ other German transit networks.
 <ul>
 <li>The EFA backend does not support Umlauts</li>
 <li>For D&uuml;sseldorf, the DB backend usually gives better results</li>
-<li>If you write the city correctly (like "Essen", not "essen"), vrr-fake can
+<li>If you write the city correctly (like "Essen", not "essen"), vrr-infoscreen can
 shorten destination names</li>
 <li><a href="/Essen/Martinstr?no_lines=8">Example</a>
-<li>See also <a href="http://dbf.finalrewind.org/">db-fakedisplay</a> for an
+<li>See also <a href="http://dbf.finalrewind.org/">db-infoscreen</a> for an
 interface optimized for Deutsche Bahn departure data</li>
 </li>
 </ul>
