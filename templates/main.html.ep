@@ -3,6 +3,7 @@
 <head>
 	<title><%= $title %></title>
 	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	%= stylesheet '/main.css'
 	%= javascript '/jquery-2.1.1.min.js'
 	%= javascript '/image.js'
@@ -102,9 +103,14 @@ other German transit networks.
 %= form_for _redirect => begin
 <div>
   <div class="field">
-    <div class="desc">City &rarr; Stop</div>
+    <div class="desc">Stadt</div>
     <div>
       %= text_field 'city'
+    </div>
+  </div>
+  <div class="field">
+    <div class="desc">Haltestelle</div>
+    <div>
       %= text_field 'stop'
       %= submit_button 'Display'
     </div>
@@ -113,15 +119,15 @@ other German transit networks.
   <span class="optional">optional:</span>
   <div class="field">
     <div class="desc" title="number of lines">
-      display height [1..10]</div>
+      display height</div>
     <div>
-      %= text_field 'no_lines'
+      %= number_field 'no_lines', min => 1, max => 10
     </div>
   </div>
   <div class="field">
     <div class="desc">min. offset [minutes]</div>
     <div>
-    %= text_field 'offset'
+    %= number_field 'offset', min => 0
     </div>
   </div>
   <div class="field">
