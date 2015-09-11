@@ -12,7 +12,7 @@ use List::MoreUtils qw(any);
 use App::VRR::Fakedisplay;
 use Travel::Status::DE::DeutscheBahn;
 use Travel::Status::DE::ASEAG;
-use Travel::Status::DE::VRR;
+use Travel::Status::DE::EFA;
 
 no warnings 'uninitialized';
 no if $] >= 5.018, warnings => "experimental::smartmatch";
