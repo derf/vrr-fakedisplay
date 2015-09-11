@@ -144,18 +144,18 @@ other German transit networks.
     </div>
   </div>
   <div class="field">
+    <div class="desc">frontend</div>
+    <div>
+      %= select_field frontend => [['Image (PNG)' => 'png'], ['HTML' => 'html'], ['Infoscreen' => 'infoscreen'], ['JSON' => 'json']]
+    </div>
+  </div>
+  <div class="field">
     <div class="desc">backend</div>
     <div>
       % my @efa_backends = map { ["$_ (EFA)" => "efa.$_"] } efa_service_list();
       % @efa_backends = map { $_->[1] } sort { $a->[0] cmp $b->[0] }
       %                 map { [$_->[0], $_] } @efa_backends;
       %= select_field backend => [['EFA / VRR' => 'vrr'], ['DB (HAFAS)' => 'db'], ['ASEAG (URA)' => 'aseag'], @efa_backends]
-    </div>
-  </div>
-  <div class="field">
-    <div class="desc">frontend</div>
-    <div>
-      %= select_field frontend => [['Image (PNG)' => 'png'], ['HTML' => 'html'], ['Infoscreen' => 'infoscreen'], ['JSON' => 'json']]
     </div>
   </div>
 </div>
