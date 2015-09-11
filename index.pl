@@ -6,6 +6,7 @@ use utf8;
 use DateTime;
 use DateTime::Format::Strptime;
 use Encode qw(decode);
+use List::Util qw(first);
 use List::MoreUtils qw(any);
 
 use App::VRR::Fakedisplay;
@@ -27,8 +28,12 @@ my %default = (
 	platform => q{},
 );
 
+my @efa_services
+  = map { $_->{shortname} } Travel::Status::DE::EFA::get_efa_urls();
+
 sub get_results {
 	my ( $backend, $city, $stop, $expiry ) = @_;
+	my $sub_backend;
 
 	$expiry ||= 150;
 
@@ -37,6 +42,16 @@ sub get_results {
 		default_expires => "${expiry} sec",
 		lock_level      => Cache::File::LOCK_LOCAL(),
 	);
+
+	if ( $backend =~ m{ [.] }x ) {
+		($sub_backend) = ( $backend =~ m{ [.] (.+) $ }x );
+
+		if ( not $sub_backend ~~ \@efa_services ) {
+			$sub_backend = undef;
+			$backend =~ s{ [.] (.+) $ }{}x;
+		}
+	}
+	say "$backend : $sub_backend";
 
 	my $sstr = ("${backend} _ ${stop} _ ${city}");
 	$sstr =~ tr{a-zA-Z0-9}{_}c;
@@ -67,7 +82,17 @@ sub get_results {
 			);
 		}
 		else {
-			$status = Travel::Status::DE::VRR->new(
+			my $efa_url = 'http://efa.vrr.de/vrr/XSLT_DM_REQUEST';
+			if ($sub_backend) {
+				my $service
+				  = first { lc( $_->{shortname} ) eq lc($sub_backend) }
+				Travel::Status::DE::EFA::get_efa_urls();
+				if ($service) {
+					$efa_url = $service->{url};
+				}
+			}
+			$status = Travel::Status::DE::EFA->new(
+				efa_url     => $efa_url,
 				place       => $city,
 				name        => $stop,
 				timeout     => 3,
@@ -478,6 +503,12 @@ sub render_image {
 
 	return;
 }
+
+helper 'efa_service_list' => sub {
+	my $self = shift;
+
+	return @efa_services;
+};
 
 get '/_redirect' => sub {
 	my $self = shift;
