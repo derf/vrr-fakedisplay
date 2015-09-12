@@ -51,7 +51,6 @@ sub get_results {
 			$backend =~ s{ [.] (.+) $ }{}x;
 		}
 	}
-	say "$backend : $sub_backend";
 
 	my $sstr = ("${backend} _ ${stop} _ ${city}");
 	$sstr =~ tr{a-zA-Z0-9}{_}c;
