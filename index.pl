@@ -6,6 +6,7 @@ use utf8;
 use DateTime;
 use DateTime::Format::Strptime;
 use Encode qw(decode);
+use File::Slurp qw(read_file write_file);
 use List::Util qw(first);
 use List::MoreUtils qw(any);
 
@@ -30,6 +31,14 @@ my %default = (
 
 my @efa_services
   = map { $_->{shortname} } Travel::Status::DE::EFA::get_efa_urls();
+
+sub log_api_access {
+	my $counter = 1;
+	if ( -r $ENV{VRRFAKEDISPLAY_STATS} ) {
+		$counter = read_file( $ENV{VRRFAKEDISPLAY_STATS} ) + 1;
+	}
+	write_file( $ENV{VRRFAKEDISPLAY_STATS}, $counter );
+}
 
 sub get_results {
 	my ( $backend, $city, $stop, $expiry ) = @_;
@@ -58,6 +67,9 @@ sub get_results {
 	my $data = $cache->thaw($sstr);
 
 	if ( not $data ) {
+		if ( $ENV{VRRFAKEDISPLAY_STATS} ) {
+			log_api_access();
+		}
 		my $status;
 		if ( $backend eq 'db' ) {
 			$status = Travel::Status::DE::DeutscheBahn->new(
