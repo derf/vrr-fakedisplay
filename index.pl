@@ -11,7 +11,7 @@ use List::Util qw(first);
 use List::MoreUtils qw(any);
 
 use App::VRR::Fakedisplay;
-use Travel::Status::DE::DeutscheBahn;
+use Travel::Status::DE::HAFAS;
 use Travel::Status::DE::ASEAG;
 use Travel::Status::DE::EFA;
 
@@ -52,12 +52,19 @@ sub get_results {
 		lock_level      => Cache::File::LOCK_LOCAL(),
 	);
 
-	if ( $backend =~ m{ [.] }x ) {
-		($sub_backend) = ( $backend =~ m{ [.] (.+) $ }x );
+	# legacy values
+	if ( not defined $backend or $backend eq 'vrr' ) {
+		$backend = 'efa.VRR';
+	}
 
-		if ( not $sub_backend ~~ \@efa_services ) {
-			$sub_backend = undef;
-			$backend =~ s{ [.] (.+) $ }{}x;
+	if ( $backend =~ s{ [.] (.+) $ }{}x ) {
+		$sub_backend = $1;
+
+		if ( $backend eq 'efa' and not $sub_backend ~~ \@efa_services ) {
+			return {
+				results => [],
+				errstr  => "efa sub-backend '$sub_backend' not supported"
+			};
 		}
 	}
 
@@ -72,18 +79,9 @@ sub get_results {
 		}
 		my $status;
 		if ( $backend eq 'db' ) {
-			$status = Travel::Status::DE::DeutscheBahn->new(
-				station => "${stop}, ${city}",
-				mot     => {
-					ice   => 0,
-					ic_ec => 0,
-					d     => 0,
-					nv    => 0,
-					s     => 1,
-					bus   => 1,
-					u     => 1,
-					tram  => 1,
-				},
+			$status = Travel::Status::DE::HAFAS->new(
+				station       => "${stop}, ${city}",
+				excluded_mots => [qw[ice ic_ec d regio]],
 			);
 		}
 		elsif ( $backend eq 'aseag' ) {

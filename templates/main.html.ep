@@ -51,7 +51,7 @@ Data is cached for 1 minute. JSON format:
 % if (param('backend') and param('backend') eq 'db') {
 serialized
 <a href="http://finalrewind.org/projects/Travel-Status-DE-DeutscheBahn/">
-Travel::Status::DE::DeutscheBahn</a>-objects, see the
+Travel::Status::DE::HAFAS</a>-objects, see the
 <a href="http://man.finalrewind.org/3/Travel-Status-DE-DeutscheBahn-Result/">::Result</a>
 documentation
 % }
@@ -186,8 +186,8 @@ v<%= $version %><br/>
 Backends:<br/>
 <a href="http://finalrewind.org/projects/Travel-Status-DE-URA/">Travel::Status::DE::ASEAG</a>
 v<%= $Travel::Status::DE::ASEAG::VERSION %><br/>
-<a href="http://finalrewind.org/projects/Travel-Status-DE-DeutscheBahn/">Travel::Status::DE::DeutscheBahn</a>
-v<%= $Travel::Status::DE::DeutscheBahn::VERSION %><br/>
+<a href="http://finalrewind.org/projects/Travel-Status-DE-DeutscheBahn/">Travel::Status::DE::HAFAS</a>
+v<%= $Travel::Status::DE::HAFAS::VERSION %><br/>
 <a href="http://finalrewind.org/projects/Travel-Status-DE-VRR/">Travel::Status::DE::EFA</a>
 v<%= $Travel::Status::DE::EFA::VERSION %><br/>
 </div>
