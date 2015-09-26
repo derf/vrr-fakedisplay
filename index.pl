@@ -32,6 +32,9 @@ my %default = (
 my @efa_services
   = map { $_->{shortname} } Travel::Status::DE::EFA::get_efa_urls();
 
+my @hafas_services
+  = map { $_->{shortname} } Travel::Status::DE::HAFAS::get_services();
+
 sub log_api_access {
 	my $counter = 1;
 	if ( -r $ENV{VRRFAKEDISPLAY_STATS} ) {
@@ -56,6 +59,9 @@ sub get_results {
 	if ( not defined $backend or $backend eq 'vrr' ) {
 		$backend = 'efa.VRR';
 	}
+	if ( $backend and $backend eq 'db' ) {
+		$backend = 'hafas.DB';
+	}
 
 	if ( $backend =~ s{ [.] (.+) $ }{}x ) {
 		$sub_backend = $1;
@@ -64,6 +70,12 @@ sub get_results {
 			return {
 				results => [],
 				errstr  => "efa sub-backend '$sub_backend' not supported"
+			};
+		}
+		if ( $backend eq 'hafas' and not $sub_backend ~~ \@hafas_services ) {
+			return {
+				results => [],
+				errstr  => "hafas sub-backend '$sub_backend' not supported"
 			};
 		}
 	}
@@ -78,10 +90,11 @@ sub get_results {
 			log_api_access();
 		}
 		my $status;
-		if ( $backend eq 'db' ) {
+		if ( $backend eq 'hafas' ) {
 			$status = Travel::Status::DE::HAFAS->new(
 				station       => "${stop}, ${city}",
 				excluded_mots => [qw[ice ic_ec d regio]],
+				service       => $sub_backend,
 			);
 		}
 		elsif ( $backend eq 'aseag' ) {
@@ -517,6 +530,12 @@ helper 'efa_service_list' => sub {
 	my $self = shift;
 
 	return @efa_services;
+};
+
+helper 'hafas_service_list' => sub {
+	my $self = shift;
+
+	return @hafas_services;
 };
 
 get '/_redirect' => sub {

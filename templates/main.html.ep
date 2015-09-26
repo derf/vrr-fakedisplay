@@ -155,7 +155,10 @@ other German transit networks.
       % my @efa_backends = map { ["$_ (EFA)" => "efa.$_"] } efa_service_list();
       % @efa_backends = map { $_->[1] } sort { $a->[0] cmp $b->[0] }
       %                 map { [$_->[0], $_] } @efa_backends;
-      %= select_field backend => [['EFA / VRR' => 'vrr'], ['DB (HAFAS)' => 'db'], ['ASEAG (URA)' => 'aseag'], @efa_backends]
+      % my @hafas_backends = map { ["$_ (HAFAS)" => "hafas.$_"] } hafas_service_list();
+      % @hafas_backends = map { $_->[1] } sort { $a->[0] cmp $b->[0] }
+      %                 map { [$_->[0], $_] } @hafas_backends;
+      %= select_field backend => [['EFA / VRR' => 'vrr'], ['DB (HAFAS)' => 'db'], ['ASEAG (URA)' => 'aseag'], @efa_backends, @hafas_backends]
     </div>
   </div>
 </div>
