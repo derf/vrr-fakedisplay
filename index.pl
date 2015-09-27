@@ -496,6 +496,8 @@ sub render_image {
 
 		my ( $line, $destination, $etr, undef ) = @{$d};
 
+		$line = substr($line, 0, 4);
+
 		$png->draw_at( 0,  $line );
 		$png->draw_at( 25, $destination );
 
