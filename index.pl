@@ -128,6 +128,10 @@ sub get_results {
 		if ( $status->can('identified_data') ) {
 			( $data->{id_name}, $data->{id_stop} ) = $status->identified_data;
 		}
+		if ( $status->errstr and $status->can('name_candidates') ) {
+			$data->{name_candidates}  = [ $status->name_candidates ];
+			$data->{place_candidates} = [ $status->place_candidates ];
+		}
 		$cache->freeze( $sstr, $data );
 	}
 
@@ -142,11 +146,12 @@ sub handle_request {
 	my $no_lines = $self->param('no_lines');
 	my $frontend = $self->param('frontend') // 'png';
 	my $backend  = $self->param('backend') // $default{backend};
-	my $errstr;
+	my ( $data, $errstr );
 
 	if ( ( $city and $stop ) or ( $backend eq 'aseag' and $stop ) ) {
-		$errstr = get_results( $self->param('backend') // $default{backend},
-			$city, $stop )->{errstr};
+		( $data, $errstr )
+		  = get_results( $self->param('backend') // $default{backend},
+			$city, $stop );
 	}
 
 	if ( not $no_lines or $no_lines < 1 or $no_lines > 40 ) {
@@ -162,12 +167,14 @@ sub handle_request {
 
 	$self->render(
 		'main',
-		city     => $city,
-		stop     => $stop,
-		version  => $VERSION,
-		frontend => $frontend,
-		errstr   => $errstr,
-		title    => $stop
+		city             => $city,
+		stop             => $stop,
+		version          => $VERSION,
+		frontend         => $frontend,
+		errstr           => $errstr,
+		name_candidates  => $data->{name_candidates},
+		place_candidates => $data->{place_candidates},
+		title            => $stop
 		? "departures for ${city} ${stop}"
 		: "vrr-infoscreen ${VERSION}",
 	);
@@ -496,7 +503,7 @@ sub render_image {
 
 		my ( $line, $destination, $etr, undef ) = @{$d};
 
-		$line = substr($line, 0, 4);
+		$line = substr( $line, 0, 4 );
 
 		$png->draw_at( 0,  $line );
 		$png->draw_at( 25, $destination );
@@ -538,6 +545,9 @@ helper 'hafas_service_list' => sub {
 	my $self = shift;
 
 	return @hafas_services;
+};
+
+helper 'handle_no_results' => sub {
 };
 
 get '/_redirect' => sub {
