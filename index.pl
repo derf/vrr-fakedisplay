@@ -146,11 +146,10 @@ sub handle_request {
 	my $no_lines = $self->param('no_lines');
 	my $frontend = $self->param('frontend') // 'png';
 	my $backend  = $self->param('backend') // $default{backend};
-	my ( $data, $errstr );
+	my $data;
 
 	if ( ( $city and $stop ) or ( $backend eq 'aseag' and $stop ) ) {
-		( $data, $errstr )
-		  = get_results( $self->param('backend') // $default{backend},
+		$data = get_results( $self->param('backend') // $default{backend},
 			$city, $stop );
 	}
 
@@ -171,7 +170,7 @@ sub handle_request {
 		stop             => $stop,
 		version          => $VERSION,
 		frontend         => $frontend,
-		errstr           => $errstr,
+		errstr           => $data->{errstr},
 		name_candidates  => $data->{name_candidates},
 		place_candidates => $data->{place_candidates},
 		title            => $stop
