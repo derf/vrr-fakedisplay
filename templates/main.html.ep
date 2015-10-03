@@ -105,13 +105,25 @@ other German transit networks.
   <div class="field">
     <div class="desc">Stadt</div>
     <div>
-      %= text_field 'city'
+      % if (stash('place_candidates') and @{ stash('place_candidates') } ) {
+        % my @candidates = map { [ $_, $_ ] } @{ stash('place_candidates') };
+        %= select_field city => \@candidates
+      % }
+      % else {
+        %= text_field 'city'
+      % }
     </div>
   </div>
   <div class="field">
     <div class="desc">Haltestelle</div>
     <div>
-      %= text_field 'stop'
+      % if (stash('name_candidates') and @{ stash('name_candidates') } ) {
+        % my @candidates = map { [ $_, $_ ] } @{ stash('name_candidates') };
+        %= select_field stop => \@candidates
+      % }
+      % else {
+        %= text_field 'stop'
+      % }
       %= submit_button 'Display'
     </div>
   </div>
