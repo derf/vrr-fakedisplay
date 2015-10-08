@@ -46,17 +46,12 @@
 %   if ($departure->can('lineref') and $departure->lineref) {
 %=    $departure->lineref->route
 %   }
-%   elsif ($departure->can('route_pre') and $departure->can('route_post')) {
-%     if ($departure->route_pre) {
-%=      ($departure->route_pre)[0]->name
-%     }
-%     if ($departure->route_post) {
-%       ($departure->route_post)[-1]->name
-%     }
+%   else {
+%=    $departure->destination
 %   }
     </span> <!-- train-route -->
     </div> <!-- mheader -->
-%   if ($departure->can('route_pre')) {
+%   if ($departure->isa('Travel::Status::DE::EFA::Result')) {
       Fahrplan:
       <table class="scheduled">
 %     for my $stop ($departure->route_pre) {
@@ -111,13 +106,6 @@
 %   }
 %   elsif ($departure->can('lineref') and $departure->lineref) {
 %=    $departure->lineref->route
-%   }
-%   elsif ($departure->can('route_timetable')) {
-%     my @first_deps = ($departure->route_timetable)[0..2];
-%     delete $first_deps[2] unless defined $first_deps[2];
-%     delete $first_deps[1] unless defined $first_deps[1];
-%     delete $first_deps[0] unless defined $first_deps[0];
-%=    join(' - ', map { $_->[1] } @first_deps );
 %   }
     </span> <!-- route -->
     <span class="dest">

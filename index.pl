@@ -100,7 +100,7 @@ sub get_results {
 		elsif ( $backend eq 'aseag' ) {
 			$status = Travel::Status::DE::ASEAG->new(
 				stop => ( $city ? "${city} ${stop}" : $stop ),
-				full_routes => 'after',
+				calculate_routes => 1,
 			);
 		}
 		else {
