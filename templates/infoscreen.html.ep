@@ -99,6 +99,27 @@
 %     }
       </table>
 %   }
+%   elsif ($departure->isa('Travel::Status::DE::URA::Result')) {
+      Fahrplan:
+      <table class="scheduled">
+%     for my $stop ($departure->route_pre) {
+        <tr class="routepre"><td class="time">
+%=        $stop->[0]->strftime('%H:%M:%S')
+        </td>
+        <td class="stop"><%= $stop->[1] %></td></tr>
+%     }
+      <tr class="routenow"><td class="time">
+        <%= $departure->time %>
+      </td>
+      <td class="stop"><%= $id_name %> <%= $id_stop %></td></tr>
+%     for my $stop ($departure->route_post) {
+        <tr class="routepost"><td class="time">
+%=      $stop->[0]->strftime('%H:%M:%S')
+        </td>
+        <td class="stop"><%= $stop->[1] %></td></tr>
+%     }
+      </table>
+%   }
     </span> <!-- moreinfo -->
     <span class="route">
 %   if ($departure->can('route_interesting') and $departure->route_interesting) {
