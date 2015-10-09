@@ -28,7 +28,7 @@
 %   my $linetype = q{};
 %   if ($departure->can('type')) {
 %     given ($departure->type) {
-%       when ($_ =~ m{enbahn$}) { $linetype = 'tram' }
+%       when ($_ =~ m{ (?: enbahn $ ) | Tram | STR }ix) { $linetype = 'tram' }
 %       when ('S-Bahn')       { $linetype = 'sbahn' }
 %       when ([qw[NE Niederflurbus SB Bus]]) { $linetype = 'bus' }
 %       when ('U-Bahn')       { $linetype = 'ubahn' }
