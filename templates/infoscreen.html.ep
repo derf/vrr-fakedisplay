@@ -104,9 +104,9 @@
       <table class="scheduled">
 %     for my $stop ($departure->route_pre) {
         <tr class="routepre"><td class="time">
-%=        $stop->[0]->strftime('%H:%M:%S')
+%=        $stop->time
         </td>
-        <td class="stop"><%= $stop->[1] %></td></tr>
+        <td class="stop"><%= $stop->name %></td></tr>
 %     }
       <tr class="routenow"><td class="time">
         <%= $departure->time %>
@@ -114,9 +114,9 @@
       <td class="stop"><%= $id_name %> <%= $id_stop %></td></tr>
 %     for my $stop ($departure->route_post) {
         <tr class="routepost"><td class="time">
-%=      $stop->[0]->strftime('%H:%M:%S')
+%=      $stop->time
         </td>
-        <td class="stop"><%= $stop->[1] %></td></tr>
+        <td class="stop"><%= $stop->name %></td></tr>
 %     }
       </table>
 %   }
