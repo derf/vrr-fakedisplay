@@ -106,7 +106,7 @@ guarantee of correctness, completeness or anything else.
 %= form_for _redirect => begin
 <div>
   <div class="field">
-    <div class="desc">Stadt</div>
+    <div class="desc">City (required for EFA backend, optional otherwise)</div>
     <div>
       % if (stash('place_candidates') and @{ stash('place_candidates') } ) {
         % my @candidates = map { [ $_, $_ ] } @{ stash('place_candidates') };
@@ -118,7 +118,7 @@ guarantee of correctness, completeness or anything else.
     </div>
   </div>
   <div class="field">
-    <div class="desc">Haltestelle</div>
+    <div class="desc">Stop</div>
     <div>
       % if (stash('name_candidates') and @{ stash('name_candidates') } ) {
         % my @candidates = map { [ $_, $_ ] } @{ stash('name_candidates') };
@@ -134,7 +134,7 @@ guarantee of correctness, completeness or anything else.
   <span class="optional">optional:</span>
   <div class="field">
     <div class="desc" title="number of lines">
-      display height</div>
+      display height [lines]</div>
     <div>
       %= number_field 'no_lines', min => 1, max => 10
     </div>
@@ -161,7 +161,7 @@ guarantee of correctness, completeness or anything else.
   <div class="field">
     <div class="desc">frontend</div>
     <div>
-      %= select_field frontend => [['Image (PNG)' => 'png'], ['HTML' => 'html'], ['Infoscreen' => 'infoscreen'], ['JSON' => 'json']]
+      %= select_field frontend => [['LED board (PNG)' => 'png'], ['LED board (HTML)' => 'html'], ['App / Infoscreen' => 'infoscreen'], ['JSON' => 'json']]
     </div>
   </div>
   <div class="field">
@@ -188,9 +188,6 @@ guarantee of correctness, completeness or anything else.
 <span class="notes">notes:</span>
 <ul>
 <li>The EFA backend does not support Umlauts</li>
-<li>For D&uuml;sseldorf, the DB backend usually gives better results</li>
-<li>If you write the city correctly (like "Essen", not "essen"), vrr-infoscreen can
-shorten destination names</li>
 <li><a href="/Essen/Martinstr?no_lines=8">Example</a>
 <li>See also <a href="http://dbf.finalrewind.org/">db-infoscreen</a> for an
 interface optimized for Deutsche Bahn departure data</li>
