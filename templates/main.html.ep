@@ -82,12 +82,15 @@ change any time.</p>
 
 <p>
 VRR-Infoscreen shows the next departures at a public transit stop, just like
-the Lumino LED displays used at some stops.
+the Lumino LED displays used in some places. It also supports an
+app / infoscreen-like frontend (click/tap on a departure for details) and
+JSON export.
 </p>
 
 <p>
-It works best for the VRR (Verkehrsverbund Rhein-Ruhr), but also supports most
-other German transit networks.
+It works best for the VRR (Verkehrsverbund Rhein-Ruhr), but also supports many
+other german transit networks. All information is provided without any
+guarantee of correctness, completeness or anything else.
 </p>
 
 % }
