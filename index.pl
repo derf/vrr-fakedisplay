@@ -92,7 +92,7 @@ sub get_results {
 		my $status;
 		if ( $backend eq 'hafas' ) {
 			$status = Travel::Status::DE::HAFAS->new(
-				station       => "${stop}, ${city}",
+				station       => ( $city ? "${city} ${stop}" : $stop ),
 				excluded_mots => [qw[ice ic_ec d regio]],
 				service       => $sub_backend,
 			);
