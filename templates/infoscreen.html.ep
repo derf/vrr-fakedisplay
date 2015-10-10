@@ -29,14 +29,22 @@
 %   if ($departure->can('type')) {
 %     given ($departure->type) {
 %       when ($_ =~ m{ (?: enbahn $ ) | Tram | STR }ix) { $linetype = 'tram' }
-%       when ('S-Bahn')       { $linetype = 'sbahn' }
+%       when ([qw[S-Bahn S]])       { $linetype = 'sbahn' }
 %       when ([qw[NE Niederflurbus SB Bus]]) { $linetype = 'bus' }
-%       when ('U-Bahn')       { $linetype = 'ubahn' }
+%       when ([qw[U-Bahn U]])       { $linetype = 'ubahn' }
 %     }
 %   }
     <li>
     <span class="line <%= $linetype %>">
-    %= $departure->line
+%   if ($departure->can('line_no')) {
+%     if ($linetype eq 'sbahn') {
+        S
+%     }
+%=    $departure->line_no
+%   }
+%   else {
+%=    $departure->line
+%   }
     </span> <!-- line -->
     <span class="moreinfo">
     <div class="mheader">
