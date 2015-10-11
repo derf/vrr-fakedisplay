@@ -92,7 +92,7 @@ sub get_results {
 		my $status;
 		if ( $backend eq 'hafas' ) {
 			$status = Travel::Status::DE::HAFAS->new(
-				station       => ( $city ? "${city} ${stop}" : $stop ),
+				station => ( $city ? "${city} ${stop}" : $stop ),
 				excluded_mots => [qw[ice ic_ec d regio]],
 				service       => $sub_backend,
 			);
@@ -184,10 +184,10 @@ sub handle_request {
 sub shorten_line {
 	my ($line) = @_;
 
-	$line =~ s{ \s* S-Bahn }{}ox;
+	$line =~ s{ \s* S-Bahn }{}ix;
 
-	$line =~ s{ ^ ( U | S | SB ) \K \s+ }{}ox;
-	$line =~ s{ ^ ( STR | Bus | RNV ) }{}ox;
+	$line =~ s{ ^ ( U | S | SB ) \K \s+ }{}ix;
+	$line =~ s{ ^ ( STR | Bus | RNV | Tram ) }{}ix;
 
 	$line =~ s{ ^ \s+ }{}ox;
 
