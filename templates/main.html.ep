@@ -199,7 +199,7 @@ interface optimized for Deutsche Bahn departure data</li>
 <a href="http://finalrewind.org/projects/vrr-fakedisplay/">vrr-fakedisplay</a>
 v<%= $version %><br/>
 Backends:<br/>
-<a href="http://finalrewind.org/projects/Travel-Status-DE-URA/">Travel::Status::DE::ASEAG</a>
+<a href="http://finalrewind.org/projects/Travel-Status-DE-URA/">Travel::Status::DE::URA</a>
 v<%= $Travel::Status::DE::ASEAG::VERSION %><br/>
 <a href="http://finalrewind.org/projects/Travel-Status-DE-DeutscheBahn/">Travel::Status::DE::HAFAS</a>
 v<%= $Travel::Status::DE::HAFAS::VERSION %><br/>
