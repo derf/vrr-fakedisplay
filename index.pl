@@ -591,9 +591,9 @@ get '/:stop'              => \&handle_request;
 
 app->config(
 	hypnotoad => {
-		listen   => ['http://*:8091'],
+		listen => [ $ENV{VRRFAKEDISPLAY_LISTEN} // 'http://*:8091' ],
 		pid_file => '/tmp/vrr-fakedisplay.pid',
-		workers  => $ENV{DBFAKEDISPLAY_WORKERS} // 2,
+		workers  => $ENV{VRRFAKEDISPLAY_WORKERS} // 2,
 	},
 );
 
