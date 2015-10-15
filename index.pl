@@ -207,6 +207,10 @@ sub shorten_destination {
 		$dest =~ s{ ^ $city \s }{}ix;
 	}
 
+	if ( $city =~ m{ ^ ( D | Duesseldorf | Düsseldorf ) $ }ix ) {
+		$dest =~ s{ ^ D - }{}ix;
+	}
+
 	if ( length($dest) > 20 ) {
 		     $dest =~ s{^Dortmund}{DO}
 		  or $dest =~ s{^Duisburg}{DU}
