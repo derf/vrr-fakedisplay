@@ -369,8 +369,10 @@ sub make_infoboard_lines {
 
 sub render_html {
 	my $self     = shift;
-	my $color    = $self->param('color') || '255,208,0';
-	my $template = $self->param('template') || 'display';
+	my $color    = $self->param('color') // '255,208,0';
+	my $frontend = $self->param('frontend') // 'infoscreen';
+
+	my $template = $frontend eq 'html' ? 'display' : 'infoscreen';
 
 	my $data = get_filtered_departures(
 		city => $self->stash('city') // q{},
@@ -554,9 +556,10 @@ helper 'handle_no_results' => sub {
 };
 
 get '/_redirect' => sub {
-	my $self = shift;
-	my $city = $self->param('city') // q{};
-	my $stop = $self->param('stop');
+	my $self   = shift;
+	my $city   = $self->param('city') // q{};
+	my $stop   = $self->param('stop');
+	my $suffix = q{};
 
 	my $params = $self->req->params;
 
@@ -571,13 +574,19 @@ get '/_redirect' => sub {
 		}
 	}
 
+	if (    $params->param('frontend')
+		and $params->param('frontend') eq 'infoscreen' )
+	{
+		$suffix = '.html';
+	}
+
 	my $params_s = $params->to_string;
 
 	if ($city) {
-		$self->redirect_to("/${city}/${stop}?${params_s}");
+		$self->redirect_to("/${city}/${stop}${suffix}?${params_s}");
 	}
 	else {
-		$self->redirect_to("/${stop}?${params_s}");
+		$self->redirect_to("/${stop}${suffix}?${params_s}");
 	}
 
 	return;
