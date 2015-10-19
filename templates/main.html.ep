@@ -127,8 +127,28 @@ guarantee of correctness, completeness or anything else.
       % else {
         %= text_field 'stop'
       % }
-      %= submit_button 'Display'
     </div>
+  </div>
+  <div class="field">
+    <div class="desc">Frontend</div>
+    <div>
+      %= select_field frontend => [['LED board (PNG)' => 'png'], ['LED board (HTML)' => 'html'], ['App / Infoscreen' => 'infoscreen'], ['JSON' => 'json']]
+    </div>
+  </div>
+  <div class="field">
+    <div class="desc">Backend</div>
+    <div>
+      % my @efa_backends = map { ["$_ (EFA)" => "efa.$_"] } efa_service_list();
+      % @efa_backends = map { $_->[1] } sort { $a->[0] cmp $b->[0] }
+      %                 map { [$_->[0], $_] } @efa_backends;
+      % my @hafas_backends = map { ["$_ (HAFAS)" => "hafas.$_"] } hafas_service_list();
+      % @hafas_backends = map { $_->[1] } sort { $a->[0] cmp $b->[0] }
+      %                 map { [$_->[0], $_] } @hafas_backends;
+      %= select_field backend => [['EFA / VRR' => 'vrr'], ['DB (HAFAS)' => 'db'], ['ASEAG (URA)' => 'aseag'], @efa_backends, @hafas_backends]
+    </div>
+  </div>
+  <div class="field">
+    %= submit_button 'Display'
   </div>
   <div class="break"></div>
   <span class="optional">optional:</span>
@@ -156,24 +176,6 @@ guarantee of correctness, completeness or anything else.
     <div class="desc" title="comma-separated list. Buggy.">match platform¹</div>
     <div>
       %= text_field 'platform'
-    </div>
-  </div>
-  <div class="field">
-    <div class="desc">frontend</div>
-    <div>
-      %= select_field frontend => [['LED board (PNG)' => 'png'], ['LED board (HTML)' => 'html'], ['App / Infoscreen' => 'infoscreen'], ['JSON' => 'json']]
-    </div>
-  </div>
-  <div class="field">
-    <div class="desc">backend</div>
-    <div>
-      % my @efa_backends = map { ["$_ (EFA)" => "efa.$_"] } efa_service_list();
-      % @efa_backends = map { $_->[1] } sort { $a->[0] cmp $b->[0] }
-      %                 map { [$_->[0], $_] } @efa_backends;
-      % my @hafas_backends = map { ["$_ (HAFAS)" => "hafas.$_"] } hafas_service_list();
-      % @hafas_backends = map { $_->[1] } sort { $a->[0] cmp $b->[0] }
-      %                 map { [$_->[0], $_] } @hafas_backends;
-      %= select_field backend => [['EFA / VRR' => 'vrr'], ['DB (HAFAS)' => 'db'], ['ASEAG (URA)' => 'aseag'], @efa_backends, @hafas_backends]
     </div>
   </div>
 </div>
