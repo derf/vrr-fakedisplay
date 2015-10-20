@@ -105,6 +105,9 @@ sub get_results {
 		}
 		else {
 			my $efa_url = 'http://efa.vrr.de/vrr/XSLT_DM_REQUEST';
+			if ( not $city ) {
+				return { errstr => 'City must be specified for this backend' };
+			}
 			if ($sub_backend) {
 				my $service
 				  = first { lc( $_->{shortname} ) eq lc($sub_backend) }
@@ -132,6 +135,13 @@ sub get_results {
 			$data->{name_candidates}  = [ $status->name_candidates ];
 			$data->{place_candidates} = [ $status->place_candidates ];
 		}
+		elsif ( $status->errstr
+			and $status->can('errcode')
+			and $status->errcode eq 'H730' )
+		{
+			$data->{name_candidates}
+			  = [ map { $_->{name} } $status->similar_stops ];
+		}
 		$cache->freeze( $sstr, $data );
 	}
 
@@ -148,7 +158,7 @@ sub handle_request {
 	my $backend  = $self->param('backend') // $default{backend};
 	my $data;
 
-	if ( ( $city and $stop ) or ( $backend eq 'aseag' and $stop ) ) {
+	if ($stop) {
 		$data = get_results( $self->param('backend') // $default{backend},
 			$city, $stop );
 	}
