@@ -590,6 +590,14 @@ get '/_redirect' => sub {
 		$suffix = '.html';
 	}
 
+	if (    $city
+		and $params->param('backend')
+		and $params->param('backend') !~ m{ ^ ( efa | vrr ) }x )
+	{
+		$stop = "$city $stop";
+		$city = undef;
+	}
+
 	my $params_s = $params->to_string;
 
 	if ($city) {
