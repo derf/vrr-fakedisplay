@@ -587,7 +587,11 @@ get '/_redirect' => sub {
 	if (    $params->param('frontend')
 		and $params->param('frontend') eq 'infoscreen' )
 	{
-		$suffix = '.html';
+		my $data = get_results( $self->param('backend') // $default{backend},
+			$city, $stop );
+		if ( not $data->{errstr} ) {
+			$suffix = '.html';
+		}
 	}
 
 	if (    $city
