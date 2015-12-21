@@ -262,10 +262,12 @@ sub get_filtered_departures {
 		my $time        = $d->time;
 		my $etr;
 
+		# Note: The offset / countdown check does not yet take caching
+		# into account, so it may be off by up to cache_expiry seconds.
 		if (   ( @grep_line and not( any { $line =~ $_ } @grep_line ) )
 			or ( @grep_platform and not( $platform ~~ \@grep_platform ) )
 			or ( $opt{hide_regional} and $line =~ m{ ^ (RB | RE | IC | EC) }x )
-		  )
+			or ( $opt{offset} and $d->countdown < $opt{offset} ) )
 		{
 			next;
 		}
@@ -391,6 +393,7 @@ sub render_html {
 		filter_line     => scalar $self->param('line'),
 		filter_platform => scalar $self->param('platform'),
 		hide_regional   => ( $template eq 'infoscreen' ? 0 : 1 ),
+		offset          => scalar $self->param('offset'),
 	);
 
 	my @departures = make_infoboard_lines(
@@ -435,6 +438,7 @@ sub render_json {
 		filter_line     => scalar $self->param('line'),
 		filter_platform => scalar $self->param('platform'),
 		hide_regional   => 0,
+		offset          => scalar $self->param('offset'),
 	);
 	my $raw_departures = $data->{filtered_results};
 	my $errstr         = $data->{errstr};
@@ -477,6 +481,7 @@ sub render_image {
 		filter_line     => scalar $self->param('line'),
 		filter_platform => scalar $self->param('platform'),
 		hide_regional   => 0,
+		offset          => scalar $self->param('offset'),
 	);
 	my $raw_departures = $data->{filtered_results};
 	my $errstr         = $data->{errstr};
