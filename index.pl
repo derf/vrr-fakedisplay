@@ -50,7 +50,7 @@ sub get_results {
 	$expiry ||= 150;
 
 	my $cache = Cache::File->new(
-		cache_root      => '/tmp/vrr-fakedisplay',
+		cache_root => $ENV{VRRFAKEDISPLAY_CACHE} // '/tmp/vrr-fakedisplay',
 		default_expires => "${expiry} sec",
 		lock_level      => Cache::File::LOCK_LOCAL(),
 	);
