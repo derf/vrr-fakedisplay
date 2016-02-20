@@ -434,7 +434,7 @@ sub render_json {
 		city => $self->stash('city') // q{},
 		stop => $self->stash('stop'),
 		backend         => scalar $self->param('backend'),
-		cache_expiry    => 60,
+		cache_expiry    => 120,
 		filter_line     => scalar $self->param('line'),
 		filter_platform => scalar $self->param('platform'),
 		hide_regional   => 0,
