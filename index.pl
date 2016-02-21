@@ -121,7 +121,7 @@ sub get_results {
 				place       => $city,
 				name        => $stop,
 				timeout     => 3,
-				full_routes => 1,
+				full_routes => 0,
 			);
 		}
 		$data = {
