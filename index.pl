@@ -44,16 +44,10 @@ sub log_api_access {
 }
 
 sub get_results {
-	my ( $backend, $city, $stop, $expiry ) = @_;
+	my ( $backend, $city, $stop ) = @_;
 	my $sub_backend;
 
-	$expiry ||= 150;
-
-	my $cache = Cache::File->new(
-		cache_root => $ENV{VRRFAKEDISPLAY_CACHE} // '/tmp/vrr-fakedisplay',
-		default_expires => "${expiry} sec",
-		lock_level      => Cache::File::LOCK_LOCAL(),
-	);
+	my $expiry = 200;
 
 	# legacy values
 	if ( not defined $backend or $backend eq 'vrr' ) {
@@ -79,6 +73,19 @@ sub get_results {
 			};
 		}
 	}
+
+	if ( $backend eq 'hafas' ) {
+		$expiry = 120;
+	}
+	elsif ( $backend eq 'aseag' ) {
+		$expiry = 120;
+	}
+
+	my $cache = Cache::File->new(
+		cache_root => $ENV{VRRFAKEDISPLAY_CACHE} // '/tmp/vrr-fakedisplay',
+		default_expires => "${expiry} sec",
+		lock_level      => Cache::File::LOCK_LOCAL(),
+	);
 
 	my $sstr = ("${backend} _ ${stop} _ ${city}");
 	$sstr =~ tr{a-zA-Z0-9}{_}c;
@@ -240,8 +247,7 @@ sub get_filtered_departures {
 
 	my ( @grep_line, @grep_platform, @filtered_results );
 
-	my $data = get_results( $opt{backend}, $opt{city}, $opt{stop},
-		$opt{cache_expiry} );
+	my $data = get_results( $opt{backend}, $opt{city}, $opt{stop} );
 
 	my $results = $data->{results};
 
@@ -434,7 +440,6 @@ sub render_json {
 		city => $self->stash('city') // q{},
 		stop => $self->stash('stop'),
 		backend         => scalar $self->param('backend'),
-		cache_expiry    => 120,
 		filter_line     => scalar $self->param('line'),
 		filter_platform => scalar $self->param('platform'),
 		hide_regional   => 0,
