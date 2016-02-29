@@ -153,8 +153,8 @@
 %   }
 %   else {
 %     if ($departure->can('countdown')) {
-%       if ($departure->countdown > 0) {
-          <%= $departure->countdown %> min
+%       if ($departure->countdown > 1) {
+          <%= $departure->countdown - 1 %> min
 %       }
 %       else {
           sofort
@@ -163,7 +163,12 @@
 %   }
     </span> <!-- countdown -->
     <span class="time">
-%=  $departure->time
+%   if ($departure->can('sched_time')) {
+%=    $departure->sched_time
+%   }
+%   else {
+%=    $departure->time
+%   }
     </span>
     </li>
 % }
