@@ -131,11 +131,19 @@ sub get_results {
 				full_routes => 0,
 			);
 		}
-		$data = {
-			results => [ $status->results ],
-			errstr  => $status->errstr,
-		};
-		if ( $status->can('identified_data') ) {
+		if ( not $status->errstr ) {
+			$data = {
+				results => [ $status->results ],
+				errstr  => undef,
+			};
+		}
+		else {
+			$data = {
+				results => [],
+				errstr  => $status->errstr,
+			};
+		}
+		if ( $status->can('identified_data') and not $status->errstr ) {
 			( $data->{id_name}, $data->{id_stop} ) = $status->identified_data;
 		}
 		if ( $status->errstr and $status->can('name_candidates') ) {
