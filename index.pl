@@ -8,7 +8,7 @@ use DateTime::Format::Strptime;
 use Encode qw(decode);
 use File::Slurp qw(read_file write_file);
 use List::Util qw(first);
-use List::MoreUtils qw(any);
+use List::MoreUtils qw();
 
 use App::VRR::Fakedisplay;
 use Travel::Status::DE::HAFAS;
@@ -278,10 +278,15 @@ sub get_filtered_departures {
 
 		# Note: The offset / countdown check does not yet take caching
 		# into account, so it may be off by up to cache_expiry seconds.
-		if (   ( @grep_line and not( any { $line =~ $_ } @grep_line ) )
+		if (
+			(
+				@grep_line
+				and not( List::MoreUtils::any { $line =~ $_ } @grep_line )
+			)
 			or ( @grep_platform and not( $platform ~~ \@grep_platform ) )
 			or ( $opt{hide_regional} and $line =~ m{ ^ (RB | RE | IC | EC) }x )
-			or ( $opt{offset} and $d->countdown < $opt{offset} ) )
+			or ( $opt{offset} and $d->countdown < $opt{offset} )
+		  )
 		{
 			next;
 		}
