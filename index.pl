@@ -439,6 +439,7 @@ sub render_html {
 		id_name    => decode( 'UTF-8', $data->{id_name} ),
 		id_stop    => decode( 'UTF-8', $data->{id_stop} ),
 		raw        => $data->{filtered_results},
+		errstr     => $data->{errstr},
 		scale      => $self->param('scale') || '4.3',
 		version    => $VERSION,
 	);

@@ -17,7 +17,7 @@
 </head>
 <body>
 
-% if (my $error = stash 'error') {
+% if (my $error = stash 'errstr') {
 <div class="error">Received an error from the backend service:</div>
 <div>
 <pre>
