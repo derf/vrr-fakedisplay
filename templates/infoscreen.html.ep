@@ -8,12 +8,12 @@
 	<meta http-equiv="refresh" content="<%= $self->stash('refresh_interval') %>"/>
 % }
 
-	%= stylesheet '/infoscreen.css'
+	%= stylesheet '/static/infoscreen.css'
 	%  if ($self->browser->mobile) {
-	%=   stylesheet '/mobile.css'
+	%=   stylesheet '/static/mobile.css'
 	%  }
-	%= javascript '/jquery-2.1.1.min.js'
-	%= javascript '/collapse.js'
+	%= javascript '/static/jquery-2.1.1.min.js'
+	%= javascript '/static/collapse.js'
 </head>
 <body>
 

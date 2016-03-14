@@ -4,9 +4,9 @@
 	<title><%= $title %></title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	%= stylesheet '/main.css'
-	%= javascript '/jquery-2.1.1.min.js'
-	%= javascript '/image.js'
+	%= stylesheet '/static/main.css'
+	%= javascript '/static/jquery-2.1.1.min.js'
+	%= javascript '/static/image.js'
 </head>
 <body>
 
