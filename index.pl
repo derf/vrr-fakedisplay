@@ -260,11 +260,11 @@ sub get_filtered_departures {
 	my $results = $data->{results};
 
 	if ( $opt{filter_line} ) {
-		my @lines = split( qr{,}, $opt{filter_line} );
+		my @lines = split( qr{,[[:space:]]*}, $opt{filter_line} );
 		@grep_line = map { qr{ ^ \Q$_\E }ix } @lines;
 	}
 	if ( $opt{filter_platform} ) {
-		@grep_platform = split( qr{,}, $opt{filter_platform} );
+		@grep_platform = split( qr{,[[:space:]]*}, $opt{filter_platform} );
 	}
 
 	for my $d ( @{$results} ) {
