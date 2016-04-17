@@ -271,7 +271,9 @@ sub get_filtered_departures {
 
 		my $line = $d->line;
 		my $platform
-		  = $d->can('platform') ? ( split( qr{ }, $d->platform ) )[-1] : q{};
+		  = $d->can('platform')
+		  ? ( split( qr{ }, $d->platform ) )[-1]
+		  : ( $d->can('stop_indicator') ? $d->stop_indicator : q{} );
 		my $destination = $d->destination;
 		my $time        = $d->time;
 		my $etr;
