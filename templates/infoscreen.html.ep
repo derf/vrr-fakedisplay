@@ -169,6 +169,11 @@
 %   else {
 %=    $departure->time
 %   }
+    <span class="platform">
+%   if ($departure->can('platform') and $departure->platform) {
+%=    $departure->platform
+%   }
+    </span>
     </span>
     </li>
 % }
