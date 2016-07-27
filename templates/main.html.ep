@@ -12,12 +12,14 @@
 
 % if ($stop) {
 % if ($errstr) {
+<div class="container">
 <div class="error">Received an error from the backend service:</div>
 <div>
 <pre>
 %= $errstr
 </pre>
 </div>
+</div><!-- container -->
 % }
 % elsif ($frontend eq 'png') {
 <img src="/<%= $city ? "$city/" : q{} %><%= $stop %>.png?<%= $params %>" alt=""
@@ -37,6 +39,7 @@ Preview:<br/>
 height="<%= $height * 5 %>" width="<%= $width * 5 %>"></iframe>
 % }
 % elsif ($frontend eq 'json') {
+<div class="container">
 <p>
 <a href="/<%= $city ? "$city/" : q{} %><%= $stop %>.json?<%= $params %>">JSON data for
 <%= $city %> <%= $stop %></a>
@@ -76,10 +79,11 @@ documentation
 </ul>
 <p>NOTE: The JSON interface is not guaranteed to be stable. The data layout may
 change any time.</p>
+</div> <!-- container -->
 % }
-% } # ($city and $stop)
+% } # ($stop)
 % else {
-
+<div class="container">
 <p>
 VRR-Infoscreen shows the next departures at a public transit stop, just like
 the Lumino LED displays used in some places. It also supports an
@@ -92,9 +96,9 @@ It works best for the VRR (Verkehrsverbund Rhein-Ruhr), but also supports many
 other german transit networks. All information is provided without any
 guarantee of correctness, completeness or anything else.
 </p>
-
+</div> <!-- container -->
 % }
-
+<div class="container">
 <div class="input-field">
 
 % if (my $error = stash 'error') {
@@ -130,6 +134,11 @@ guarantee of correctness, completeness or anything else.
     </div>
   </div>
   <div class="field">
+    %= submit_button 'Display'
+  </div>
+  <div class="break"></div>
+  <span class="optional">optional:</span>
+  <div class="field">
     <div class="desc">Frontend</div>
     <div>
       %= select_field frontend => [['LED board (PNG)' => 'png'], ['LED board (HTML)' => 'html'], ['App / Infoscreen' => 'infoscreen'], ['JSON' => 'json']]
@@ -147,11 +156,6 @@ guarantee of correctness, completeness or anything else.
       %= select_field backend => [['EFA / VRR' => 'vrr'], ['DB (HAFAS)' => 'db'], ['ASEAG (URA)' => 'aseag'], @efa_backends, @hafas_backends]
     </div>
   </div>
-  <div class="field">
-    %= submit_button 'Display'
-  </div>
-  <div class="break"></div>
-  <span class="optional">optional:</span>
   <div class="field">
     <div class="desc" title="number of lines">
       display height [lines]</div>
@@ -208,6 +212,7 @@ v<%= $Travel::Status::DE::HAFAS::VERSION %><br/>
 <a href="http://finalrewind.org/projects/Travel-Status-DE-VRR/">Travel::Status::DE::EFA</a>
 v<%= $Travel::Status::DE::EFA::VERSION %><br/>
 </div>
+</div> <!-- container -->
 
 </body>
 </html>
