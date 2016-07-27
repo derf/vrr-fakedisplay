@@ -13,12 +13,10 @@
 % if ($stop) {
 % if ($errstr) {
 <div class="container">
-<div class="error">Received an error from the backend service:</div>
-<div>
-<pre>
+<div class="error">
+<strong>Received an error from the backend service:</strong>
 %= $errstr
-</pre>
-</div>
+</div><!-- error -->
 </div><!-- container -->
 % }
 % elsif ($frontend eq 'png') {

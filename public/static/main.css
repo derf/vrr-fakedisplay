@@ -17,9 +17,14 @@ div.about a {
 }
 
 div.error {
-	font-size: 150%;
-	font-weight: bold;
-	color: #ee0000;
+	padding: 15px;
+	margin-bottom: 20px;
+	border: 1px solid #ebccd1;
+	border-radius: 4px;
+	color: #a94442;
+	background-color: #f2dede;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 pre {

@@ -8,14 +8,12 @@
 </head>
 <body>
 
-<div class="error">404 Not Found</div>
-<div>
-<pre>
+<div class="container">
+<div class="error">
+<strong>404 Not Found:</strong>
 The requested URL does not exist and does not map to a public transit station.
-</pre>
-</div>
-<div>
-<a href="/">return to main page</a>
-</div>
+<a href="/">Return to main page</a>
+</div> <!-- error -->
+</div> <!-- container -->
 </body>
 </html>
