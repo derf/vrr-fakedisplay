@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 	<title><%= $title %></title>
 	<meta charset="utf-8">
@@ -191,10 +191,9 @@ kind.
 <span class="notes">notes:</span>
 <ul>
 <li>The EFA backend does not support Umlauts</li>
-<li><a href="/Essen/Martinstr?no_lines=8">Example</a>
+<li><a href="/Essen/Martinstr?no_lines=8">Example</a></li>
 <li>See also <a href="http://dbf.finalrewind.org/">db-infoscreen</a> for an
 interface optimized for Deutsche Bahn departure data</li>
-</li>
 </ul>
 </div> <!-- notes -->
 
