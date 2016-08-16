@@ -47,7 +47,11 @@
 %=    $departure->line_no
 %   }
 %   else {
-%=    $departure->line
+%     my $line = $departure->line;
+%     if ($line =~ m{^IC}) {
+%       $line = join(q{ }, (split(qr{ }, $line))[0,1]);
+%     }
+%=    $line;
 %   }
     </span> <!-- line -->
     <span class="moreinfo">
