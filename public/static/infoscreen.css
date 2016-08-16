@@ -29,33 +29,33 @@ div.displayclean > ul > li {
 }
 
 div.displayclean li .line {
-	color:#FFFFFF;
-	background-color:#666666;
+	background-color: #eeeeee;
+	border-radius: 5px;
 	font-weight:bold;
 	font-size: 2.9em;
 	padding:3px 8px 2px 5px;
 	position:absolute;
-	top:7px;
+	bottom:5px;
 	left:2px;
 }
 
 div.displayclean li .tram {
-	background-color:#CC0000;
+	background-color:#ffcccc;
 }
 
 div.displayclean li .sbahn {
-	background-color:#006E10;
+	background-color:#aaffba;
 	-webkit-border-radius: 30px;
 	-moz-border-radius: 30px;
 	border-radius: 30px;
 }
 
 div.displayclean li .ubahn {
-	background-color:#001090;
+	background-color:#aac0ff;
 }
 
 div.displayclean li .bus {
-	background-color:#991199;
+	background-color:#eeaaee;
 	-webkit-border-radius: 10px;
 	-moz-border-radius: 10px;
 	border-radius: 10px;
