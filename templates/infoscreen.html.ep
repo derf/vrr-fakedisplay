@@ -67,6 +67,7 @@
 %   }
     </span> <!-- train-route -->
     </div> <!-- mheader -->
+    <div class="mfooter">
 %   if ($departure->isa('Travel::Status::DE::EFA::Result')) {
       Fahrplan:
       <table class="scheduled">
@@ -136,6 +137,7 @@
 %     }
       </table>
 %   }
+    </div> <!-- mfooter -->
     </span> <!-- moreinfo -->
     <span class="route">
 %   if ($departure->can('route_interesting') and $departure->route_interesting) {
