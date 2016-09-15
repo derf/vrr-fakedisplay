@@ -138,7 +138,12 @@ kind.
   <div class="field">
     <div class="desc">Frontend</div>
     <div>
-      %= select_field frontend => [['LED board (PNG)' => 'png'], ['LED board (HTML)' => 'html'], ['App / Infoscreen' => 'infoscreen'], ['JSON' => 'json']]
+      % if ($self->browser->mobile) {
+      %=  select_field frontend => [['App / Infoscreen' => 'infoscreen'], ['LED board (PNG)' => 'png'], ['LED board (HTML)' => 'html'], ['JSON' => 'json']]
+      % }
+      % else {
+      %=  select_field frontend => [['LED board (PNG)' => 'png'], ['LED board (HTML)' => 'html'], ['App / Infoscreen' => 'infoscreen'], ['JSON' => 'json']]
+      % }
     </div>
   </div>
   <div class="field">
