@@ -15,6 +15,8 @@ div.displayclean > ul {
 	position:absolute;
 	width:100%;
 
+	background-color: inherit;
+
 	list-style-type:none;
 	margin:0;
 	padding:0;
@@ -26,6 +28,7 @@ div.displayclean > ul > li {
 	border-bottom: 1px solid #999999;
 	width:100%;
 	position:relative;
+	background-color: inherit;
 }
 
 div.displayclean li .line {
@@ -80,7 +83,6 @@ div.displayclean li .dest {
 	left:2.5em;
 	bottom:-0.1em;
 	width: 70%;
-	z-index: 1;
 	overflow: hidden;
 }
 
@@ -90,10 +92,12 @@ div.displayclean li.cancelled {
 
 div.displayclean li .countdown {
 	color:#000000;
+	background-color: inherit;
 	font-size:3em;
 	position:absolute;
 	right:5px;
 	bottom:2px;
+	padding-left: 0.2em;
 }
 
 div.displayclean li .header {
@@ -113,15 +117,18 @@ div.displayclean li .head {
 div.displayclean li .countdown .delay {
 	font-size: 1em;
 	color:#FF0000;
+	background-color: inherit;
 	padding-right:7px;
 }
 
 div.displayclean li > .time {
 	color:#444444;
+	background-color: inherit;
 	font-size: 2.4em;
 	position:absolute;
 	right:5px;
 	top:5px;
+	padding-left: 0.2em;
 }
 
 div.displayclean li > .time > .platform {
