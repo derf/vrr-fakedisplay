@@ -30,6 +30,7 @@
 <ul>
 % for my $departure (@{$raw}) {
 %   my $linetype = q{};
+%   my $liclass = q{};
 %   if ($departure->can('type')) {
 %     given ($departure->type) {
 %       when ($_ =~ m{ (?: enbahn $ ) | Tram | STR }ix) { $linetype = 'tram' }
@@ -38,7 +39,10 @@
 %       when ([qw[U-Bahn U]])       { $linetype = 'ubahn' }
 %     }
 %   }
-    <li>
+%   if ($departure->can('is_cancelled') and $departure->is_cancelled) {
+%     $liclass = 'cancelled';
+%   }
+    <li class="<%= $liclass %>">
     <span class="line <%= $linetype %>">
 %   if ($departure->can('line_no')) {
 %     if ($linetype eq 'sbahn') {
