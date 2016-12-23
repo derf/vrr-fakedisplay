@@ -31,6 +31,8 @@
 % for my $departure (@{$raw}) {
 %   my $linetype = q{};
 %   my $liclass = q{};
+%   my $time_abs = q{};
+%   my $time_rel = q{};
 %   if ($departure->can('type')) {
 %     given ($departure->type) {
 %       when ($_ =~ m{ (?: enbahn $ ) | Tram | STR }ix) { $linetype = 'tram' }
@@ -39,8 +41,39 @@
 %       when ([qw[U-Bahn U]])       { $linetype = 'ubahn' }
 %     }
 %   }
+%   if ($departure->can('countdown')) {
+%     if ($departure->countdown > 1) {
+%       $time_rel = $departure->countdown -1 . ' min';
+%     }
+%     else {
+%       $time_rel = 'sofort';
+%     }
+%   }
+%   if ($departure->can('sched_time')) {
+%     $time_abs = $departure->sched_time;
+%   }
+%   else {
+%     $time_abs = $departure->time;
+%   }
+%   my $time_main = $time_rel;
+%   my $time_sec = $time_abs;
+%   if (my $timefmt = param('time_format')) {
+%     if ($timefmt eq 'abs_rel') {
+%       $time_main = $time_abs;
+%       $time_sec = $time_rel;
+%     }
+%     elsif ($timefmt eq 'abs') {
+%       $time_main = $time_abs;
+%       $time_sec = q{};
+%     }
+%     elsif ($timefmt eq 'rel') {
+%       $time_main = $time_rel;
+%       $time_sec = q{};
+%     }
+%   }
 %   if ($departure->can('is_cancelled') and $departure->is_cancelled) {
 %     $liclass = 'cancelled';
+%     $time_main = q{};
 %   }
     <li class="<%= $liclass %>">
     <span class="line <%= $linetype %>">
@@ -159,26 +192,14 @@
       <span class="delay"> (+<%= $departure->delay %>) </span>
 %   }
 %   if ($departure->can('is_cancelled') and $departure->is_cancelled) {
-      <span class="delay"> FÄLLT AUS </span>
+      <span class="delay"> fällt aus </span>
 %   }
 %   else {
-%     if ($departure->can('countdown')) {
-%       if ($departure->countdown > 1) {
-          <%= $departure->countdown - 1 %> min
-%       }
-%       else {
-          sofort
-%       }
-%     }
+%=    $time_main
 %   }
     </span> <!-- countdown -->
     <span class="time">
-%   if ($departure->can('sched_time')) {
-%=    $departure->sched_time
-%   }
-%   else {
-%=    $departure->time
-%   }
+%=  $time_sec
 %   if ($departure->can('platform') and $departure->platform) {
       <span class="platform">
 %=      $departure->platform
