@@ -5,7 +5,6 @@ use utf8;
 
 use DateTime;
 use DateTime::Format::Strptime;
-use Encode qw(decode);
 use File::Slurp qw(read_file write_file);
 use List::Util qw(first);
 use List::MoreUtils qw();
@@ -438,8 +437,8 @@ sub render_html {
 		title      => "vrr-infoscreen v${VERSION}",
 		color      => [ split( qr{,}, $color ) ],
 		departures => \@departures,
-		id_name    => decode( 'UTF-8', $data->{id_name} ),
-		id_stop    => decode( 'UTF-8', $data->{id_stop} ),
+		id_name    => $data->{id_name},
+		id_stop    => $data->{id_stop},
 		raw        => $data->{filtered_results},
 		errstr     => $data->{errstr},
 		scale      => $self->param('scale') || '4.3',
