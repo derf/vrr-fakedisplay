@@ -195,7 +195,6 @@ kind.
 <div class="notes">
 <span class="notes">notes:</span>
 <ul>
-<li>The EFA backend does not support Umlauts</li>
 <li><a href="/Essen/Martinstr?no_lines=8">Example</a></li>
 <li>See also <a href="http://dbf.finalrewind.org/">db-infoscreen</a> for an
 interface optimized for Deutsche Bahn departure data</li>
