@@ -211,6 +211,8 @@ v<%= $Travel::Status::DE::ASEAG::VERSION %><br/>
 v<%= $Travel::Status::DE::HAFAS::VERSION %><br/>
 <a href="http://finalrewind.org/projects/Travel-Status-DE-VRR/">Travel::Status::DE::EFA</a>
 v<%= $Travel::Status::DE::EFA::VERSION %><br/>
+<a href="/_imprint">Imprint</a><br/>
+<a href="/_privacy">Privacy</a><br/>
 </div>
 </div> <!-- container -->
 

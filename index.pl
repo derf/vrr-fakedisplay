@@ -639,6 +639,18 @@ get '/_redirect' => sub {
 	return;
 };
 
+get '/_privacy' => sub {
+	my $self = shift;
+
+	$self->render('privacy');
+};
+
+get '/_imprint' => sub {
+	my $self = shift;
+
+	$self->render('imprint');
+};
+
 get '/'                   => \&handle_request;
 get '/:city/(*stop).html' => \&render_html;
 get '/:city/(*stop).json' => \&render_json;
