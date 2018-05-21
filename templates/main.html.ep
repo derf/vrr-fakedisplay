@@ -198,7 +198,7 @@ Alle Angaben ohne Gewähr.
 </div> <!-- notes -->
 
 <div class="about">
-<a href="http://finalrewind.org/projects/vrr-fakedisplay/">vrr-fakedisplay</a>
+<a href="http://finalrewind.org/projects/vrr-fakedisplay/">vrr-infoscreen</a>
 v<%= $version %><br/>
 Backends:<br/>
 <a href="http://finalrewind.org/projects/Travel-Status-DE-URA/">Travel::Status::DE::URA</a>
