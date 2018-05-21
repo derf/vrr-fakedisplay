@@ -14,7 +14,7 @@
 % if ($errstr) {
 <div class="container">
 <div class="error">
-<strong>Received an error from the backend service:</strong>
+<strong>Backend-Fehler:</strong>
 %= $errstr
 </div><!-- error -->
 </div><!-- container -->
@@ -29,7 +29,7 @@ height="<%= $height * 5 %>" width="<%= $width * 5 %>"></iframe>
 % }
 % elsif ($frontend eq 'infoscreen') {
 <p>
-<a href="/<%= $city ? "$city/" : q{} %><%= $stop %>.html?<%= $params %>&amp;template=infoscreen">Infoscreen for
+<a href="/<%= $city ? "$city/" : q{} %><%= $stop %>.html?<%= $params %>&amp;template=infoscreen">Infoscreen für
 <%= $city %> <%= $stop %></a>
 </p>
 Preview:<br/>
@@ -39,59 +39,55 @@ height="<%= $height * 5 %>" width="<%= $width * 5 %>"></iframe>
 % elsif ($frontend eq 'json') {
 <div class="container">
 <p>
-<a href="/<%= $city ? "$city/" : q{} %><%= $stop %>.json?<%= $params %>">JSON data for
+<a href="/<%= $city ? "$city/" : q{} %><%= $stop %>.json?<%= $params %>">JSON-Daten für
 <%= $city %> <%= $stop %></a>
 </p>
 <p>
-Data is cached for 1 minute. JSON format:
+Die Daten werden für 5 Minuten zwischengespeichert. Format:
 </p>
 <ul>
-<li>error: err string if an error occured, otherwise null</li>
-<li>preformatted: strings used by the PNG / HTML frontend</li>
+<li>error: Fehlermeldung im Fehlerfall, sonst null</li>
+<li>preformatted: Die vom PNG/HTML-Frontend verwendeten Angaben</li>
 <li>raw:
 % if (param('backend') and param('backend') =~ m{ ^db | ^hafas }x) {
-serialized
+Serialisierte
 <a href="http://finalrewind.org/projects/Travel-Status-DE-DeutscheBahn/">
-Travel::Status::DE::HAFAS</a>-objects, see the
+Travel::Status::DE::HAFAS</a>-Objekte, siehe die Dokumentation zu
 <a href="http://man.finalrewind.org/3/Travel-Status-DE-HAFAS-Result/">::Result</a>
-documentation
 % }
 % elsif (param('backend') and param('backend') eq 'aseag') {
-serialized
+Serialisierte
 <a href="http://finalrewind.org/projects/Travel-Status-DE-URA/">
-Travel::Status::DE::URA</a>-objects, see the
+Travel::Status::DE::URA</a>-Objekte, siehe die Dokumentation zu
 <a href="http://man.finalrewind.org/3/Travel-Status-DE-URA-Result/">::Result</a>
-documentation
 % }
 % else {
-serialized
+Serialisierte
 <a href="http://finalrewind.org/projects/Travel-Status-DE-VRR/">
-Travel::Status::DE::EFA</a>-objects, see the
+Travel::Status::DE::EFA</a>-Objekte, siehe die Dokumentation zu
 <a href="http://man.finalrewind.org/3/Travel-Status-DE-EFA-Result/">::Result</a>
-and
+und
 <a href="http://man.finalrewind.org/3/Travel-Status-DE-EFA-Line/">::Line</a>
-documentation
 % }
 </li>
-<li>version: Program version (string, not numeric)</li>
+<li>version: Aktuelle vrr-infoscreen-Version (String, keine Zahl)</li>
 </ul>
-<p>NOTE: The JSON interface is not guaranteed to be stable. The data layout may
-change any time.</p>
+<p>Bitte beachten: Das Datenformat des JSON-Interface kann sich jederzeit ohne
+Ankündigung ändern.</p>
 </div> <!-- container -->
 % }
 % } # ($stop)
 % else {
 <div class="container">
 <p>
-VRR-Infoscreen shows the next departures at a public transit stop, just like
-the Lumino LED displays used in some places. It also supports an app /
-infoscreen-like frontend and JSON export.
+Diese Seite ist ein inoffizielles Frontend für die Abfahrtsmonitore
+einiger europäischer Nahverkehrsunternehmen. Sie kannn wahlweise die oft an
+Haltestellen montierten LED-Displays nachahmen oder einen Handy- und
+Infoscreen-tauglichen Abfahrtsmonitor anzeigen.
 </p>
 
 <p>
-It works best for the VRR (Verkehrsverbund Rhein-Ruhr), but also supports many
-other german transit networks. All data is provided without warranty of any
-kind.
+Alle Angaben ohne Gewähr.
 </p>
 </div> <!-- container -->
 % }
@@ -100,14 +96,14 @@ kind.
 
 % if (my $error = stash 'error') {
 <p>
-  Error: <%= $error %><br/>
+  Fehler: <%= $error %><br/>
 </p>
 % }
 
 %= form_for _redirect => begin
 <div>
   <div class="field">
-    <div class="desc">City (required for EFA backend, optional otherwise)</div>
+    <div class="desc">Stadt (Pflichtfeld für EFA-Backends, sonst optional)</div>
     <div>
       % if (stash('place_candidates') and @{ stash('place_candidates') } ) {
         % my @candidates = map { [ $_, $_ ] } @{ stash('place_candidates') };
@@ -119,7 +115,7 @@ kind.
     </div>
   </div>
   <div class="field">
-    <div class="desc">Stop</div>
+    <div class="desc">Haltestelle</div>
     <div>
       % if (stash('name_candidates') and @{ stash('name_candidates') } ) {
         % my @candidates = map { [ $_, $_ ] } @{ stash('name_candidates') };
@@ -131,7 +127,7 @@ kind.
     </div>
   </div>
   <div class="field">
-    %= submit_button 'Display'
+    %= submit_button 'Anzeigen'
   </div>
   <div class="break"></div>
   <span class="optional">optional:</span>
@@ -139,10 +135,10 @@ kind.
     <div class="desc">Frontend</div>
     <div>
       % if ($self->browser->mobile) {
-      %=  select_field frontend => [['App / Infoscreen' => 'infoscreen'], ['LED board (PNG)' => 'png'], ['LED board (HTML)' => 'html'], ['JSON' => 'json']]
+      %=  select_field frontend => [['App / Infoscreen' => 'infoscreen'], ['LED-Tafel (PNG)' => 'png'], ['LED-Tafel (HTML)' => 'html'], ['JSON' => 'json']]
       % }
       % else {
-      %=  select_field frontend => [['LED board (PNG)' => 'png'], ['LED board (HTML)' => 'html'], ['App / Infoscreen' => 'infoscreen'], ['JSON' => 'json']]
+      %=  select_field frontend => [['LED-Tafel (PNG)' => 'png'], ['LED-Tafel (HTML)' => 'html'], ['App / Infoscreen' => 'infoscreen'], ['JSON' => 'json']]
       % }
     </div>
   </div>
@@ -159,27 +155,27 @@ kind.
     </div>
   </div>
   <div class="field">
-    <div class="desc" title="number of lines">
-      display height [lines]</div>
+    <div class="desc">
+      Höhe der Abfahrtstafel in Zeilen</div>
     <div>
       %= number_field 'no_lines', min => 1, max => 10
     </div>
   </div>
   <div class="field">
-    <div class="desc">min. offset [minutes]</div>
+    <div class="desc">Mindestoffset der angezeigten Abfahrten in Minuten</div>
     <div>
     %= number_field 'offset', min => 0
     </div>
   </div>
   <div class="field">
-    <div class="desc" title="comma-separated list, example: NE,U,10">
-      match line prefixes¹</div>
+    <div class="desc">
+      Linien/Typen¹</div>
     <div>
       %= text_field 'line'
     </div>
   </div>
   <div class="field">
-    <div class="desc" title="comma-separated list. Buggy.">match platform¹</div>
+    <div class="desc">Bahnsteige¹</div>
     <div>
       %= text_field 'platform'
     </div>
@@ -188,16 +184,16 @@ kind.
 % end
 
 <p>
-<b>¹</b> separate values with commas, e.g. NE,U,10
+<b>¹</b> Es können mehrere durch Kommata getrennte Werte angegeben werden, z.B. NE,U,10
 </p>
 </div> <!-- input-field -->
 
 <div class="notes">
-<span class="notes">notes:</span>
+<span class="notes">Hinweise:</span>
 <ul>
-<li><a href="/Essen/Martinstr?no_lines=8">Example</a></li>
-<li>See also <a href="http://dbf.finalrewind.org/">db-infoscreen</a> for an
-interface optimized for Deutsche Bahn departure data</li>
+<li><a href="/Essen/Martinstr?no_lines=8">Beispiel</a></li>
+<li><a href="http://dbf.finalrewind.org/">db-infoscreen</a>
+(für Züge und Bahnhöfe optimiert)</li>
 </ul>
 </div> <!-- notes -->
 
@@ -211,8 +207,8 @@ v<%= $Travel::Status::DE::ASEAG::VERSION %><br/>
 v<%= $Travel::Status::DE::HAFAS::VERSION %><br/>
 <a href="http://finalrewind.org/projects/Travel-Status-DE-VRR/">Travel::Status::DE::EFA</a>
 v<%= $Travel::Status::DE::EFA::VERSION %><br/>
-<a href="/_imprint">Imprint</a><br/>
-<a href="/_privacy">Privacy</a><br/>
+<a href="/_imprint">Impressum</a><br/>
+<a href="/_privacy">Datenschutz</a><br/>
 </div>
 </div> <!-- container -->
 

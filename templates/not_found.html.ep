@@ -11,8 +11,9 @@
 <div class="container">
 <div class="error">
 <strong>404 Not Found:</strong>
-The requested URL does not exist and does not map to a public transit station.
-<a href="/">Return to main page</a>
+Die aufgerufene URL existiert nicht und ist keine gültige Abbildung auf einen
+Haltestellennamen.
+<a href="/">Zurück zur Hauptseite</a>
 </div> <!-- error -->
 </div> <!-- container -->
 </body>
