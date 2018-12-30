@@ -1,0 +1,21 @@
+[Unit]
+Description=vrrf.finalrewind.org
+After=network.target
+
+[Service]
+Type=simple
+RemainAfterExit=yes
+PIDFile=/tmp/vrr-fakedisplay.pid
+ExecStart=/usr/bin/hypnotoad -f index.pl
+ExecStop=/usr/bin/hypnotoad -s index.pl
+ExecReload=/usr/bin/hypnotoad index.pl
+User=vrr-fakedisplay
+WorkingDirectory=/srv/www/vrr-fakedisplay
+Environment=LANG=en_US.UTF-8
+Environment=VRRFAKEDISPLAY_LISTEN=http://127.0.0.1:8091
+Environment=VRRFAKEDISPLAY_WORKERS=1
+Environment=VRRFAKEDISPLAY_STATS=/tmp/vrrf-api-stats
+Environment=VRRFAKEDISPLAY_CACHE=/var/cache/vrrf/main
+
+[Install]
+WantedBy=multi-user.target
