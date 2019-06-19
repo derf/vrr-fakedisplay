@@ -20,6 +20,7 @@ instance, see the Setup notes below.
  * File::ShareDir
  * GD
  * Mojolicious
+ * Mojolicious::Plugin::BrowserDetect
  * Travel::Status::DE::EFA ≥ 1.15
  * Travel::Status::DE::HAFAS ≥ 2.03
  * Travel::Status::DE::URA ≥ 2.01
