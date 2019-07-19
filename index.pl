@@ -81,7 +81,7 @@ sub get_results {
 	}
 
 	my $cache = Cache::File->new(
-		cache_root => $ENV{VRRFAKEDISPLAY_CACHE} // '/tmp/vrr-fakedisplay',
+		cache_root      => $ENV{VRRFAKEDISPLAY_CACHE} // '/tmp/vrr-fakedisplay',
 		default_expires => "${expiry} sec",
 		lock_level      => Cache::File::LOCK_LOCAL(),
 	);
@@ -98,14 +98,14 @@ sub get_results {
 		my $status;
 		if ( $backend eq 'hafas' ) {
 			$status = Travel::Status::DE::HAFAS->new(
-				station => ( $city ? "${city} ${stop}" : $stop ),
+				station       => ( $city ? "${city} ${stop}" : $stop ),
 				excluded_mots => [qw[ice ic_ec d regio]],
 				service       => $sub_backend,
 			);
 		}
 		elsif ( $backend eq 'aseag' ) {
 			$status = Travel::Status::DE::ASEAG->new(
-				stop => ( $city ? "${city} ${stop}" : $stop ),
+				stop             => ( $city ? "${city} ${stop}" : $stop ),
 				calculate_routes => 1,
 			);
 		}
@@ -312,7 +312,7 @@ sub make_infoboard_lines {
 	my $want_crop       = $opt{want_crop};
 	my @fmt_departures;
 
-	my $dt_now = DateTime->now( time_zone => 'Europe/Berlin' );
+	my $dt_now      = DateTime->now( time_zone => 'Europe/Berlin' );
 	my $strp_simple = DateTime::Format::Strptime->new(
 		pattern   => '%H:%M',
 		time_zone => 'floating',
@@ -407,8 +407,8 @@ sub render_html {
 	my $template = $frontend eq 'html' ? 'display' : 'infoscreen';
 
 	my $data = get_filtered_departures(
-		city => $self->stash('city') // q{},
-		stop => $self->stash('stop'),
+		city            => $self->stash('city') // q{},
+		stop            => $self->stash('stop'),
 		backend         => scalar $self->param('backend'),
 		filter_line     => scalar $self->param('line'),
 		filter_platform => scalar $self->param('platform'),
@@ -417,8 +417,8 @@ sub render_html {
 	);
 
 	my @departures = make_infoboard_lines(
-		city => $self->stash('city') // q{},
-		stop => $self->stash('stop'),
+		city      => $self->stash('city') // q{},
+		stop      => $self->stash('stop'),
 		backend   => scalar $self->param('backend'),
 		no_lines  => scalar $self->param('no_lines'),
 		offset    => scalar $self->param('offset'),
@@ -452,8 +452,8 @@ sub render_json {
 	my $self = shift;
 
 	my $data = get_filtered_departures(
-		city => $self->stash('city') // q{},
-		stop => $self->stash('stop'),
+		city            => $self->stash('city') // q{},
+		stop            => $self->stash('stop'),
 		backend         => scalar $self->param('backend'),
 		filter_line     => scalar $self->param('line'),
 		filter_platform => scalar $self->param('platform'),
@@ -495,8 +495,8 @@ sub render_image {
 	my $scale = $self->param('scale');
 
 	my $data = get_filtered_departures(
-		city => $self->stash('city') // q{},
-		stop => $self->stash('stop'),
+		city            => $self->stash('city') // q{},
+		stop            => $self->stash('stop'),
 		backend         => scalar $self->param('backend'),
 		filter_line     => scalar $self->param('line'),
 		filter_platform => scalar $self->param('platform'),
@@ -507,8 +507,8 @@ sub render_image {
 	my $errstr         = $data->{errstr};
 
 	my @departures = make_infoboard_lines(
-		city => $self->stash('city') // q{},
-		stop => $self->stash('stop'),
+		city      => $self->stash('city') // q{},
+		stop      => $self->stash('stop'),
 		backend   => scalar $self->param('backend'),
 		no_lines  => scalar $self->param('no_lines'),
 		offset    => scalar $self->param('offset'),
@@ -663,7 +663,7 @@ get '/:stop'              => \&handle_request;
 
 app->config(
 	hypnotoad => {
-		listen => [ $ENV{VRRFAKEDISPLAY_LISTEN} // 'http://127.0.0.1:8091' ],
+		listen   => [ $ENV{VRRFAKEDISPLAY_LISTEN} // 'http://127.0.0.1:8091' ],
 		pid_file => '/tmp/vrr-fakedisplay.pid',
 		workers  => $ENV{VRRFAKEDISPLAY_WORKERS} // 2,
 	},
