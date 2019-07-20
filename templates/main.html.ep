@@ -55,7 +55,7 @@ Serialisierte
 Travel::Status::DE::HAFAS</a>-Objekte, siehe die Dokumentation zu
 <a href="http://man.finalrewind.org/3/Travel-Status-DE-HAFAS-Result/">::Result</a>
 % }
-% elsif (param('backend') and param('backend') eq 'aseag') {
+% elsif (param('backend') and param('backend') =~ m{ ^ura }x) {
 Serialisierte
 <a href="http://finalrewind.org/projects/Travel-Status-DE-URA/">
 Travel::Status::DE::URA</a>-Objekte, siehe die Dokumentation zu
@@ -150,8 +150,11 @@ Alle Angaben ohne Gewähr.
       %                 map { [$_->[0], $_] } @efa_backends;
       % my @hafas_backends = map { ["$_ (HAFAS)" => "hafas.$_"] } hafas_service_list();
       % @hafas_backends = map { $_->[1] } sort { $a->[0] cmp $b->[0] }
-      %                 map { [$_->[0], $_] } @hafas_backends;
-      %= select_field backend => [['EFA / VRR' => 'vrr'], ['DB (HAFAS)' => 'db'], ['ASEAG (URA)' => 'aseag'], @efa_backends, @hafas_backends]
+      %                   map { [$_->[0], $_] } @hafas_backends;
+      % my @ura_backends = map { ["$_ (URA)" => "ura.$_"] } ura_service_list();
+      % @ura_backends = map { $_->[1] } sort { $a->[0] cmp $b->[0] }
+      %                 map { [$_->[0], $_] } @ura_backends;
+      %= select_field backend => [['EFA / VRR' => 'vrr'], @efa_backends, @hafas_backends, @ura_backends]
     </div>
   </div>
   <div class="field">

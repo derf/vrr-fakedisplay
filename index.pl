@@ -11,7 +11,7 @@ use List::MoreUtils qw();
 
 use App::VRR::Fakedisplay;
 use Travel::Status::DE::HAFAS;
-use Travel::Status::DE::ASEAG;
+use Travel::Status::DE::URA;
 use Travel::Status::DE::EFA;
 
 no warnings 'uninitialized';
@@ -34,6 +34,9 @@ my @efa_services
 my @hafas_services
   = map { $_->{shortname} } Travel::Status::DE::HAFAS::get_services();
 
+my @ura_services
+  = map { $_->{shortname} } Travel::Status::DE::URA::get_services();
+
 sub log_api_access {
 	my $counter = 1;
 	if ( -r $ENV{VRRFAKEDISPLAY_STATS} ) {
@@ -55,6 +58,9 @@ sub get_results {
 	if ( $backend and $backend eq 'db' ) {
 		$backend = 'hafas.DB';
 	}
+	if ( $backend and $backend eq 'aseag' ) {
+		$backend = 'ura.ASEAG';
+	}
 
 	if ( $backend =~ s{ [.] (.+) $ }{}x ) {
 		$sub_backend = $1;
@@ -69,6 +75,12 @@ sub get_results {
 			return {
 				results => [],
 				errstr  => "hafas sub-backend '$sub_backend' not supported"
+			};
+		}
+		if ( $backend eq 'ura' and not $sub_backend ~~ \@ura_services ) {
+			return {
+				results => [],
+				errstr  => "ura sub-backend '$sub_backend' not supported"
 			};
 		}
 	}
@@ -103,11 +115,18 @@ sub get_results {
 				service       => $sub_backend,
 			);
 		}
-		elsif ( $backend eq 'aseag' ) {
-			$status = Travel::Status::DE::ASEAG->new(
-				stop             => ( $city ? "${city} ${stop}" : $stop ),
-				calculate_routes => 1,
-			);
+		elsif ( $backend eq 'ura' ) {
+			my $service
+			  = first { lc( $_->{shortname} ) eq lc($sub_backend) }
+			Travel::Status::DE::URA::get_services();
+			if ($service) {
+				$status = Travel::Status::DE::URA->new(
+					ura_base         => $service->{ura_base},
+					ura_version      => $service->{ura_version},
+					stop             => ( $city ? "${city} ${stop}" : $stop ),
+					calculate_routes => 1,
+				);
+			}
 		}
 		else {
 			my $efa_url = 'http://efa.vrr.de/vrr/XSLT_DM_REQUEST';
@@ -585,6 +604,12 @@ helper 'hafas_service_list' => sub {
 	my $self = shift;
 
 	return @hafas_services;
+};
+
+helper 'ura_service_list' => sub {
+	my $self = shift;
+
+	return @ura_services;
 };
 
 helper 'handle_no_results' => sub {
