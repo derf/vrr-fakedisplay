@@ -8,12 +8,13 @@
 	<meta http-equiv="refresh" content="<%= $self->stash('refresh_interval') %>"/>
 % }
 
-	%= stylesheet '/static/infoscreen.css'
+	% my $av = 'v1'; # asset version
+	%= stylesheet "/static/${av}/css/infoscreen.css"
 	%  if ($self->browser->mobile) {
-	%=   stylesheet '/static/mobile.css'
+	%=   stylesheet "/static/${av}/css/mobile.css"
 	%  }
-	%= javascript '/static/jquery-2.1.1.min.js'
-	%= javascript '/static/collapse.js'
+	%= javascript '/static/js/jquery-2.1.1.min.js'
+	%= javascript "/static/${av}/js/collapse.js"
 </head>
 <body>
 

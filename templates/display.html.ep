@@ -3,8 +3,9 @@
 <head>
 	<title><%= $title %></title>
 	<meta charset="utf-8">
-	%= stylesheet '/static/display.css'
-	%= javascript '/static/jquery-2.1.1.min.js'
+	% my $av = 'v1'; # asset version
+	%= stylesheet "/static/${av}/css/display.css"
+	%= javascript '/static/js/jquery-2.1.1.min.js'
 </head>
 <body style="color: #<%= join(q{}, map { sprintf('%02x', $_) } @{$color} ) %>;
     font-size: <%= $scale * 100 %>%;">

@@ -4,9 +4,10 @@
 	<title><%= $title %></title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	%= stylesheet '/static/main.css'
-	%= javascript '/static/jquery-2.1.1.min.js'
-	%= javascript '/static/image.js'
+	% my $av = 'v1'; # asset version
+	%= stylesheet "/static/${av}/css/main.css"
+	%= javascript '/static/js/jquery-2.1.1.min.js'
+	%= javascript "/static/${av}/js/image.js"
 </head>
 <body>
 
