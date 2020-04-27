@@ -1,0 +1,12 @@
+requires 'Cache';
+requires 'DateTime';
+requires 'DateTime::Format::Strptime';
+requires 'File::ShareDir';
+requires 'File::Slurp';
+requires 'GD';
+requires 'Module::Build';
+requires 'Mojolicious';
+requires 'Mojolicious::Plugin::BrowserDetect';
+requires 'Travel::Status::DE::EFA';
+requires 'Travel::Status::DE::HAFAS';
+requires 'Travel::Status::DE::URA';
