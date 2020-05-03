@@ -196,8 +196,8 @@ Alle Angaben ohne Gewähr.
 <span class="notes">Hinweise:</span>
 <ul>
 <li><a href="/Essen/Martinstr?no_lines=8">Beispiel</a></li>
-<li><a href="http://dbf.finalrewind.org/">db-infoscreen</a>
-(für Züge und Bahnhöfe optimiert)</li>
+<li><a href="https://dbf.finalrewind.org/">db-infoscreen</a>
+(nur S-Bahn, Regional- und Fernverkehr)</li>
 </ul>
 </div> <!-- notes -->
 
@@ -205,12 +205,12 @@ Alle Angaben ohne Gewähr.
 <a href="http://finalrewind.org/projects/vrr-fakedisplay/">vrr-infoscreen</a>
 v<%= $version %><br/>
 Backends:<br/>
-<a href="http://finalrewind.org/projects/Travel-Status-DE-URA/">Travel::Status::DE::URA</a>
-v<%= $Travel::Status::DE::ASEAG::VERSION %><br/>
-<a href="http://finalrewind.org/projects/Travel-Status-DE-DeutscheBahn/">Travel::Status::DE::HAFAS</a>
-v<%= $Travel::Status::DE::HAFAS::VERSION %><br/>
 <a href="http://finalrewind.org/projects/Travel-Status-DE-VRR/">Travel::Status::DE::EFA</a>
 v<%= $Travel::Status::DE::EFA::VERSION %><br/>
+<a href="http://finalrewind.org/projects/Travel-Status-DE-DeutscheBahn/">Travel::Status::DE::HAFAS</a>
+v<%= $Travel::Status::DE::HAFAS::VERSION %><br/>
+<a href="http://finalrewind.org/projects/Travel-Status-DE-URA/">Travel::Status::DE::URA</a>
+v<%= $Travel::Status::DE::URA::VERSION %><br/>
 <a href="/_imprint">Impressum</a><br/>
 <a href="/_privacy">Datenschutz</a><br/>
 </div>
