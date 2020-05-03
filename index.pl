@@ -688,7 +688,7 @@ get '/:stop'              => \&handle_request;
 
 app->config(
 	hypnotoad => {
-		listen   => [ $ENV{VRRFAKEDISPLAY_LISTEN} // 'http://127.0.0.1:8091' ],
+		listen   => [ $ENV{VRRFAKEDISPLAY_LISTEN} // 'http://*:8091' ],
 		pid_file => '/tmp/vrr-fakedisplay.pid',
 		workers  => $ENV{VRRFAKEDISPLAY_WORKERS} // 2,
 	},
