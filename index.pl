@@ -303,9 +303,9 @@ sub get_filtered_departures {
 				@grep_line
 				and not( List::MoreUtils::any { $line =~ $_ } @grep_line )
 			)
-			or ( @grep_platform and not( $platform ~~ \@grep_platform ) )
+			or ( @grep_platform      and not( $platform ~~ \@grep_platform ) )
 			or ( $opt{hide_regional} and $line =~ m{ ^ (RB | RE | IC | EC) }x )
-			or ( $opt{offset} and $d->countdown < $opt{offset} )
+			or ( $opt{offset}        and $d->countdown < $opt{offset} )
 		  )
 		{
 			next;
@@ -323,10 +323,11 @@ sub make_infoboard_lines {
 	my (%opt) = @_;
 
 	my ( @grep_line, @grep_platform );
-	my $no_lines  = $opt{no_lines}  // $default{no_lines};
-	my $max_lines = $opt{max_lines} // 40;
-	my $offset    = $opt{offset}    // 0;
-	my $results   = $opt{data};
+	my $no_lines    = $opt{no_lines}    // $default{no_lines};
+	my $max_lines   = $opt{max_lines}   // 40;
+	my $offset      = $opt{offset}      // 0;
+	my $time_format = $opt{time_format} // 'countdown';
+	my $results     = $opt{data};
 	my $displayed_lines = 0;
 	my $want_crop       = $opt{want_crop};
 	my @fmt_departures;
@@ -390,6 +391,9 @@ sub make_infoboard_lines {
 		{
 			next;
 		}
+		elsif ( $time_format eq 'hhmm' ) {
+			$etr = $dt->strftime('%H:%M');
+		}
 		elsif ( $duration->in_units('minutes') == 0 ) {
 			$etr = 'sofort';
 		}
@@ -436,13 +440,14 @@ sub render_html {
 	);
 
 	my @departures = make_infoboard_lines(
-		city      => $self->stash('city') // q{},
-		stop      => $self->stash('stop'),
-		backend   => scalar $self->param('backend'),
-		no_lines  => scalar $self->param('no_lines'),
-		offset    => scalar $self->param('offset'),
-		want_crop => scalar $self->param('want_crop'),
-		data      => $data->{filtered_results},
+		city        => $self->stash('city') // q{},
+		stop        => $self->stash('stop'),
+		backend     => scalar $self->param('backend'),
+		no_lines    => scalar $self->param('no_lines'),
+		offset      => scalar $self->param('offset'),
+		time_format => scalar $self->param('time_format'),
+		want_crop   => scalar $self->param('want_crop'),
+		data        => $data->{filtered_results},
 	);
 
 	for my $d (@departures) {
@@ -470,6 +475,8 @@ sub render_html {
 sub render_json {
 	my $self = shift;
 
+	my $time_format = $self->param('time_format') // 'countdown';
+
 	my $data = get_filtered_departures(
 		city            => $self->stash('city') // q{},
 		stop            => $self->stash('stop'),
@@ -482,14 +489,15 @@ sub render_json {
 	my $raw_departures = $data->{filtered_results};
 	my $errstr         = $data->{errstr};
 	my @departures     = make_infoboard_lines(
-		no_lines  => scalar $self->param('no_lines'),
-		offset    => scalar $self->param('offset'),
-		want_crop => scalar $self->param('want_crop'),
-		data      => $raw_departures,
+		no_lines    => scalar $self->param('no_lines'),
+		offset      => scalar $self->param('offset'),
+		time_format => $time_format,
+		want_crop   => scalar $self->param('want_crop'),
+		data        => $raw_departures,
 	);
 
 	for my $d (@departures) {
-		if ( $d->[2] and $d->[2] ne 'sofort' ) {
+		if ( $d->[2] and $d->[2] ne 'sofort' and $time_format eq 'countdown' ) {
 			$d->[2] .= ' min';
 		}
 	}
@@ -510,8 +518,9 @@ sub render_json {
 sub render_image {
 	my $self = shift;
 
-	my $color = $self->param('color') || '255,208,0';
-	my $scale = $self->param('scale');
+	my $color       = $self->param('color') || '255,208,0';
+	my $scale       = $self->param('scale');
+	my $time_format = $self->param('time_format') // 'countdown';
 
 	my $data = get_filtered_departures(
 		city            => $self->stash('city') // q{},
@@ -526,13 +535,14 @@ sub render_image {
 	my $errstr         = $data->{errstr};
 
 	my @departures = make_infoboard_lines(
-		city      => $self->stash('city') // q{},
-		stop      => $self->stash('stop'),
-		backend   => scalar $self->param('backend'),
-		no_lines  => scalar $self->param('no_lines'),
-		offset    => scalar $self->param('offset'),
-		want_crop => scalar $self->param('want_crop'),
-		data      => $raw_departures
+		city        => $self->stash('city') // q{},
+		stop        => $self->stash('stop'),
+		backend     => scalar $self->param('backend'),
+		no_lines    => scalar $self->param('no_lines'),
+		offset      => scalar $self->param('offset'),
+		time_format => $time_format,
+		want_crop   => scalar $self->param('want_crop'),
+		data        => $raw_departures
 	);
 
 	if ( $scale > 30 ) {
@@ -567,7 +577,10 @@ sub render_image {
 		$png->draw_at( 0,  $line );
 		$png->draw_at( 25, $destination );
 
-		if ( length($etr) > 2 ) {
+		if ( $time_format eq 'hhmm' ) {
+			$png->draw_at( 153, $etr );
+		}
+		elsif ( length($etr) > 2 ) {
 			$png->draw_at( 145, $etr );
 		}
 		elsif ( length($etr) > 1 ) {
@@ -577,7 +590,7 @@ sub render_image {
 			$png->draw_at( 154, $etr );
 		}
 
-		if ( $etr and $etr ne 'sofort' ) {
+		if ( $etr and $etr ne 'sofort' and $time_format eq 'countdown' ) {
 			$png->draw_at( 161, 'min' );
 		}
 
