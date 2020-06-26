@@ -51,10 +51,11 @@ or
 cpanm -n --installdeps .
 ```
 
-Next, you need to build App::VRR::Fakedisplay, which is required for the lED
+Next, you need to build App::VRR::Fakedisplay, which is required for the LED
 frontend and shipped with vrr-fakedisplay.
 
 ```
+export PERL5LIB=local/lib/perl5
 perl Build.PL
 ./Build
 ./Build manifest
