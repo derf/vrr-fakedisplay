@@ -81,14 +81,15 @@ Ankündigung ändern.</p>
 % else {
 <div class="container">
 <p>
-Diese Seite ist ein inoffizielles Frontend für die Abfahrtsmonitore
-einiger europäischer Nahverkehrsunternehmen. Sie kannn wahlweise die oft an
-Haltestellen montierten LED-Displays nachahmen oder einen Handy- und
-Infoscreen-tauglichen Abfahrtsmonitor anzeigen.
+vrr-infoscreen ist ein inoffizielles Frontend für die Abfahrtsmonitore einiger
+europäischer Nahverkehrsunternehmen. Es kannn wahlweise die oft an Haltestellen
+montierten LED-Displays nachahmen oder einen für Infotafeln geeigneten
+Abfahrtsmonitor anzeigen.
 </p>
 
 <p>
-Alle Angaben ohne Gewähr.
+Diese Seite ist ein privat betriebenes Projekt ohne Verfügbarkeitsgarantie
+und wird derzeit nicht aktiv gepflegt oder weiterentwickelt. Alle Angaben ohne Gewähr.
 </p>
 </div> <!-- container -->
 % }

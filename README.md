@@ -11,6 +11,9 @@ There's a public [vrr-infoscreen service on
 finalrewind.org](https://vrrf.finalrewind.org/). You can also host your own
 instance via carton/cpanminus or Docker, see the Setup notes below.
 
+**Legacy Warning**. As of 2017, vrr-infoscreen is not under active development
+anymore. Maintenance and bugfixes may not occur in a timely manner.
+
 ## Dependencies
 
  * perl ≥ 5.20
