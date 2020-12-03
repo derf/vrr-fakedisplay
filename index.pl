@@ -694,10 +694,10 @@ get '/:city/<*stop>.html' => \&render_html;
 get '/:city/<*stop>.json' => \&render_json;
 get '/:city/<*stop>.png'  => \&render_image;
 get '/:city/*stop'        => \&handle_request;
-get '/<:stop>.html'       => \&render_html;
-get '/<:stop>.json'       => \&render_json;
-get '/<:stop>.png'        => \&render_image;
-get '/:stop'              => \&handle_request;
+get '/<*stop>.html'       => \&render_html;
+get '/<*stop>.json'       => \&render_json;
+get '/<*stop>.png'        => \&render_image;
+get '/*stop'              => \&handle_request;
 
 app->config(
 	hypnotoad => {
