@@ -105,7 +105,7 @@ und wird derzeit nicht aktiv gepflegt oder weiterentwickelt. Alle Angaben ohne G
 %= form_for _redirect => begin
 <div>
   <div class="field">
-    <div class="desc">Stadt (Pflichtfeld für EFA-Backends, sonst optional)</div>
+    <div class="desc">Stadt (optional, kann auch Teil der Haltestelle sein)</div>
     <div>
       % if (stash('place_candidates') and @{ stash('place_candidates') } ) {
         % my @candidates = map { [ $_, $_ ] } @{ stash('place_candidates') };

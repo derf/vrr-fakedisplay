@@ -130,9 +130,6 @@ sub get_results {
 		}
 		else {
 			my $efa_url = 'http://efa.vrr.de/vrr/XSLT_DM_REQUEST';
-			if ( not $city ) {
-				return { errstr => 'City must be specified for this backend' };
-			}
 			if ($sub_backend) {
 				my $service
 				  = first { lc( $_->{shortname} ) eq lc($sub_backend) }
