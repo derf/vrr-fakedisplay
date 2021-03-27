@@ -181,6 +181,17 @@
 %   if ($departure->can('route_interesting') and $departure->route_interesting) {
 %=    join(' - ', map { $_->can('name_suf') ? $_->name_suf : $_->name } ($departure->route_interesting));
 %   }
+%   elsif ($departure->can('occupancy') and $departure->occupancy) {
+%     if ($departure->occupancy eq 'MANY_SEATS') {
+        ●○○
+%     }
+%     elsif ($departure->occupancy eq 'FEW_SEATS') {
+        ●●○
+%     }
+%     elsif ($departure->occupancy eq 'STANDING_ONLY') {
+        <span style="color: red;">●●●</span>
+%     }
+%   }
     </span> <!-- route -->
     <span class="dest">
 %=  $departure->destination
