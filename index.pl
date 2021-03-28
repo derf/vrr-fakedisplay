@@ -46,7 +46,10 @@ sub log_api_access {
 }
 
 sub get_results {
-	my ( $backend, $city, $stop ) = @_;
+	my %opt     = @_;
+	my $backend = $opt{backend};
+	my $city    = $opt{city};
+	my $stop    = $opt{stop};
 	my $sub_backend;
 
 	my $expiry = 200;
@@ -139,11 +142,12 @@ sub get_results {
 				}
 			}
 			$status = Travel::Status::DE::EFA->new(
-				efa_url     => $efa_url,
-				place       => $city,
-				name        => $stop,
-				timeout     => 3,
-				full_routes => 0,
+				efa_url          => $efa_url,
+				place            => $city,
+				name             => $stop,
+				timeout          => 3,
+				full_routes      => 0,
+				proximity_search => $opt{proximity_search}
 			);
 		}
 		if ( not $status->errstr ) {
@@ -189,8 +193,11 @@ sub handle_request {
 	my $data;
 
 	if ($stop) {
-		$data = get_results( $self->param('backend') // $default{backend},
-			$city, $stop );
+		$data = get_results(
+			backend => $self->param('backend') // $default{backend},
+			city    => $city,
+			stop    => $stop
+		);
 	}
 
 	if ( not $no_lines or $no_lines < 1 or $no_lines > 40 ) {
@@ -270,7 +277,12 @@ sub get_filtered_departures {
 
 	my ( @grep_line, @grep_platform, @filtered_results );
 
-	my $data = get_results( $opt{backend}, $opt{city}, $opt{stop} );
+	my $data = get_results(
+		backend          => $opt{backend},
+		city             => $opt{city},
+		stop             => $opt{stop},
+		proximity_search => $opt{proximity_search}
+	);
 
 	my $results = $data->{results};
 
@@ -427,13 +439,14 @@ sub render_html {
 	my $template = $frontend eq 'html' ? 'display' : 'infoscreen';
 
 	my $data = get_filtered_departures(
-		city            => $self->stash('city') // q{},
-		stop            => $self->stash('stop'),
-		backend         => scalar $self->param('backend'),
-		filter_line     => scalar $self->param('line'),
-		filter_platform => scalar $self->param('platform'),
-		hide_regional   => ( $template eq 'infoscreen' ? 0 : 1 ),
-		offset          => scalar $self->param('offset'),
+		city             => $self->stash('city') // q{},
+		stop             => $self->stash('stop'),
+		backend          => scalar $self->param('backend'),
+		filter_line      => scalar $self->param('line'),
+		filter_platform  => scalar $self->param('platform'),
+		hide_regional    => ( $template eq 'infoscreen' ? 0 : 1 ),
+		offset           => scalar $self->param('offset'),
+		proximity_search => scalar $self->param('proximity_search'),
 	);
 
 	my @departures = make_infoboard_lines(
@@ -475,13 +488,14 @@ sub render_json {
 	my $time_format = $self->param('time_format') // 'countdown';
 
 	my $data = get_filtered_departures(
-		city            => $self->stash('city') // q{},
-		stop            => $self->stash('stop'),
-		backend         => scalar $self->param('backend'),
-		filter_line     => scalar $self->param('line'),
-		filter_platform => scalar $self->param('platform'),
-		hide_regional   => 0,
-		offset          => scalar $self->param('offset'),
+		city             => $self->stash('city') // q{},
+		stop             => $self->stash('stop'),
+		backend          => scalar $self->param('backend'),
+		filter_line      => scalar $self->param('line'),
+		filter_platform  => scalar $self->param('platform'),
+		hide_regional    => 0,
+		offset           => scalar $self->param('offset'),
+		proximity_search => scalar $self->param('proximity_search'),
 	);
 	my $raw_departures = $data->{filtered_results};
 	my $errstr         = $data->{errstr};
@@ -520,13 +534,14 @@ sub render_image {
 	my $time_format = $self->param('time_format') // 'countdown';
 
 	my $data = get_filtered_departures(
-		city            => $self->stash('city') // q{},
-		stop            => $self->stash('stop'),
-		backend         => scalar $self->param('backend'),
-		filter_line     => scalar $self->param('line'),
-		filter_platform => scalar $self->param('platform'),
-		hide_regional   => 0,
-		offset          => scalar $self->param('offset'),
+		city             => $self->stash('city') // q{},
+		stop             => $self->stash('stop'),
+		backend          => scalar $self->param('backend'),
+		filter_line      => scalar $self->param('line'),
+		filter_platform  => scalar $self->param('platform'),
+		hide_regional    => 0,
+		offset           => scalar $self->param('offset'),
+		proximity_search => scalar $self->param('proximity_search'),
 	);
 	my $raw_departures = $data->{filtered_results};
 	my $errstr         = $data->{errstr};
@@ -647,8 +662,11 @@ get '/_redirect' => sub {
 	if (    $params->param('frontend')
 		and $params->param('frontend') eq 'infoscreen' )
 	{
-		my $data = get_results( $self->param('backend') // $default{backend},
-			$city, $stop );
+		my $data = get_results(
+			backend => $self->param('backend') // $default{backend},
+			city    => $city,
+			stop    => $stop
+		);
 		if ( not $data->{errstr} ) {
 			$suffix = '.html';
 		}
