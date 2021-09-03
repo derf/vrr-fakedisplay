@@ -92,7 +92,7 @@ Diese Seite ist ein privat betriebenes Projekt ohne Verfügbarkeitsgarantie
 und wird derzeit nicht aktiv gepflegt oder weiterentwickelt. Alternativen:
 <ul>
 <li>LED-Tafel: Derzeit keine</li>
-<li>HTML/App: <a href="https://nvm.finalewind.org">nvm.finalrewind.org</a></li>
+<li>HTML/App: <a href="https://nvm.finalrewind.org">nvm.finalrewind.org</a></li>
 <li>JSON aus EFA-APIs: <a href="https://finalrewind.org/interblag/entry/efa-json-api/">EFA-APIs mit nativer JSON-Unterstützung</a></li>
 <li>JSON aus HAFAS-APIs: <a href="https://transport.rest/">transport.rest</a></li>
 <li>JSON aus URA-APIs: Derzeit keine</li>
